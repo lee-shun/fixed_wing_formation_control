@@ -191,6 +191,34 @@ void PACK_FW_STATES::pack_fw_states()
   fixed_wing_states_pub.publish(fixed_wing_sub_pub.fw_states_form_mavros);
 }
 
+void PACK_FW_STATES::msg_to_mavros()
+{
+  //将期望值转换一下坐标系，并转化为四元数
+  float angle[3], quat[4];
+
+  angle[0] = fixed_wing_sub_pub.cmd_from_controller.roll_angle_sp;
+  angle[1] = -fixed_wing_sub_pub.cmd_from_controller.pitch_angle_sp; //
+  angle[2] = -fixed_wing_sub_pub.cmd_from_controller.roll_angle_sp + deg_2_rad(90.0);
+
+  euler_2_quaternion(angle, quat);
+
+  fixed_wing_sub_pub.att_sp.type_mask = 7; //1+2+4+64+128 body.rate_x,body.rate_y,body.rate_z thrust..
+  fixed_wing_sub_pub.att_sp.orientation.w = quat[0];
+  fixed_wing_sub_pub.att_sp.orientation.x = quat[1];
+  fixed_wing_sub_pub.att_sp.orientation.y = quat[2];
+  fixed_wing_sub_pub.att_sp.orientation.z = quat[3];
+  fixed_wing_sub_pub.att_sp.thrust = fixed_wing_sub_pub.cmd_from_controller.throttle_sp;
+
+  fixed_wing_local_att_sp_pub.publish(fixed_wing_sub_pub.att_sp);
+}
+
+void PACK_FW_STATES::srv_to_mavros()
+{
+  //设置模式
+  fixed_wing_sub_pub.mode_cmd.request.custom_mode = fixed_wing_sub_pub.cmd_from_controller.cmd_mode;
+  set_mode_client.call(fixed_wing_sub_pub.mode_cmd);
+}
+
 void PACK_FW_STATES::run(int argc, char **argv)
 {
   ros::Rate rate(60.0);
@@ -199,7 +227,10 @@ void PACK_FW_STATES::run(int argc, char **argv)
 
   while (ros::ok())
   {
+
     pack_fw_states();
+    msg_to_mavros();
+    srv_to_mavros();
 
     ros::spinOnce(); //挂起一段时间，保证周期的速度hahahha
     rate.sleep();

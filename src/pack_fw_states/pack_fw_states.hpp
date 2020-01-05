@@ -9,6 +9,7 @@
 #include <ros/ros.h>
 #include "iostream"
 #include "fixed_wing_formation_control/FWstates.h" //自定义的飞机的状态消息
+#include "fixed_wing_formation_control/FWcmd.h"
 #include "fixed_wing_sub_pub.hpp"
 
 using namespace std;
@@ -92,7 +93,9 @@ private:
     float att_angle[3], att_quat[4]; //转换四元数中间量
 
 public:
-    void send_to_mavros();
+    void msg_to_mavros();
+
+    void srv_to_mavros();
 
     void ros_sub_and_pub();
 
