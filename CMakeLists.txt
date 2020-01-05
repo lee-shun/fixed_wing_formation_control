@@ -132,11 +132,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+
+########### 比赛任务主节点 #############
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
-
+ add_library(formation_controller
+   src/formation_controller/formation_controller.cpp
+ )
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -161,8 +165,11 @@ add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
+ target_link_libraries(task_main
+ formation_controller
+ )
 
- 
+###########mavros打包+指令发送节点##############
  add_executable(pack_fw_states src/pack_fw_states/pack_fw_states.cpp)
  target_link_libraries(pack_fw_states
  ${catkin_LIBRARIES}
