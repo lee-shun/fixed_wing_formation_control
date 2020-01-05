@@ -33,7 +33,8 @@
 #include <mavros_msgs/PositionTarget.h>
 #include <mavros_msgs/GlobalPositionTarget.h>
 
-#include <mavros_msgs/Formation_fixed_wing.h> //自定义的传输消息
+#include "fixed_wing_formation_control/FWstates.h" //自定义的飞机的状态消息
+#include "fixed_wing_formation_control/FWcmd.h"
 
 #include "../fixed_wing_lib/mathlib.hpp"
 
@@ -76,6 +77,8 @@ public:
 
     mavros_msgs::VFR_HUD air_ground_speed_from_px4;
 
+    fixed_wing_formation_control::FWcmd cmd_from_controller;//来自各种控制器的四通道控制量
+
     //服务项暂存容器
     mavros_msgs::SetMode mode_cmd;
 
@@ -96,7 +99,7 @@ public:
 
     mavros_msgs::AttitudeTarget att_sp;
 
-    mavros_msgs::Formation_fixed_wing fixed_wing_states_tran; //这个是自定义的飞机状态消息
+    fixed_wing_formation_control::FWstates fw_states_form_mavros; //这个是自定义的完整的飞机状态消息
 
     float att_sp_Euler[3];
     float thrust_sp;
@@ -194,9 +197,9 @@ public:
         air_ground_speed_from_px4 = *msg;
     }
 
-    void fixed_wing_states_tran_cb(const mavros_msgs::Formation_fixed_wing::ConstPtr &msg)
+    void cmd_from_controller_cb(const fixed_wing_formation_control::FWcmd::ConstPtr &msg)
     {
-        fixed_wing_states_tran = *msg;
+        cmd_from_controller = *msg;
     }
 };
 
