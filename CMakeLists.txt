@@ -60,6 +60,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    FWstates.msg
+   FWcmd.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -160,6 +161,14 @@ add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
+
+ 
+ add_executable(pack_fw_states src/pack_fw_states/pack_fw_states.cpp)
+ target_link_libraries(pack_fw_states
+ ${catkin_LIBRARIES}
+)
+
+
 
 #############
 ## Install ##
