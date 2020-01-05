@@ -3,8 +3,8 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
-#include <iostream>
 #include "../fixed_wing_lib/mathlib.hpp"
+#include "syslib.hpp"
 
 using namespace std;
 
@@ -133,13 +133,13 @@ public:
     {
         _airspeed_enabled = enabled;
     }
-    void update_pitch_throttle(float time_now, const float rotMat[3][3], float pitch, float baro_altitude, float hgt_dem,
+    void update_pitch_throttle(const float rotMat[3][3], float pitch, float baro_altitude, float hgt_dem,
                                float EAS_dem, float indicated_airspeed, float EAS2TAS, bool climbOutDem, float ptchMinCO,
                                float throttle_min, float throttle_max, float throttle_cruise, float pitch_limit_min, float pitch_limit_max);
     // Update of the estimated height and height rate internal state
     // Update of the inertial speed rate internal state
     // Should be called at 50Hz or greater
-    void update_state(float time_now, float baro_altitude, float airspeed, const float rotMat[3][3],
+    void update_state(float baro_altitude, float airspeed, const float rotMat[3][3],
                       const float accel_body[3], const float accel_earth[3], bool altitude_lock, bool in_air);
 
     // demanded throttle in percentage
@@ -447,7 +447,7 @@ private:
     void _initialise_states(float pitch, float throttle_cruise, float baro_altitude, float ptchMinCO_rad, float EAS2TAS);
 
     // Update the airspeed internal state using a second order complementary filter
-    void _update_speed(float time_now, float airspeed_demand, float indicated_airspeed,
+    void _update_speed(float airspeed_demand, float indicated_airspeed,
                        float indicated_airspeed_min, float indicated_airspeed_max, float EAS2TAS);
     void _update_STE_rate_lim();
     void _detect_underspeed();
@@ -463,11 +463,11 @@ private:
 /*来源为px4*/
 //#include "tecs.hpp"
 
-void TECS::update_state(float time_now, float baro_altitude, float airspeed, const float rotMat[3][3],
+void TECS::update_state(float baro_altitude, float airspeed, const float rotMat[3][3],
                         const float accel_body[3], const float accel_earth[3], bool altitude_lock, bool in_air)
 {
     /// Calculate time in seconds since last update
-    uint64_t now = time_now;
+    uint64_t now = get_sys_time() / 1000;
     float DT = max((now - _update_50hz_last_usec), 0);
 
     bool reset_altitude = false;
@@ -618,11 +618,11 @@ void TECS::_initialise_states(float pitch, float throttle_cruise, float baro_alt
     _states_initalized = true;
 }
 
-void TECS::_update_speed(float time_now, float airspeed_demand, float indicated_airspeed,
+void TECS::_update_speed(float airspeed_demand, float indicated_airspeed,
                          float indicated_airspeed_min, float indicated_airspeed_max, float EAS2TAS)
 {
     // Calculate time in seconds since last update
-    float now = time_now; //这里的时间感觉会有问题，原先的算法是在这里读取系统时间，这里是我在进来的时候添加的时间，是静止的时间
+    float now = get_sys_time() / 1000;
     float DT = max((now - _update_speed_last_usec), 0) * 1.0e-6f;
 
     /**************************
@@ -987,13 +987,13 @@ void TECS::_update_pitch()
     _last_pitch_dem = _pitch_dem;
 }
 
-void TECS::update_pitch_throttle(float time_now, const float rotMat[3][3], float pitch, float baro_altitude, float hgt_dem,
+void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float baro_altitude, float hgt_dem,
                                  float EAS_dem, float indicated_airspeed, float EAS2TAS, bool climbOutDem, float ptchMinCO,
                                  float throttle_min, float throttle_max, float throttle_cruise, float pitch_limit_min, float pitch_limit_max)
 {
     //cout<<"very_first" <<_hgt_dem<<endl;
     // Calculate time in seconds since last update
-    float now = time_now;
+    float now = get_sys_time() / 1000;
     _DT = max((now - _update_pitch_throttle_last_usec), 0);
     _THRmaxf = throttle_max;
     _THRminf = throttle_min;
@@ -1019,7 +1019,7 @@ void TECS::update_pitch_throttle(float time_now, const float rotMat[3][3], float
     * 2. 将空速的加速度做一个滤波（并不知道是什么滤波）,得到的是空速的变换率
 	*
 	***************************/
-    _update_speed(time_now, EAS_dem, indicated_airspeed, _indicated_airspeed_min, _indicated_airspeed_max, EAS2TAS);
+    _update_speed(EAS_dem, indicated_airspeed, _indicated_airspeed_min, _indicated_airspeed_max, EAS2TAS);
     //cout<<"_initialise_states" <<_hgt_dem<<endl;
     // /**************************
     // *

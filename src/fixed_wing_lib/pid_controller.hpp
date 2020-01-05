@@ -1,7 +1,9 @@
 #ifndef _PID_CONTROLLER_H
 #define _PID_CONTROLLER_H
+
+#include <iostream>
 #include "mathlib.hpp"
-#include "iostream"
+#include "syslib.hpp"
 
 using namespace std;
 
@@ -17,7 +19,7 @@ private:
 
     float _dt_default{0.2};
 
-    float _dt_max{0.5};
+    float _dt_max{0.1};
 
     float _dt_min{0.01};
 
@@ -54,6 +56,10 @@ private:
 
     float ele_d{0};
 
+    float ele_d_max{500};
+
+    float ele_d_min{-500};
+
 public:
     //功能函数
 
@@ -64,7 +70,7 @@ public:
     float pid_classic();
 
     //抗饱和积分 pid
-    float pid_anti_saturated(float time, float input_val, bool use_integ);
+    float pid_anti_saturated(float input_val, bool use_integ, bool use_diff);
 
     //增量式 pid
     float pid_incremental();
@@ -100,14 +106,15 @@ public:
 
 void PID_CONTROLLER::cal_time_interval()
 {
+
     _dt = current_time - last_time;
 
     _dt = constrain(_dt, _dt_min, _dt_max);
 }
 
-float PID_CONTROLLER::pid_anti_saturated(float time, float input_val, bool use_integ)
+float PID_CONTROLLER::pid_anti_saturated(float input_val, bool use_integ, bool use_diff)
 {
-    current_time = time;
+    current_time = get_sys_time() / 1000; //获取系统时间，单位为毫秒，需要转化成秒
     input = input_val;
 
     cal_time_interval();
@@ -150,6 +157,11 @@ float PID_CONTROLLER::pid_anti_saturated(float time, float input_val, bool use_i
     if (!use_integ) //使用积分开关，距离比较小的时候使用
     {
         ele_i = 0;
+    }
+
+    if (!use_diff) //使用微分开关，距离比较小的时候使用
+    {
+        ele_d = 0;
     }
     output = ele_p + ele_i + ele_d;
 
