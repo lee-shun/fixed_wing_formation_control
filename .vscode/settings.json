@@ -3,5 +3,9 @@
         "/home/lee/catkin_ws/devel/lib/python2.7/dist-packages",
         "/opt/ros/melodic/lib/python2.7/dist-packages"
     ],
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "cmath": "cpp",
+        "iomanip": "cpp"
+    }
 }
