@@ -7,6 +7,7 @@
 void FORMATION_CONTROL::reset_formation_controller() //重置控制器中有“记忆”的量。
 {
     rest_speed_pid = true;
+    rest_tecs = true;
 };
 
 void FORMATION_CONTROL::set_formation_type(int formation_type)
@@ -77,8 +78,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_stat
 
     float mix_v_p_Xb = formation_params.kp_p * fw_error.PXb + formation_params.kv_p * fw_error.led_fol_vxb;
 
-    PID_CONTROLLER gspeed_pid;
-
     gspeed_pid.init_pid(formation_params.mix_kp, formation_params.mix_ki, formation_params.mix_kd);
 
     if (rest_speed_pid) //若要重置编队控制器，这个pid得重置一下
@@ -108,11 +107,57 @@ void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_stat
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
     fw_sp.air_speed = fw_sp.ground_speed - wind_Xb;
 
-    TECS _tecs;
+    //计算一下旋转矩阵//顺便将体轴系下的加速度转换到ned下！！！这个放在外部好了
+    // float rotmat[3][3];
+    // float angle[3], quat[4];
+    // angle[0] = fw_states.roll_angle;
+    // angle[1] = fw_states.pitch_angle;
+    // angle[2] = fw_states.yaw_angle;
 
-    //6. 机体侧向混合误差,由L1控制器解算滚转以及偏航角。
+    // euler_2_quaternion(angle, quat);
+    // quat_2_rotmax(quat, rotmat);
 
-    
+    if (rest_tecs)
+    {
+        _tecs.reset_state();
+        rest_tecs = false;
+    }
+    //设置参数,真实的飞机还需要另外调参
+    _tecs.set_speed_weight(tecs_params.speed_weight);
+    _tecs.set_time_const_throt(tecs_params.time_const_throt); //这个值影响到总能量-->油门的（相当于Kp，他越大，kp越小）
+    _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
+    _tecs.enable_airspeed(true);
+
+    if (fw_sp.altitude - fw_states.altitude >= 5) //判断一下是否要进入爬升
+
+    {
+        tecs_params.climboutdem = true;
+    }
+    else
+    {
+        tecs_params.climboutdem = false;
+    }
+    _tecs.update_state(fw_states.altitude, fw_states.air_speed, fw_states.rotmat,
+                       fw_states.body_acc, fw_states.ned_acc, fw_states.altitude_lock, fw_states.in_air);
+
+    _tecs.update_pitch_throttle(fw_states.rotmat, fw_states.pitch_angle,
+                                fw_states.altitude, fw_sp.altitude, fw_sp.air_speed,
+                                fw_states.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
+                                tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
+                                tecs_params.throttle_max, tecs_params.throttle_cruise,
+                                tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
+
+    _tecs.get_tecs_state(tecs_outputs); //这个是tecs控制器状态，可以作为调试的窗口用
+
+    _cmd.pitch = _tecs.get_pitch_demand();
+    _cmd.thrust = _tecs.get_throttle_demand();
+
+    //6. 机体侧向混合误差,或者只有位置误差（当前）,由L1控制器解算滚转以及偏航角。
+
+    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_ground_speed_2d, fw_states.air_speed);
+
+    _cmd.roll = constrain(_lateral_controller.nav_roll(),
+                          -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
 }
 
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
