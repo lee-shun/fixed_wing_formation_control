@@ -141,6 +141,7 @@ include_directories(
  add_library(formation_controller
    src/formation_controller/formation_controller.cpp
  )
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -168,6 +169,7 @@ target_link_libraries(task_main
  target_link_libraries(task_main
  formation_controller
  )
+
 
 ###########mavros打包+指令发送节点##############
  add_executable(pack_fw_states src/pack_fw_states/pack_fw_states.cpp)
