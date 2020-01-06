@@ -5,7 +5,8 @@
 */
 
 #include <iostream>
-#include"../fixed_wing_lib/tecs.hpp"
+#include "../fixed_wing_lib/lateral_controller.hpp"
+#include "../fixed_wing_lib/tecs.hpp"
 #include "../fixed_wing_lib/mathlib.hpp"
 #include "../fixed_wing_lib/pid_controller.hpp"
 #include "../fixed_wing_lib/vector.hpp"
@@ -57,11 +58,19 @@ public:
 
         float roll_angle{-20000};
 
+        float att_quat[4];
+
         float ned_vel_x{-20000}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
 
         float ned_vel_y{-20000};
 
         float ned_vel_z{-20000};
+
+        float body_acc[3];
+
+        float ned_acc[3]; //内部计算后填充，或者外部填充均可
+
+        float rotmat[3][3];
 
         double latitude{-20000};
 
@@ -78,6 +87,10 @@ public:
         float wind_estimate_y{-20000};
 
         float wind_estimate_z{-20000};
+
+        bool in_air{true};
+
+        bool altitude_lock{false};
     };
 
     struct _s_fw_error //本机误差
@@ -131,7 +144,9 @@ public:
     void rel_pos_controller();
 
 private:
+    //重置内部控器标志量
     bool rest_speed_pid{false};
+    bool rest_tecs{false};
     struct _s_formation_offset
     {
         //机体系
@@ -145,14 +160,9 @@ private:
         float ned_d{0};
     } formation_offset;
 
+    //这个结构体为了区分，将角度以及就是单独的运动学位置以及速度的期望值，是计算出来的
     struct _s_fw_sp
     {
-        float pitch_angle{-20000};
-
-        float yaw_angle{-20000};
-
-        float roll_angle{-20000};
-
         float ned_vel_x{-20000};
 
         float ned_vel_y{-20000};
@@ -185,7 +195,48 @@ private:
         float mix_ki{0.01};
     } formation_params;
 
+    struct _s_tecs_params
+    {
+        int EAS2TAS{1};
+
+        bool climboutdem{false};
+
+        float climbout_pitch_min_rad{0.2};
+
+        float throttle_min{0.1};
+
+        float throttle_max{1};
+
+        float throttle_cruise{0.1};
+
+        float pitch_min_rad{-0.5};
+
+        float pitch_max_rad{0.5};
+
+        float speed_weight{1};
+
+        float time_const_throt{1.0};
+
+        float time_const{5.0};
+
+    } tecs_params;
+
+    struct _s_lateral_controller_params
+    {
+        float roll_max{PI / 2};
+    } lateral_controller_params;
+
     _s_fw_error fw_error;
+
+    TECS _tecs;
+
+    struct TECS::tecs_state tecs_outputs;
+
+    PID_CONTROLLER gspeed_pid;
+
+    LATERAL_CONTROLLER _lateral_controller;
+
+    _s_4cmd _cmd;
 
     Point get_plane_to_sp_vector(Point origin, Point target);
 };
