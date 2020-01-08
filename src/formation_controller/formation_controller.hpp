@@ -32,44 +32,44 @@ public:
 
     struct _s_leader_states //领机状态信息
     {
-        float pitch_angle{-20000}; //姿态只有姿态那个控制器才可能用到
+        float pitch_angle{0}; //姿态只有姿态那个控制器才可能用到
 
-        float yaw_angle{-20000};
+        float yaw_angle{0};
 
-        float roll_angle{-20000};
+        float roll_angle{0};
 
-        float ned_vel_x{-20000}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
+        float ned_vel_x{0}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
 
-        float ned_vel_y{-20000};
+        float ned_vel_y{0};
 
-        float ned_vel_z{-20000};
+        float ned_vel_z{0};
 
-        double latitude{-20000};
+        double latitude{0};
 
-        double longtitude{-20000};
+        double longtitude{0};
 
-        double altitude{-20000};
+        double altitude{0};
 
-        float relative_alt{-20000};
+        float relative_alt{0};
 
-        float air_speed{-20000};
+        float air_speed{0};
     };
 
     struct _s_fw_states //本机状态信息
     {
-        float pitch_angle{-20000};
+        float pitch_angle{0};
 
-        float yaw_angle{-20000};
+        float yaw_angle{0};
 
-        float roll_angle{-20000};
+        float roll_angle{0};
 
         float att_quat[4];
 
-        float ned_vel_x{-20000}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
+        float ned_vel_x{0}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
 
-        float ned_vel_y{-20000};
+        float ned_vel_y{0};
 
-        float ned_vel_z{-20000};
+        float ned_vel_z{0};
 
         float body_acc[3];
 
@@ -77,21 +77,21 @@ public:
 
         float rotmat[3][3];
 
-        double latitude{-20000};
+        double latitude{0};
 
-        double longtitude{-20000};
+        double longtitude{0};
 
-        double altitude{-20000};
+        double altitude{0};
 
-        float relative_alt{-20000};
+        float relative_alt{0};
 
-        float air_speed{-20000};
+        float air_speed{0};
 
-        float wind_estimate_x{-20000};
+        float wind_estimate_x{0};
 
-        float wind_estimate_y{-20000};
+        float wind_estimate_y{0};
 
-        float wind_estimate_z{-20000};
+        float wind_estimate_z{0};
 
         bool in_air{true};
 
@@ -176,23 +176,23 @@ private:
     //这个结构体为了区分，将角度以及油门就是单独的，由运动学位置以及速度的期望值，是计算出来的
     struct _s_fw_sp
     {
-        float ned_vel_x{-20000};
+        float ned_vel_x{0};
 
-        float ned_vel_y{-20000};
+        float ned_vel_y{0};
 
-        float ned_vel_z{-20000};
+        float ned_vel_z{0};
 
-        double latitude{-20000};
+        double latitude{0};
 
-        double longtitude{-20000};
+        double longtitude{0};
 
-        double altitude{-20000};
+        double altitude{0};
 
-        float relative_alt{-20000};
+        float relative_alt{0};
 
-        float air_speed{-20000};
+        float air_speed{0};
 
-        float ground_speed{-20000};
+        float ground_speed{0};
     } fw_sp;
 
     struct _s_formation_params //编队控制器混合误差产生参数
