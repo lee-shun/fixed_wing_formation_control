@@ -30,8 +30,8 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
-void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_states leader_states,
-                                               FORMATION_CONTROL::_s_fw_states fw_states)
+void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_leader_states leader_states,
+                                               struct FORMATION_CONTROL::_s_fw_states fw_states)
 {
 
     //测试数据通断
@@ -110,16 +110,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_stat
     Point wind_vector(fw_states.wind_estimate_x, fw_states.wind_estimate_y);
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
     fw_sp.air_speed = fw_sp.ground_speed - wind_Xb;
-
-    //计算一下旋转矩阵//顺便将体轴系下的加速度转换到ned下！！！这个放在外部好了
-    // float rotmat[3][3];
-    // float angle[3], quat[4];
-    // angle[0] = fw_states.roll_angle;
-    // angle[1] = fw_states.pitch_angle;
-    // angle[2] = fw_states.yaw_angle;
-
-    // euler_2_quaternion(angle, quat);
-    // quat_2_rotmax(quat, rotmat);
 
     if (rest_tecs)
     {
