@@ -169,6 +169,10 @@ void PACK_FW_STATES::pack_fw_states()
   fixed_wing_sub_pub.fw_states_form_mavros.body_acc_y = fixed_wing_sub_pub.imu.linear_acceleration.y;
   fixed_wing_sub_pub.fw_states_form_mavros.body_acc_z = fixed_wing_sub_pub.imu.linear_acceleration.z;
 
+  fixed_wing_sub_pub.fw_states_form_mavros.body_acc.x = fixed_wing_sub_pub.imu.linear_acceleration.x;
+  fixed_wing_sub_pub.fw_states_form_mavros.body_acc.y = fixed_wing_sub_pub.imu.linear_acceleration.y;
+  fixed_wing_sub_pub.fw_states_form_mavros.body_acc.z = fixed_wing_sub_pub.imu.linear_acceleration.z;
+
   //以下来自altitude
   fixed_wing_sub_pub.fw_states_form_mavros.relative_hight = fixed_wing_sub_pub.altitude_from_px4.relative;
   fixed_wing_sub_pub.fw_states_form_mavros.ned_altitude = fixed_wing_sub_pub.altitude_from_px4.local;
@@ -227,12 +231,12 @@ void PACK_FW_STATES::run(int argc, char **argv)
 
   while (ros::ok())
   {
-
+    //一直在向mavros发，保持px4的链接不断
     pack_fw_states();
     msg_to_mavros();
     srv_to_mavros();
 
-    ros::spinOnce(); //挂起一段时间，保证周期的速度hahahha
+    ros::spinOnce(); //挂起一段时间，保证周期的速度
     rate.sleep();
   }
 }

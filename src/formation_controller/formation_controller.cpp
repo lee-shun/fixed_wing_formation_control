@@ -160,6 +160,11 @@ void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_stat
                           -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
 }
 
+struct FORMATION_CONTROL::_s_4cmd FORMATION_CONTROL::get_formation_4cmd()
+{
+    return _cmd;
+}
+
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
 {
     /* this is an approximation for small angles, proposed by [2] */

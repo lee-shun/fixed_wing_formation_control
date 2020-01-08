@@ -123,7 +123,7 @@ public:
 
     void reset_formation_controller(); //重置控制器，防止不同阶段控制器的状态混乱。
 
-    _s_4cmd get_formation_4cmd(); //得到编队控制后的四通道控制量
+    struct FORMATION_CONTROL::_s_4cmd get_formation_4cmd(); //得到编队控制后的四通道控制量
 
     //几个编队控制器类型,根据能得到的领机信息分类
 
@@ -160,7 +160,7 @@ private:
         float ned_d{0};
     } formation_offset;
 
-    //这个结构体为了区分，将角度以及就是单独的运动学位置以及速度的期望值，是计算出来的
+    //这个结构体为了区分，将角度以及油门就是单独的，由运动学位置以及速度的期望值，是计算出来的
     struct _s_fw_sp
     {
         float ned_vel_x{-20000};
