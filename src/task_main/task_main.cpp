@@ -83,14 +83,14 @@ void TASK_MAIN::control_formation()
     fw_4cmd.pitch_angle_sp = formation_cmd.pitch;
     fw_4cmd.yaw_angle_sp = formation_cmd.yaw;
 
-    fw_cmd_pub.publish(fw_4cmd);//发布四通道控制量
+    fw_cmd_pub.publish(fw_4cmd); //发布四通道控制量
 
     fw_col_mode_last = fw_col_mode_current; //上一次模式的纪录
 }
 
 void TASK_MAIN::run()
 {
-    ros::Rate rate(50.0);
+    ros::Rate rate(10.0);
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 
@@ -100,6 +100,7 @@ void TASK_MAIN::run()
 
         if (need_control_formation)
         {
+            cout << "启控时间：[" << current_time << "]秒" << endl;
             control_formation();
         }
 

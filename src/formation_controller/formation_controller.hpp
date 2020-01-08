@@ -135,8 +135,8 @@ public:
     //得到领机的位置，速度，姿态
     void att_vel_pos_controller();
     //得到领机的绝对位置，绝对速度
-    void abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_states leader_states,
-                                FORMATION_CONTROL::_s_fw_states fw_states);
+    void abs_pos_vel_controller(struct FORMATION_CONTROL::_s_leader_states leader_states,
+                                struct FORMATION_CONTROL::_s_fw_states fw_states);
     //得到领机的仅仅有绝对位置
     void abs_pos_controller();
     //得到领机的相对位置与相对速度
