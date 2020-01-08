@@ -6,6 +6,8 @@
     "cmake.configureOnOpen": false,
     "files.associations": {
         "cmath": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp"
     }
 }

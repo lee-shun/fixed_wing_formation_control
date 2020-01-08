@@ -33,6 +33,10 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
 void FORMATION_CONTROL::abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_states leader_states,
                                                FORMATION_CONTROL::_s_fw_states fw_states)
 {
+
+    //测试数据通断
+    print_data(&fw_states);
+
     //1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置-->GPS位置
 
     double cos_yaw = cos(leader_states.yaw_angle); //规定，运算全部用弧度，输出时考虑角度
@@ -172,4 +176,60 @@ Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
     Point out(deg_2_rad((target.x - origin.x)), deg_2_rad((target.y - origin.y) * cosf(deg_2_rad(origin.x))));
 
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
+}
+
+void FORMATION_CONTROL::print_data(FORMATION_CONTROL::_s_fw_states *p)
+{
+    cout << "***************以下是本飞机状态******************" << endl;
+    cout << "***************以下是本飞机状态******************" << endl;
+
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+    cout << "飞机当前姿态欧美系【roll，pitch，yaw】" << rad_2_deg(p->roll_angle) << " [deg] "
+         << rad_2_deg(p->pitch_angle) << " [deg] "
+         << rad_2_deg(p->yaw_angle) << " [deg] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "飞机当前姿态的旋转矩阵【第2行】" << p->rotmat[2][0] << " [] "
+         << p->rotmat[2][1] << " [] "
+         << p->rotmat[2][2] << " [] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] " //待完成
+         << p->body_acc[1] << " [m/ss] "
+         << p->body_acc[2] << " [m/ss] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] " //待完成
+         << p->ned_vel_y << " [m/s] "
+         << p->ned_vel_z << " [m/s] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] " //待完成
+         << p->ned_acc[1] << " [m/ss] "
+         << p->ned_acc[2] << " [m/ss] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] " //待完成
+         << p->longtitude << " [] "
+         << p->altitude << " [] "
+         << p->relative_alt << " [] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] " //待完成
+         << p->wind_estimate_y << " [m/s] "
+         << p->wind_estimate_z << " [m/s] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+
+    cout << "***************以上是本飞机状态******************" << endl;
+    cout << "***************以上是本飞机状态******************" << endl;
+    for (int i = 1; i <= the_space_between_blocks; i++)
+        cout << endl;
 }

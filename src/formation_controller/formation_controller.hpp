@@ -13,6 +13,11 @@
 
 using namespace std;
 
+#ifndef the_space_between_lines
+#define the_space_between_lines 1  //为了打印中间空格
+#define the_space_between_blocks 3 //为了打印中间空格
+#endif
+
 class FORMATION_CONTROL
 {
 public:
@@ -129,25 +134,33 @@ public:
 
     //得到领机的位置，速度，姿态
     void att_vel_pos_controller();
-
     //得到领机的绝对位置，绝对速度
     void abs_pos_vel_controller(FORMATION_CONTROL::_s_leader_states leader_states,
                                 FORMATION_CONTROL::_s_fw_states fw_states);
-
     //得到领机的仅仅有绝对位置
     void abs_pos_controller();
-
     //得到领机的相对位置与相对速度
     void rel_pos_vel_controller();
-
     //得到领机的相对位置
     void rel_pos_controller();
 
 private:
-    //重置内部控器标志量
-    bool rest_speed_pid{false};
+    bool rest_speed_pid{false}; //重置内部控器标志量
     bool rest_tecs{false};
-    struct _s_formation_offset
+
+    Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
+    _s_fw_error fw_error;
+
+    TECS _tecs; //TECS
+    struct TECS::tecs_state tecs_outputs;
+
+    PID_CONTROLLER gspeed_pid; //横侧向控制器
+    LATERAL_CONTROLLER _lateral_controller;
+
+    _s_4cmd _cmd; //最后的控制量
+
+    void print_data(FORMATION_CONTROL::_s_fw_states *p); //测试数据通断
+    struct _s_formation_offset                           //编队队形集合位移
     {
         //机体系
         float xb{0};
@@ -182,7 +195,7 @@ private:
         float ground_speed{-20000};
     } fw_sp;
 
-    struct _s_formation_params
+    struct _s_formation_params //编队控制器混合误差产生参数
     {
         float kv_p{0.5}; //主从机速度差比例项
 
@@ -195,7 +208,7 @@ private:
         float mix_ki{0.01};
     } formation_params;
 
-    struct _s_tecs_params
+    struct _s_tecs_params //TECS控制器参数
     {
         int EAS2TAS{1};
 
@@ -221,24 +234,10 @@ private:
 
     } tecs_params;
 
-    struct _s_lateral_controller_params
+    struct _s_lateral_controller_params //横侧向控制器参数
     {
         float roll_max{PI / 2};
     } lateral_controller_params;
-
-    _s_fw_error fw_error;
-
-    TECS _tecs;
-
-    struct TECS::tecs_state tecs_outputs;
-
-    PID_CONTROLLER gspeed_pid;
-
-    LATERAL_CONTROLLER _lateral_controller;
-
-    _s_4cmd _cmd;
-
-    Point get_plane_to_sp_vector(Point origin, Point target);
 };
 
 #endif
