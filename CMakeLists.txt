@@ -61,6 +61,8 @@ add_message_files(
    FILES
    FWstates.msg
    FWcmd.msg
+   Formation_control_states.msg
+   Leaderstates.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -114,7 +116,7 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  #INCLUDE_DIRS include
   #LIBRARIES fixed_wing_formation_control
   CATKIN_DEPENDS   message_runtime geometry_msgs mavros mavros_msgs nav_msgs roscpp rospy sensor_msgs serial std_msgs std_srvs tf2_eigen tf2_ros
   #DEPENDS system_lib

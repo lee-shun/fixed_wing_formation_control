@@ -11,14 +11,21 @@ void TASK_MAIN::fw_state_cb(const fixed_wing_formation_control::FWstates::ConstP
 {
     fwstates = *msg;
 }
+void TASK_MAIN::leader_states_cb(const fixed_wing_formation_control::Leaderstates::ConstPtr &msg)
+{
+    leaderstates = *msg;
+}
 
 void TASK_MAIN::ros_sub_pub()
 {
     //1.【订阅】固定翼全部状态量
     fw_states_sub = nh.subscribe<fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
     //2. 【订阅】领机信息
+    leader_states_sub = nh.subscribe<fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
     //3.【发布】固定翼四通道控制量
     fw_cmd_pub = nh.advertise<fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
+    //4.【发布】编队控制器状态
+    formation_control_states_pub = nh.advertise<fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 }
 
 void TASK_MAIN::control_formation()
