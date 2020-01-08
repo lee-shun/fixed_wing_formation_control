@@ -38,8 +38,10 @@
 
 #include "../fixed_wing_lib/mathlib.hpp"
 
+#ifndef the_space_between_lines
 #define the_space_between_lines 1  //为了打印中间空格
 #define the_space_between_blocks 3 //为了打印中间空格
+#endif
 
 class _FIXED_WING_SUB_PUB
 {
@@ -77,7 +79,7 @@ public:
 
     mavros_msgs::VFR_HUD air_ground_speed_from_px4;
 
-    fixed_wing_formation_control::FWcmd cmd_from_controller;//来自各种控制器的四通道控制量
+    fixed_wing_formation_control::FWcmd cmd_from_controller; //来自各种控制器的四通道控制量
 
     //服务项暂存容器
     mavros_msgs::SetMode mode_cmd;

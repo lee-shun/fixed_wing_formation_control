@@ -225,12 +225,25 @@ void PACK_FW_STATES::srv_to_mavros()
 
 void PACK_FW_STATES::run(int argc, char **argv)
 {
-  ros::Rate rate(60.0);
+  ros::Rate rate(50.0);
 
   ros_sub_and_pub();
+  cout << "打包中，，，请查收，，" << endl;
+
+  long begin_time = get_sys_time();
 
   while (ros::ok())
   {
+    print_counter++;
+    if (print_counter >= 100)
+    {
+      cout << "现在距离程序开始已经过了：" << fixed << setprecision(5)
+           << double(get_time_from_begin(begin_time)) / 1000 << " 秒"
+           << "仍在打包" << endl;
+
+      print_counter = 0;
+    }
+
     //一直在向mavros发，保持px4的链接不断
     pack_fw_states();
     msg_to_mavros();
