@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="fixed_wing_formation_control" type="pack_fw_states" name="pack_fw_states" output="screen">
+
+ 
+  </node>
+</launch>
