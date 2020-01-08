@@ -101,18 +101,21 @@ void TASK_MAIN::run()
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 
-    while (ros::ok())
+    while (true) //比赛任务还在进行
     {
-        current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
-
-        if (need_control_formation)
+        while (ros::ok() && need_control_formation) //ros::ok控制编队控制
         {
-            cout << "启控时间：[" << current_time << "]秒" << endl;
-            control_formation();
-        }
+            current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
 
-        ros::spinOnce();
-        rate.sleep();
+            if (need_control_formation)
+            {
+                cout << "启控时间：[" << current_time << "]秒" << endl;
+                control_formation();
+            }
+
+            ros::spinOnce();
+            rate.sleep();
+        }
     }
 }
 
