@@ -33,8 +33,10 @@ private:
     void leader_states_cb(const fixed_wing_formation_control::Leaderstates::ConstPtr &msg); //
     void ros_sub_pub();                                                                     //订阅领机从机的信息
 
-    void control_formation(); //编队控制主函数
-    bool need_control_formation{true};
+    bool need_take_off{false}; //起飞标志位
+
+    void control_formation();                                                             //编队控制主函数
+    bool need_control_formation{true};                                                    //
     FORMATION_CONTROL formation_controller;                                               //编队控制器
     string fw_col_mode_current{"MANUAL"};                                                 //当前模式
     string fw_col_mode_last{"MANUAL"};                                                    //上一时刻模式
@@ -42,6 +44,8 @@ private:
     struct FORMATION_CONTROL::_s_fw_states thisfw_states;                                 //本机信息
     struct FORMATION_CONTROL::_s_4cmd formation_cmd;                                      //四通道控制量
     struct FORMATION_CONTROL::_s_formation_controller_states formation_controller_states; //编队控制器状态
+
+    bool need_landing{false};
 
 public:
     void run();
