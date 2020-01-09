@@ -101,11 +101,11 @@ void TASK_MAIN::run()
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 
-    while (ros::ok() && need_take_off)
+    while (ros::ok() && need_take_off&&fw_is_ok)
     {
         /*take_off code*/
     }
-    while (ros::ok() && need_control_formation) //控制编队控制跟随
+    while (ros::ok() && need_control_formation&&fw_is_ok) //控制编队控制跟随
     {
         current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
 
@@ -119,7 +119,7 @@ void TASK_MAIN::run()
         rate.sleep();
     }
 
-    while (ros::ok() && need_landing)
+    while (ros::ok() && need_landing&&fw_is_ok)
     {
         /*landing code*/
     }

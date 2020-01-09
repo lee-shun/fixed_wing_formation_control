@@ -33,6 +33,8 @@ private:
     void leader_states_cb(const fixed_wing_formation_control::Leaderstates::ConstPtr &msg); //
     void ros_sub_pub();                                                                     //订阅领机从机的信息
 
+    bool fw_is_ok{true};//飞机失联、失控以及炸鸡标志位
+
     bool need_take_off{false}; //起飞标志位
 
     void control_formation();                                                             //编队控制主函数
