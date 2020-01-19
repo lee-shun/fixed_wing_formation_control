@@ -20,11 +20,16 @@ void TASK_MAIN::ros_sub_pub()
 {
     //1.【订阅】固定翼全部状态量
     fw_states_sub = nh.subscribe<fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
+
     //2. 【订阅】领机信息
     leader_states_sub = nh.subscribe<fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
-    //3.【发布】固定翼四通道控制量
+
+    //3.【订阅】监控节点飞机以及任务状态
+
+    //4.【发布】固定翼四通道控制量
     fw_cmd_pub = nh.advertise<fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
-    //4.【发布】编队控制器状态
+
+    //5.【发布】编队控制器状态
     formation_control_states_pub = nh.advertise<fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 }
 
@@ -35,19 +40,23 @@ void TASK_MAIN::control_formation()
     {
         formation_controller.reset_formation_controller();
     }
+    //领机状态赋值
+    leader_states.air_speed = leaderstates.airspeed;
 
-    leader_states.air_speed = 0;
-    leader_states.altitude = 0;
-    leader_states.latitude = 0;
-    leader_states.longtitude = 0;
-    leader_states.ned_vel_x = 0;
-    leader_states.ned_vel_y = 0;
-    leader_states.ned_vel_z = 0;
-    leader_states.pitch_angle = 0;
-    leader_states.relative_alt = 0;
-    leader_states.roll_angle = 0;
-    leader_states.yaw_angle = 0;
+    leader_states.altitude = leaderstates.altitude;
+    leader_states.latitude = leaderstates.latitude;
+    leader_states.longtitude = leaderstates.longtitude;
+    leader_states.relative_alt = leaderstates.relative_alt;
 
+    leader_states.ned_vel_x = leaderstates.ned_vel_x;
+    leader_states.ned_vel_y = leaderstates.ned_vel_y;
+    leader_states.ned_vel_z = leaderstates.ned_vel_z;
+
+    leader_states.pitch_angle = leaderstates.pitch_angle;
+    leader_states.roll_angle = leaderstates.roll_angle;
+    leader_states.yaw_angle = leaderstates.yaw_angle;
+
+    //从机状态赋值
     thisfw_states.air_speed = fwstates.air_speed;
     thisfw_states.in_air = fwstates.in_air;
 
@@ -79,12 +88,13 @@ void TASK_MAIN::control_formation()
     thisfw_states.wind_estimate_y = fwstates.wind_estimate_y;
     thisfw_states.wind_estimate_z = fwstates.wind_estimate_z;
 
+    //设定编队形状
     formation_controller.set_formation_type(2);
-
+    //选定控制器类型，并进行控制
     formation_controller.abs_pos_vel_controller(leader_states, thisfw_states);
-
+    //获得最终控制量
     formation_cmd = formation_controller.get_formation_4cmd();
-
+    //控制量赋值
     fw_4cmd.throttle_sp = formation_cmd.thrust;
     fw_4cmd.roll_angle_sp = formation_cmd.roll;
     fw_4cmd.pitch_angle_sp = formation_cmd.pitch;
@@ -101,27 +111,39 @@ void TASK_MAIN::run()
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 
-    while (ros::ok() && need_take_off&&fw_is_ok)
+    while (ros::ok() && need_task)
     {
-        /*take_off code*/
-    }
-    while (ros::ok() && need_control_formation&&fw_is_ok) //控制编队控制跟随
-    {
-        current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
+        /*执行比赛大逻辑，并非执行一次，飞机如果进入了失控保护又进入正常，可以再次进行编队控制*/
 
-        if (need_control_formation)
+        while (ros::ok() && need_take_off && fw_is_ok)
         {
-            cout << "编队启控时间：[" << current_time << "]秒" << endl;
-            control_formation();
+            /*起飞代码*/
         }
 
-        ros::spinOnce();
-        rate.sleep();
-    }
+        while (ros::ok() && need_control_formation && fw_is_ok) //控制编队控制跟随
+        {
+            /*编队控制代码*/
+            current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
 
-    while (ros::ok() && need_landing&&fw_is_ok)
-    {
-        /*landing code*/
+            if (true) //监控节点的并没有发现飞机完成时间，距离任务
+            {
+                cout << "编队启控时间：[" << current_time << "]秒" << endl;
+                control_formation();
+            }
+
+            ros::spinOnce();
+            rate.sleep();
+        }
+
+        while (ros::ok() && need_landing && fw_is_ok)
+        {
+            /*降落代码*/
+        }
+
+        while (ros::ok() && (!fw_is_ok))
+        {
+            /*失控保护代码*/
+        }
     }
 }
 
