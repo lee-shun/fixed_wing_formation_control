@@ -10,6 +10,29 @@ using namespace std;
 #define EARTH_RADIUS 6378137
 #define CONSTANTS_ONE_G 9.80665
 
+//获取绝对值
+float abs_num(float a)
+{
+    float result;
+    if (a < 0)
+        result = -a;
+
+    else
+        result = a;
+
+    return result;
+}
+
+bool ISFINITE(float a)
+{
+    if ((abs_num(a) > 0.02) && (abs_num(a) < 1000))
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
 float constrain(float val, float min, float max)
 {
     return (val < min) ? min : ((val > max) ? max : val);
@@ -143,19 +166,6 @@ void cov_lat_long_2_m(double a_pos[2], double b_pos[2], double m[2])
 
     m[0] = n_distance;
     m[1] = e_distance;
-}
-
-//获取绝对值
-float abs_num(float a)
-{
-    float result;
-    if (a < 0)
-        result = -a;
-
-    else
-        result = a;
-
-    return result;
 }
 
 #endif

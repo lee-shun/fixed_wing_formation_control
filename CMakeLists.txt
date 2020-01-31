@@ -140,6 +140,9 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
+add_library(tecs
+src/fixed_wing_lib/tecs.cpp
+)
  add_library(formation_controller
    src/formation_controller/formation_controller.cpp
  )
@@ -168,6 +171,11 @@ add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
+
+ target_link_libraries(formation_controller
+ tecs
+ )
+
  target_link_libraries(task_main
  formation_controller
  )
