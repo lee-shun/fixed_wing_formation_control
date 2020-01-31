@@ -145,35 +145,21 @@ public:
     void rel_pos_controller();
 
 private:
-    bool rest_speed_pid{false}; //重置内部控器标志量
-    bool rest_tecs{false};
-
-    Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
-    _s_fw_error fw_error;
-
-    TECS _tecs; //TECS
-    struct TECS::tecs_state tecs_outputs;
-
-    PID_CONTROLLER gspeed_pid; //横侧向控制器
-    LATERAL_CONTROLLER _lateral_controller;
-
-    _s_4cmd _cmd; //最后的控制量
-
-    void print_data(FORMATION_CONTROL::_s_fw_states *p); //测试数据通断
-    struct _s_formation_offset                           //编队队形集合位移
+    struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
     {
-        //机体系
-        float xb{0};
-        float yb{0};
-        float zb{0};
+        float kv_p{0.5}; //主从机速度差比例项
 
-        //NED系
-        float ned_n{0};
-        float ned_e{0};
-        float ned_d{0};
-    } formation_offset;
+        float kp_p{0.8}; //从机期望与实际位置误差比例
 
-    //这个结构体为了区分，将角度以及油门就是单独的，由运动学位置以及速度的期望值，是计算出来的
+        float mix_kp{0.6};
+
+        float mix_kd{0.0};
+
+        float mix_ki{0.01};
+    } formation_params;
+
+    //这个结构体为了区分，角度以及油门的期望值就是单独要发布的，
+    //是由运动学位置以及速度的期望值以及当前飞机的状态，是计算出来的。
     struct _s_fw_sp
     {
         float ned_vel_x{0};
@@ -195,19 +181,12 @@ private:
         float ground_speed{0};
     } fw_sp;
 
-    struct _s_formation_params //编队控制器混合误差产生参数
-    {
-        float kv_p{0.5}; //主从机速度差比例项
+    Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
+    _s_fw_error fw_error;
 
-        float kp_p{0.8}; //从机期望与实际位置误差比例
-
-        float mix_kp{0.6};
-
-        float mix_kd{0.0};
-
-        float mix_ki{0.01};
-    } formation_params;
-
+    TECS _tecs; //TECS
+    bool rest_tecs{false};
+    bool vz_valid{false};
     struct _s_tecs_params //TECS控制器参数
     {
         int EAS2TAS{1};
@@ -234,10 +213,30 @@ private:
 
     } tecs_params;
 
+    LATERAL_CONTROLLER _lateral_controller; //横侧向控制器
+    PID_CONTROLLER gspeed_pid;
+    bool rest_speed_pid{false};         //重置内部控器标志量
     struct _s_lateral_controller_params //横侧向控制器参数
     {
         float roll_max{PI / 2};
     } lateral_controller_params;
+
+    _s_4cmd _cmd; //最后的控制量
+
+    struct _s_formation_offset //编队队形集合位移
+    {
+        //机体系
+        float xb{0};
+        float yb{0};
+        float zb{0};
+
+        //NED系
+        float ned_n{0};
+        float ned_e{0};
+        float ned_d{0};
+    } formation_offset;
+
+    void print_data(FORMATION_CONTROL::_s_fw_states *p); //测试数据通断
 };
 
 #endif

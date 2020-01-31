@@ -122,7 +122,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_lead
     _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
     _tecs.enable_airspeed(true);
 
-    if (fw_sp.altitude - fw_states.altitude >= 5) //判断一下是否要进入爬升
+    if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
 
     {
         tecs_params.climboutdem = true;
@@ -131,8 +131,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_lead
     {
         tecs_params.climboutdem = false;
     }
-    _tecs.update_state(fw_states.altitude, fw_states.air_speed, fw_states.rotmat,
-                       fw_states.body_acc, fw_states.ned_acc, fw_states.altitude_lock, fw_states.in_air);
+    _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc, fw_states.altitude_lock,
+                                         fw_states.in_air, fw_states.altitude, vz_valid, fw_states.ned_vel_z, fw_states.body_acc[2]);
 
     _tecs.update_pitch_throttle(fw_states.rotmat, fw_states.pitch_angle,
                                 fw_states.altitude, fw_sp.altitude, fw_sp.air_speed,
@@ -140,11 +140,10 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_lead
                                 tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
                                 tecs_params.throttle_max, tecs_params.throttle_cruise,
                                 tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
+    //这个是tecs控制器状态，可以作为调试的窗口用
 
-    _tecs.get_tecs_state(tecs_outputs); //这个是tecs控制器状态，可以作为调试的窗口用
-
-    _cmd.pitch = _tecs.get_pitch_demand();
-    _cmd.thrust = _tecs.get_throttle_demand();
+    _cmd.pitch = _tecs.get_pitch_setpoint();
+    _cmd.thrust = _tecs.get_throttle_setpoint();
 
     //6. 机体侧向混合误差,或者只有位置误差（当前）,由L1控制器解算滚转以及偏航角。
 
