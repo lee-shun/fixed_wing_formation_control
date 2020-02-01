@@ -21,8 +21,17 @@ using namespace std;
 class FORMATION_CONTROL
 {
 public:
-    struct _s_formation_controller_states //编队控制器内部的情况
+    struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
     {
+        float kv_p{0.5}; //主从机速度差比例项
+
+        float kp_p{0.8}; //从机期望与实际位置误差比例
+
+        float mix_kp{0.6};
+
+        float mix_kd{0.0};
+
+        float mix_ki{0.01};
     };
 
     struct rel_states //领机从机相对状态
@@ -98,69 +107,20 @@ public:
         bool altitude_lock{false};
     };
 
-    struct _s_fw_error //本机误差
+    struct _s_formation_offset //编队队形集合位移
     {
-        //体轴系位置误差<与自己期望>
-        float PXb{0};
-        float PYb{0};
-        float PZb{0};
+        //机体系
+        float xb{0};
+        float yb{0};
+        float zb{0};
 
-        //体轴系速度误差<与自己期望>
-        float VXb{0};
-        float VYb{0};
-        float VZb{0};
-
-        //体轴系速度误差<与领机>
-        float led_fol_vxb{0};
-        float led_fol_vyb{0};
-        float led_fol_vzb{0};
+        //NED系
+        float ned_n{0};
+        float ned_e{0};
+        float ned_d{0};
     };
 
-    struct _s_4cmd
-    {
-        float roll{0};
-        float pitch{0};
-        float yaw{0};
-        float thrust{0};
-    };
-
-    void set_formation_type(int formation_type); //设定编队形状
-
-    void reset_formation_controller(); //重置控制器，防止不同阶段控制器的状态混乱。
-
-    struct FORMATION_CONTROL::_s_4cmd get_formation_4cmd(); //得到编队控制后的四通道控制量
-
-    //几个编队控制器类型,根据能得到的领机信息分类
-
-    //得到领机的位置，速度，姿态
-    void att_vel_pos_controller();
-    //得到领机的绝对位置，绝对速度
-    void abs_pos_vel_controller(struct FORMATION_CONTROL::_s_leader_states leader_states,
-                                struct FORMATION_CONTROL::_s_fw_states fw_states);
-    //得到领机的仅仅有绝对位置
-    void abs_pos_controller();
-    //得到领机的相对位置与相对速度
-    void rel_pos_vel_controller();
-    //得到领机的相对位置
-    void rel_pos_controller();
-
-private:
-    struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
-    {
-        float kv_p{0.5}; //主从机速度差比例项
-
-        float kp_p{0.8}; //从机期望与实际位置误差比例
-
-        float mix_kp{0.6};
-
-        float mix_kd{0.0};
-
-        float mix_ki{0.01};
-    } formation_params;
-
-    //这个结构体为了区分，角度以及油门的期望值就是单独要发布的，
-    //是由运动学位置以及速度的期望值以及当前飞机的状态，是计算出来的。
-    struct _s_fw_sp
+    struct _s_fw_sp //这个结构体为了区分，角度以及油门的期望值就是单独要发布的，//是由运动学位置以及速度的期望值以及当前飞机的状态，是计算出来的。
     {
         float ned_vel_x{0};
 
@@ -179,14 +139,26 @@ private:
         float air_speed{0};
 
         float ground_speed{0};
-    } fw_sp;
+    };
 
-    Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
-    _s_fw_error fw_error;
+    struct _s_fw_error //本机误差，包括与领机的偏差
+    {
+        //体轴系位置误差<与自己期望>
+        float PXb{0};
+        float PYb{0};
+        float PZb{0};
 
-    TECS _tecs; //TECS
-    bool rest_tecs{false};
-    bool vz_valid{false};
+        //体轴系速度误差<与自己期望>
+        float VXb{0};
+        float VYb{0};
+        float VZb{0};
+
+        //体轴系速度误差<与领机>
+        float led_fol_vxb{0};
+        float led_fol_vyb{0};
+        float led_fol_vzb{0};
+    };
+
     struct _s_tecs_params //TECS控制器参数
     {
         int EAS2TAS{1};
@@ -210,33 +182,58 @@ private:
         float time_const_throt{1.0};
 
         float time_const{5.0};
+    };
 
-    } tecs_params;
-
-    LATERAL_CONTROLLER _lateral_controller; //横侧向控制器
-    PID_CONTROLLER gspeed_pid;
-    bool rest_speed_pid{false};         //重置内部控器标志量
     struct _s_lateral_controller_params //横侧向控制器参数
     {
         float roll_max{PI / 2};
-    } lateral_controller_params;
+    };
+
+    struct _s_4cmd //四通道控制量
+    {
+        float roll{0};
+        float pitch{0};
+        float yaw{0};
+        float thrust{0};
+    };
+
+    void set_formation_type(int formation_type); //设定编队形状
+    void reset_formation_controller();           //重置控制器，防止不同阶段控制器的状态混乱。
+
+    //几个编队控制器类型,根据能得到的领机信息分类
+    void att_vel_pos_controller();                                     //得到领机的位置，速度，姿态
+    void abs_pos_vel_controller(struct _s_leader_states leader_states, //
+                                struct _s_fw_states fw_states);        //得到领机的绝对位置，绝对速度
+    void abs_pos_controller();                                         //得到领机的仅仅有绝对位置
+    void rel_pos_vel_controller();                                     //得到领机的相对位置与相对速度
+    void rel_pos_controller();                                         //得到领机的相对位置
+
+    struct FORMATION_CONTROL::_s_4cmd get_formation_4cmd();               //得到编队控制后的四通道控制量
+    struct FORMATION_CONTROL::_s_fw_error get_formation_error();          //得到编队控制误差
+    struct FORMATION_CONTROL::_s_formation_params get_formation_params(); //得到编队控制器参数
+
+private:
+    _s_formation_offset formation_offset; //编队偏移量
+    _s_formation_params formation_params; //编队控制器混合误差产生参数,编队控制器参数
+
+    _s_fw_sp fw_sp; //本机的期望
+
+    _s_fw_error fw_error; //本机误差，包括与期望的差和领机的偏差
+
+    TECS _tecs;                 //TECS
+    bool rest_tecs{false};      //重置TECS
+    bool vz_valid{false};       //纵向速度有效标志位
+    _s_tecs_params tecs_params; //TECS参数
+
+    LATERAL_CONTROLLER _lateral_controller;                 //横侧向控制器
+    PID_CONTROLLER gspeed_pid;                              //地速进入的pid
+    bool rest_speed_pid{false};                             //重置内部控器标志量
+    _s_lateral_controller_params lateral_controller_params; //横侧向控制器参数
 
     _s_4cmd _cmd; //最后的控制量
 
-    struct _s_formation_offset //编队队形集合位移
-    {
-        //机体系
-        float xb{0};
-        float yb{0};
-        float zb{0};
-
-        //NED系
-        float ned_n{0};
-        float ned_e{0};
-        float ned_d{0};
-    } formation_offset;
-
-    void print_data(FORMATION_CONTROL::_s_fw_states *p); //测试数据通断
+    Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
+    void print_data(struct _s_fw_states *p);                  //测试数据通断
 };
 
 #endif

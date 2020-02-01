@@ -30,9 +30,11 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
-void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_leader_states leader_states,
-                                               struct FORMATION_CONTROL::_s_fw_states fw_states)
-{
+void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_states,
+                                               struct _s_fw_states fw_states)
+{ /*    
+    *领机绝对位置以及绝对速度GPS控制器
+    * */
 
     //测试数据通断
     print_data(&fw_states);
@@ -50,6 +52,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_lead
     ref[0] = leader_states.latitude;
     ref[1] = leader_states.longtitude;
     ref[2] = leader_states.altitude;
+
     cov_m_2_lat_long_alt(ref, formation_offset.ned_n, formation_offset.ned_e, formation_offset.ned_d, result);
 
     fw_sp.latitude = result[0];
@@ -131,8 +134,9 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct FORMATION_CONTROL::_s_lead
     {
         tecs_params.climboutdem = false;
     }
-    _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc, fw_states.altitude_lock,
-                                         fw_states.in_air, fw_states.altitude, vz_valid, fw_states.ned_vel_z, fw_states.body_acc[2]);
+    _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc,
+                                         fw_states.altitude_lock, fw_states.in_air, fw_states.altitude,
+                                         vz_valid, fw_states.ned_vel_z, fw_states.body_acc[2]);
 
     _tecs.update_pitch_throttle(fw_states.rotmat, fw_states.pitch_angle,
                                 fw_states.altitude, fw_sp.altitude, fw_sp.air_speed,
@@ -167,7 +171,7 @@ Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
 
-void FORMATION_CONTROL::print_data(FORMATION_CONTROL::_s_fw_states *p)
+void FORMATION_CONTROL::print_data(struct _s_fw_states *p)
 {
     cout << "***************以下是本飞机状态******************" << endl;
     cout << "***************以下是本飞机状态******************" << endl;

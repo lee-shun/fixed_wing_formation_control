@@ -44,12 +44,6 @@
 static constexpr float DT_MIN = 0.001f; ///< minimum allowed value of _dt (sec)
 static constexpr float DT_MAX = 1.0f;   ///< max value of _dt allowed before a filter state reset is performed (sec)
 
-/**
- * @file tecs.cpp
- *
- * @author Paul Riseborough
- */
-
 /*
  * This function implements a complementary filter to estimate the climb rate when
  * inertial nav data is not available. It also calculates a true airspeed derivative

@@ -8,6 +8,10 @@
         "cmath": "cpp",
         "iomanip": "cpp",
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "sstream": "cpp",
+        "utility": "cpp"
     }
 }
