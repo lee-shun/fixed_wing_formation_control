@@ -1,7 +1,8 @@
 #ifndef _FORMATION_CONTROL_HPP_
 #define _FORMATION_CONTROL_HPP_
-/*本程序的作用是提供几个类型下的编队控制器
-例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
+/**
+ * 本程序的作用是提供几个类型下的编队控制器
+ * 例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
 */
 
 #include <iostream>
@@ -107,7 +108,7 @@ public:
         bool altitude_lock{false};
     };
 
-    struct _s_formation_offset //编队队形集合位移
+    struct _s_formation_offset //编队队形几何偏移
     {
         //机体系
         float xb{0};
@@ -215,10 +216,8 @@ public:
 private:
     _s_formation_offset formation_offset; //编队偏移量
     _s_formation_params formation_params; //编队控制器混合误差产生参数,编队控制器参数
-
-    _s_fw_sp fw_sp; //本机的期望
-
-    _s_fw_error fw_error; //本机误差，包括与期望的差和领机的偏差
+    _s_fw_sp fw_sp;                       //本机的期望
+    _s_fw_error fw_error;                 //本机误差，包括与期望的差和领机的偏差
 
     TECS _tecs;                 //TECS
     bool rest_tecs{false};      //重置TECS
@@ -226,7 +225,7 @@ private:
     _s_tecs_params tecs_params; //TECS参数
 
     LATERAL_CONTROLLER _lateral_controller;                 //横侧向控制器
-    PID_CONTROLLER gspeed_pid;                              //地速进入的pid
+    PID_CONTROLLER gspeed_pid;                              //产生期望地速的pid
     bool rest_speed_pid{false};                             //重置内部控器标志量
     _s_lateral_controller_params lateral_controller_params; //横侧向控制器参数
 
