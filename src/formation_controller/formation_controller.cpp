@@ -157,15 +157,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
                           -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
 }
 
-struct FORMATION_CONTROL::_s_4cmd FORMATION_CONTROL::get_formation_4cmd()
-{
-    return _cmd;
-}
-
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
 {
-    /* this is an approximation for small angles, proposed by [2] */
-
     Point out(deg_2_rad((target.x - origin.x)), deg_2_rad((target.y - origin.y) * cosf(deg_2_rad(origin.x))));
 
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
@@ -225,4 +218,18 @@ void FORMATION_CONTROL::print_data(struct _s_fw_states *p)
     cout << "***************以上是本飞机状态******************" << endl;
     for (int i = 1; i <= the_space_between_blocks; i++)
         cout << endl;
+}
+
+struct FORMATION_CONTROL::_s_4cmd FORMATION_CONTROL::get_formation_4cmd()
+{
+    return _cmd;
+}
+
+struct FORMATION_CONTROL::_s_fw_error FORMATION_CONTROL::get_formation_error()
+{
+    return fw_error;
+}
+struct FORMATION_CONTROL::_s_formation_params FORMATION_CONTROL::get_formation_params()
+{
+    return formation_params;
 }
