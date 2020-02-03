@@ -135,7 +135,7 @@ include_directories(
 )
 
 
-########### 比赛任务主节点 #############
+########### 库生成声明 #############
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
@@ -155,6 +155,8 @@ src/fixed_wing_lib/tecs.cpp
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+
+###########任务主节点##############
 add_executable(task_main src/task_main/task_main.cpp)
 
 ## Rename C++ executable without prefix
@@ -171,11 +173,9 @@ add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
-
  target_link_libraries(formation_controller
  tecs
  )
-
  target_link_libraries(task_main
  formation_controller
  )
@@ -187,7 +187,11 @@ target_link_libraries(task_main
  ${catkin_LIBRARIES}
 )
 
-
+###########几何虚拟领机##############
+add_executable(vir_dir_leader src/test/vir_leader/vir_dir_leader.cpp)
+target_link_libraries(vir_dir_leader
+${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
