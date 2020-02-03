@@ -21,15 +21,15 @@ public:
     void run(int argc, char **argv);
 
 private:
-    fixed_wing_formation_control::Leaderstates leaderstates; //即将要发布的领机的状态
+    float distance_e;
 
+    fixed_wing_formation_control::Leaderstates leaderstates; //即将要发布的领机的状态
     ros::NodeHandle nh;
     ros::Publisher vir_leader_pub;
 
     long begin_time;
     float current_time;
     float last_time;
-    float distance_e;
 
     void ros_sub_pub();
     void show_vir_leader_status();
