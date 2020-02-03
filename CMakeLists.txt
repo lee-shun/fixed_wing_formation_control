@@ -193,6 +193,12 @@ target_link_libraries(vir_dir_leader
 ${catkin_LIBRARIES}
 )
 
+###########仿真虚拟领机##############
+add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
+target_link_libraries(vir_sim_leader
+${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
