@@ -11,7 +11,7 @@
 
 #define LEADER_HOME_LAT 47.3980795
 #define LEADER_HOME_LONG 8.5441407
-#define LEADER_HOME_ALT 580
+#define LEADER_HOME_ALT 580.00
 
 using namespace std;
 

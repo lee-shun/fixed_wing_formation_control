@@ -28,27 +28,23 @@ int main(int argc, char **argv)
     ros::Time begin_time = ros::Time::now(); // 记录启控时间
     mavros_msgs::SetMode mode_cmd;           //模式容器
 
-    // 【订阅】无人机当前状态
-    ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>("mavros/state", 10, state_cb);
-    // 服务 修改系统模式
-    ros::ServiceClient set_mode_client = nh.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
+    ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>("mavros/state", 10, state_cb);     // 【订阅】无人机当前状态
+    ros::ServiceClient set_mode_client = nh.serviceClient<mavros_msgs::SetMode>("mavros/set_mode"); // 【服务】 修改系统模式
 
-    int mode_type = 0;
-    int times_out = 100;
-    int counters = 0;
-    bool outflag = false;
+    int mode_type = 0;    //模式类型
+    int times_out = 100;  //次数限制
+    int counters = 0;     //计数器
+    bool outflag = false; //退出标志位
 
     while (ros::ok() && (!outflag))
     {
-        // 当前时间
-        float current_time = get_ros_time(begin_time);
+        float current_time = get_ros_time(begin_time); // 当前时间
+
         cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>固定翼模式<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-
         cout << "时刻: " << current_time << " [s] " << endl;
-
         cout << "模式 : [ " << current_state.mode << " ]" << endl;
-
         cout << "更换模式：1 offboard, 2 mission, 3 out" << endl;
+
         cin >> mode_type;
         if (mode_type == 1)
         {
@@ -79,8 +75,8 @@ int main(int argc, char **argv)
             cout << "切换失败" << endl;
         }
         counters = 0;
-        ros::spinOnce();
-        //挂起一段时间(rate为 50HZ)
+
+        ros::spinOnce(); //挂起一段时间(rate为 50HZ)
         rate.sleep();
     }
     return 0;

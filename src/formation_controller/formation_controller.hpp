@@ -75,11 +75,17 @@ public:
 
         float att_quat[4];
 
-        float ned_vel_x{0}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
+        float ned_vel_x{0}; //NED速度
 
         float ned_vel_y{0};
 
         float ned_vel_z{0};
+
+        float global_vel_x{0}; //地速
+
+        float global_vel_y{0};
+
+        float global_vel_z{0};
 
         float body_acc[3];
 
@@ -144,6 +150,12 @@ public:
 
     struct _s_fw_error //本机误差，包括与领机的偏差
     {
+        //ned坐标系之下的位置误差
+        float P_N{0};
+        float P_E{0};
+        float P_D{0};
+        float P_NE{0};
+
         //体轴系位置误差<与自己期望>
         float PXb{0};
         float PYb{0};
