@@ -33,13 +33,36 @@ void TASK_MAIN::ros_sub_pub()
     formation_control_states_pub = nh.advertise<fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 }
 
+void TASK_MAIN::formation_states_pub()
+{
+    formation_control_states.planeID = planeID;
+    //本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值
+    formation_control_states.err_PXb = formation_error.PXb;
+    formation_control_states.err_PYb = formation_error.PYb;
+    formation_control_states.err_PZb = formation_error.PZb;
+    formation_control_states.err_VXb = formation_error.VXb;
+    formation_control_states.err_VYb = formation_error.VYb;
+    formation_control_states.err_VZb = formation_error.VZb;
+    formation_control_states.led_fol_vxb = formation_error.led_fol_vxb;
+    formation_control_states.led_fol_vyb = formation_error.led_fol_vyb;
+    formation_control_states.led_fol_vzb = formation_error.led_fol_vzb;
+    //本部分关于从机的期望值的赋值
+    formation_control_states.sp_air_speed = formation_sp.air_speed;
+    formation_control_states.sp_altitude = formation_sp.altitude;
+    formation_control_states.sp_ground_speed = formation_sp.ground_speed;
+    formation_control_states.sp_latitude = formation_sp.latitude;
+    formation_control_states.sp_longtitude = formation_sp.longtitude;
+    formation_control_states.sp_ned_vel_x = formation_sp.ned_vel_x;
+    formation_control_states.sp_ned_vel_y = formation_sp.ned_vel_y;
+    formation_control_states.sp_ned_vel_z = formation_sp.ned_vel_z;
+    formation_control_states.sp_relative_alt = formation_sp.relative_alt;
+    //发布编队控制器控制状态
+    formation_control_states_pub.publish(formation_control_states);
+}
+
 void TASK_MAIN::control_formation()
 {
     fw_col_mode_current = fwstates.control_mode;
-    if (fw_col_mode_current != fw_col_mode_last) //模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！
-    {
-        formation_controller.reset_formation_controller();
-    }
     //领机状态赋值
     leader_states.air_speed = leaderstates.airspeed;
 
@@ -90,10 +113,20 @@ void TASK_MAIN::control_formation()
 
     //设定编队形状
     formation_controller.set_formation_type(2);
+    //模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！
+    if (fw_col_mode_current != fw_col_mode_last)
+    {
+        formation_controller.reset_formation_controller();
+    }
     //选定控制器类型，并进行控制
     formation_controller.abs_pos_vel_controller(leader_states, thisfw_states);
     //获得最终控制量
     formation_cmd = formation_controller.get_formation_4cmd();
+    //获得编队控制期望值
+    formation_sp = formation_controller.get_formation_sp();
+    //获得编队误差信息
+    formation_error = formation_controller.get_formation_error();
+
     //控制量赋值
     fw_4cmd.throttle_sp = formation_cmd.thrust;
     fw_4cmd.roll_angle_sp = formation_cmd.roll;
@@ -101,6 +134,7 @@ void TASK_MAIN::control_formation()
     fw_4cmd.yaw_angle_sp = formation_cmd.yaw;
 
     fw_cmd_pub.publish(fw_4cmd); //发布四通道控制量
+    formation_states_pub();      //发布编队控制器状态
 
     fw_col_mode_last = fw_col_mode_current; //上一次模式的纪录
 }

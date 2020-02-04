@@ -229,7 +229,13 @@ struct FORMATION_CONTROL::_s_fw_error FORMATION_CONTROL::get_formation_error()
 {
     return fw_error;
 }
+
 struct FORMATION_CONTROL::_s_formation_params FORMATION_CONTROL::get_formation_params()
 {
     return formation_params;
+}
+
+struct FORMATION_CONTROL::_s_fw_sp FORMATION_CONTROL::get_formation_sp()
+{
+    return fw_sp;
 }
