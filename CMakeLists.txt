@@ -198,6 +198,11 @@ add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
 target_link_libraries(vir_sim_leader
 ${catkin_LIBRARIES}
 )
+###########模式切换##############
+add_executable(switch_fw_mode src/test/switch_fw_mode.cpp)
+target_link_libraries(switch_fw_mode
+${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
