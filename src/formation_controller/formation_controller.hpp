@@ -210,6 +210,7 @@ public:
     void rel_pos_controller();                                         //得到领机的相对位置
 
     struct FORMATION_CONTROL::_s_4cmd get_formation_4cmd();               //得到编队控制后的四通道控制量
+    struct FORMATION_CONTROL::_s_fw_sp get_formation_sp();                //得到编队中本机的运动学期望值
     struct FORMATION_CONTROL::_s_fw_error get_formation_error();          //得到编队控制误差
     struct FORMATION_CONTROL::_s_formation_params get_formation_params(); //得到编队控制器参数
 

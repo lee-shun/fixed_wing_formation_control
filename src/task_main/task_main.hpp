@@ -20,6 +20,7 @@ private:
     float current_time;
     float get_ros_time(ros::Time begin); //获取当前时间
 
+    int planeID{2};                                                                         //飞机编号
     _FIXED_WING_SUB_PUB fixed_wing_sub_pub;                                                 //ros消息收发的中间对象
     fixed_wing_formation_control::FWstates fwstates;                                        //自定义--飞机打包的全部状态
     fixed_wing_formation_control::FWcmd fw_4cmd;                                            //自定义--飞机四通道控制量
@@ -38,14 +39,18 @@ private:
 
     bool need_take_off{false}; //起飞标志位
 
-    void control_formation();                                 //编队控制主函数
-    bool need_control_formation{true};                        //需要编队控制的标志位
-    FORMATION_CONTROL formation_controller;                   //编队控制器
-    string fw_col_mode_current{"MANUAL"};                     //当前模式
-    string fw_col_mode_last{"MANUAL"};                        //上一时刻模式
-    struct FORMATION_CONTROL::_s_leader_states leader_states; //领机信息
-    struct FORMATION_CONTROL::_s_fw_states thisfw_states;     //本机信息
-    struct FORMATION_CONTROL::_s_4cmd formation_cmd;          //四通道控制量
+    void control_formation();                                       //编队控制主函数
+    bool need_control_formation{true};                              //需要编队控制的标志位
+    FORMATION_CONTROL formation_controller;                         //编队控制器
+    string fw_col_mode_current{"MANUAL"};                           //当前模式
+    string fw_col_mode_last{"MANUAL"};                              //上一时刻模式
+    struct FORMATION_CONTROL::_s_leader_states leader_states;       //领机信息
+    struct FORMATION_CONTROL::_s_fw_states thisfw_states;           //本机信息
+    struct FORMATION_CONTROL::_s_4cmd formation_cmd;                //四通道控制量
+    struct FORMATION_CONTROL::_s_fw_error formation_error;          //编队误差以及偏差
+    struct FORMATION_CONTROL::_s_formation_params formation_params; //编队控制器混合误差产生参数,编队控制器参数
+    struct FORMATION_CONTROL::_s_fw_sp formation_sp;                //编队控制运动学期望值
+    void formation_states_pub();                                    //发布编队控制器控制状态
 
     bool need_landing{false}; //需要降落标志位
 
