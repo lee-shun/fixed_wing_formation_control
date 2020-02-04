@@ -1,6 +1,12 @@
 #这里也要记得写上planeid，后面得向地面站发送哈！！！！
 uint16 planeID
 
+#NED下的位置误差
+float64 err_P_N
+float64 err_P_E
+float64 err_P_D
+float64 err_P_NE
+
 #体轴系位置误差<与自己期望>
 float64 err_PXb
 float64 err_PYb

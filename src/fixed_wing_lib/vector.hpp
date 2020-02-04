@@ -51,8 +51,18 @@ public:
 
     double len2() { return x * x + y * y; }
 
-    //归一化
-    Vec normalized() { return Vec((*this).x, (*this).y) / (*this).len(); }
+    //归一化,如果是零向量，则返回零向量
+    Vec normalized()
+    {
+        if ((*this).len() == 0)
+        {
+            return Vec(0, 0);
+        }
+        else
+        {
+            return Vec((*this).x, (*this).y) / (*this).len();
+        }
+    }
 
     //返回两点之间的距离
     double dis(Point obj) { return hypot(x - obj.x, y - obj.y); } //hypot 给定直角三角形的两条直角边，返回斜边边长

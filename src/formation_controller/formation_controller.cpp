@@ -61,9 +61,9 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     //2. 计算领机的期望位置与当前位置的误差在从机坐标系下的投影
 
-    Point pos_sp(fw_sp.latitude, fw_sp.longtitude),                   //期望位置
-        current_pos(fw_states.latitude, fw_states.longtitude),        //当前位置
-        fw_ground_speed_2d(fw_states.ned_vel_x, fw_states.ned_vel_y); //当前地速
+    Point pos_sp(fw_sp.latitude, fw_sp.longtitude),                         //期望位置
+        current_pos(fw_states.latitude, fw_states.longtitude),              //当前位置
+        fw_ground_speed_2d(fw_states.global_vel_x, fw_states.global_vel_y); //当前地速
 
     Point vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); //计算飞机到期望点向量
 
@@ -72,6 +72,18 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     fw_error.PXb = vector_plane_sp * fw_ground_speed_2d_unit; //沿速度（机体x）方向距离误差（待检验）
     fw_error.PYb = vector_plane_sp ^ fw_ground_speed_2d_unit; //垂直于速度（机体x）方向距离误差
     fw_error.PZb = fw_sp.altitude - fw_states.altitude;       //高度方向误差
+
+    double a_pos[2], b_pos[2], m[2]; //计算ned坐标系下的位置误差
+    a_pos[0] = fw_states.latitude;
+    a_pos[1] = fw_states.longtitude;
+    b_pos[0] = fw_sp.latitude;
+    b_pos[1] = fw_sp.longtitude;
+    cov_lat_long_2_m(a_pos, b_pos, m);
+
+    fw_error.P_N = m[0];
+    fw_error.P_E = m[1];
+    fw_error.P_D = fw_sp.altitude - fw_states.altitude;
+    fw_error.P_NE = sqrt((m[0] * m[0] + m[1] * m[1]));
 
     //3. 计算领机速度与从机速度之差在从机坐标系下的投影
 

@@ -37,6 +37,10 @@ void TASK_MAIN::formation_states_pub()
 {
     formation_control_states.planeID = planeID;
     //本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值
+    formation_control_states.err_P_N = formation_error.P_N;
+    formation_control_states.err_P_E = formation_error.P_E;
+    formation_control_states.err_P_D = formation_error.P_D;
+    formation_control_states.err_P_NE = formation_error.P_NE;
     formation_control_states.err_PXb = formation_error.PXb;
     formation_control_states.err_PYb = formation_error.PYb;
     formation_control_states.err_PZb = formation_error.PZb;
@@ -92,6 +96,10 @@ void TASK_MAIN::control_formation()
     thisfw_states.ned_vel_x = fwstates.ned_vel_x;
     thisfw_states.ned_vel_y = fwstates.ned_vel_y;
     thisfw_states.ned_vel_z = fwstates.ned_vel_z;
+
+    thisfw_states.global_vel_x = fwstates.global_vel_x;
+    thisfw_states.global_vel_y = fwstates.global_vel_y;
+    thisfw_states.global_vel_z = fwstates.global_vel_z;
 
     thisfw_states.pitch_angle = fwstates.pitch_angle;
     thisfw_states.roll_angle = fwstates.roll_angle;
