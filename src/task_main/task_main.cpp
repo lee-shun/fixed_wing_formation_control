@@ -75,6 +75,10 @@ void TASK_MAIN::control_formation()
     leader_states.longtitude = leaderstates.longtitude;
     leader_states.relative_alt = leaderstates.relative_alt;
 
+    leader_states.global_vel_x = leaderstates.global_vel_x;
+    leader_states.global_vel_y = leaderstates.global_vel_y;
+    leader_states.global_vel_z = leaderstates.global_vel_z;
+
     leader_states.ned_vel_x = leaderstates.ned_vel_x;
     leader_states.ned_vel_y = leaderstates.ned_vel_y;
     leader_states.ned_vel_z = leaderstates.ned_vel_z;
@@ -82,6 +86,7 @@ void TASK_MAIN::control_formation()
     leader_states.pitch_angle = leaderstates.pitch_angle;
     leader_states.roll_angle = leaderstates.roll_angle;
     leader_states.yaw_angle = leaderstates.yaw_angle;
+    leader_states.yaw_valid = false; //目前来讲，领机的yaw不能直接获得
 
     //从机状态赋值
     thisfw_states.air_speed = fwstates.air_speed;

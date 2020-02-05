@@ -5,6 +5,8 @@ float64 pitch_angle
 
 float64 yaw_angle
 
+bool yaw_valid
+
 float64 roll_angle
 
 float64 thrust#这个有点不好获得
@@ -25,6 +27,12 @@ float64 ned_vel_x
 float64 ned_vel_y
 
 float64 ned_vel_z
+
+float64 global_vel_x
+
+float64 global_vel_y
+
+float64 global_vel_z
 
 float64 ned_acc_x
 
