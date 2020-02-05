@@ -48,11 +48,19 @@ public:
 
         float roll_angle{0};
 
-        float ned_vel_x{0}; //由于NED以及GPS坐标系系均为惯性系，两个速度是一致的
+        bool yaw_valid{false}; //有时候不能直接得到领机的航向信息
+
+        float ned_vel_x{0}; //NED速度与GPS速度是不一致的
 
         float ned_vel_y{0};
 
         float ned_vel_z{0};
+
+        float global_vel_x{0}; //GPS速度
+
+        float global_vel_y{0};
+
+        float global_vel_z{0};
 
         double latitude{0};
 
@@ -81,7 +89,7 @@ public:
 
         float ned_vel_z{0};
 
-        float global_vel_x{0}; //地速
+        float global_vel_x{0}; //GPS速度
 
         float global_vel_y{0};
 
@@ -231,6 +239,8 @@ private:
     _s_formation_params formation_params; //编队控制器混合误差产生参数,编队控制器参数
     _s_fw_sp fw_sp;                       //本机的期望
     _s_fw_error fw_error;                 //本机误差，包括与期望的差和领机的偏差
+    double led_cos_yaw;                   //领机yaw_cos
+    double led_sin_yaw;                   //领机yaw_sin
 
     TECS _tecs;                 //TECS
     bool rest_tecs{false};      //重置TECS

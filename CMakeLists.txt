@@ -240,11 +240,12 @@ ${catkin_LIBRARIES}
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+ install(FILES
+ scripts/monitor_msg.sh
+ scripts/sim_env.sh
+ scripts/vir_dir_leader.sh
+   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+ )
 
 #############
 ## Testing ##

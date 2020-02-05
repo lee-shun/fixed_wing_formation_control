@@ -13,6 +13,8 @@ float64 pitch_angle
 
 float64 yaw_angle
 
+bool yaw_valid
+
 float64 roll_angle
 
 geometry_msgs/Quaternion att_quater #姿态四元数，只能在外面弄下旋转矩阵了

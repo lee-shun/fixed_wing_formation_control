@@ -32,7 +32,8 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
 
 void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_states,
                                                struct _s_fw_states fw_states)
-{ /*    
+{
+    /*    
     *领机绝对位置以及绝对速度GPS控制器
     * */
 
@@ -41,11 +42,29 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     //1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置-->GPS位置
 
-    double cos_yaw = cos(leader_states.yaw_angle); //规定，运算全部用弧度，输出时考虑角度
-    double sin_yaw = sin(leader_states.yaw_angle);
+    //没有直接得到领机的yaw的信息，需要计算一下
+    if (leader_states.yaw_valid)
+    {
+        led_cos_yaw = cos(leader_states.yaw_angle); //规定，运算全部用弧度，输出时考虑角度
+        led_sin_yaw = sin(leader_states.yaw_angle);
+    }
+    else
+    {
+        Vec len_gspeed_2d(leader_states.global_vel_x, leader_states.global_vel_y); //领机地速向量
+        if (len_gspeed_2d.len2() == 0)                                             //领机的地速为零，无方向可言
+        {
+            led_sin_yaw = 0;
+            led_cos_yaw = 0;
+        }
+        else
+        {
+            led_cos_yaw = len_gspeed_2d.x / len_gspeed_2d.len2();
+            led_sin_yaw = len_gspeed_2d.y / len_gspeed_2d.len2();
+        }
+    }
 
-    formation_offset.ned_n = cos_yaw * formation_offset.xb + (-sin_yaw * formation_offset.yb);
-    formation_offset.ned_e = sin_yaw * formation_offset.xb + cos_yaw * formation_offset.yb;
+    formation_offset.ned_n = led_cos_yaw * formation_offset.xb + (-led_sin_yaw * formation_offset.yb);
+    formation_offset.ned_e = led_sin_yaw * formation_offset.xb + led_cos_yaw * formation_offset.yb;
     formation_offset.ned_d = formation_offset.zb;
 
     double ref[3], result[3];
@@ -69,8 +88,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     Point fw_ground_speed_2d_unit = fw_ground_speed_2d.normalized();
 
-    fw_error.PXb = vector_plane_sp * fw_ground_speed_2d_unit; //沿速度（机体x）方向距离误差（待检验）
-    fw_error.PYb = vector_plane_sp ^ fw_ground_speed_2d_unit; //垂直于速度（机体x）方向距离误差
+    fw_error.PXb = fw_ground_speed_2d_unit * vector_plane_sp; //沿速度（机体x）方向距离误差（待检验）
+    fw_error.PYb = fw_ground_speed_2d_unit ^ vector_plane_sp; //垂直于速度（机体x）方向距离误差
     fw_error.PZb = fw_sp.altitude - fw_states.altitude;       //高度方向误差
 
     double a_pos[2], b_pos[2], m[2]; //计算ned坐标系下的位置误差
@@ -87,11 +106,11 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     //3. 计算领机速度与从机速度之差在从机坐标系下的投影
 
-    Point led_ground_speed_2d(leader_states.ned_vel_x, leader_states.ned_vel_y);
+    Point led_ground_speed_2d(leader_states.global_vel_x, leader_states.global_vel_y);
     Point led_fol_vel_error = led_ground_speed_2d - fw_ground_speed_2d;
 
-    fw_error.led_fol_vxb = led_fol_vel_error * fw_ground_speed_2d_unit; //沿速度（机体x）方向速度误差（待检验）
-    fw_error.led_fol_vyb = led_fol_vel_error ^ fw_ground_speed_2d_unit; //垂直速度（机体x）方向速度误差（待检验）
+    fw_error.led_fol_vxb = fw_ground_speed_2d_unit * led_fol_vel_error; //沿速度（机体x）方向速度误差（待检验）
+    fw_error.led_fol_vyb = fw_ground_speed_2d_unit ^ led_fol_vel_error; //垂直速度（机体x）方向速度误差（待检验）
 
     //4. 机体前向混合误差，进入PID，计算出期望速度。
 
