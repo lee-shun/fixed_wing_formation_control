@@ -154,7 +154,7 @@ void TASK_MAIN::control_formation()
 
 void TASK_MAIN::run()
 {
-    ros::Rate rate(10.0);
+    ros::Rate rate(50.0);
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 
