@@ -623,13 +623,18 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 	// Calculate the time since last update (seconds)
 	uint64_t now = get_sys_time();
 	_dt = constrain((now - _pitch_update_timestamp) * 1e-3f, DT_MIN, DT_MAX);
-
+	cout << "tecs_dt" << _dt << endl;
 	// Set class variables from inputs
 	_throttle_setpoint_max = throttle_max;
 	_throttle_setpoint_min = throttle_min;
 	_pitch_setpoint_max = pitch_limit_max;
 	_pitch_setpoint_min = pitch_limit_min;
 	_climbout_mode_active = climb_out_setpoint;
+
+	cout << "baro_altitude==" << baro_altitude << endl;
+	cout << "pitch==" << pitch << endl;
+	cout << "EAS_setpoint==" << EAS_setpoint << endl;
+	cout << "hgt_setpoint==" << hgt_setpoint << endl;
 
 	// Initialize selected states and variables as required
 	_initialize_states(pitch, throttle_cruise, baro_altitude, pitch_min_climbout, eas_to_tas);
