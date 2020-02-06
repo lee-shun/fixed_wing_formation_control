@@ -200,7 +200,7 @@ public:
 
         float speed_weight{1};
 
-        float time_const_throt{2.0};
+        float time_const_throt{8.0};
 
         float time_const{5.0};
     };

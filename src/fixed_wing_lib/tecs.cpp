@@ -55,7 +55,8 @@ void TECS::update_vehicle_state_estimates(float airspeed, const float rotMat[3][
 {
 	// calculate the time lapsed since the last update
 	uint64_t now = get_sys_time();
-	float dt = constrain((now - _state_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
+	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
+	float dt = constrain(time_intvl, DT_MIN, DT_MAX);
 
 	bool reset_altitude = false;
 
@@ -154,7 +155,8 @@ void TECS::_update_speed_states(float airspeed_setpoint, float indicated_airspee
 {
 	// Calculate the time in seconds since the last update and use the default time step value if out of bounds
 	uint64_t now = get_sys_time();
-	const float dt = constrain((now - _speed_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
+	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
+	const float dt = constrain(time_intvl, DT_MIN, DT_MAX);
 
 	// Convert equivalent airspeed quantities to true airspeed
 	_EAS_setpoint = airspeed_setpoint;
@@ -622,7 +624,8 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 {
 	// Calculate the time since last update (seconds)
 	uint64_t now = get_sys_time();
-	_dt = constrain((now - _pitch_update_timestamp) * 1e-3f, DT_MIN, DT_MAX);
+	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
+	_dt = constrain(time_intvl, DT_MIN, DT_MAX);
 	cout << "tecs_dt" << _dt << endl;
 	// Set class variables from inputs
 	_throttle_setpoint_max = throttle_max;
