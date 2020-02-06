@@ -49,13 +49,28 @@ static constexpr float DT_MAX = 1.0f;   ///< max value of _dt allowed before a f
  * inertial nav data is not available. It also calculates a true airspeed derivative
  * which is used by the airspeed complimentary filter.
  */
+void TECS::write_to_files(string file_path_name, float time_stamp, float data)
+{
+	//打开一个文件，将它的值以及时间戳写进去，文件命名为值的名字
+
+	fstream oufile;
+
+	oufile.open(file_path_name.c_str(), ios::app | ios::out);
+	oufile << fixed << time_stamp << "\t" << data << endl;
+
+	if (!oufile)
+		cout << file_path_name << "-->"
+			 << "something wrong to open or write" << endl;
+	oufile.close();
+}
+
 void TECS::update_vehicle_state_estimates(float airspeed, const float rotMat[3][3],
 										  const float accel_body[3], bool altitude_lock, bool in_air,
 										  float altitude, bool vz_valid, float vz, float az)
 {
 	// calculate the time lapsed since the last update
 	uint64_t now = get_sys_time();
-	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
+	float time_intvl = (now - _state_update_timestamp) * 1.0e-3f;
 	float dt = constrain(time_intvl, DT_MIN, DT_MAX);
 
 	bool reset_altitude = false;
@@ -251,7 +266,10 @@ void TECS::_update_height_setpoint(float desired, float state)
 	// Apply a rate limit to respect vehicle performance limitations
 	if ((_hgt_setpoint - _hgt_setpoint_prev) > (_max_climb_rate * _dt))
 	{
+
 		_hgt_setpoint = _hgt_setpoint_prev + _max_climb_rate * _dt;
+		cout << "hhh11" << endl;
+		write_to_files("/home/lee/_hgt_setpoint_prev", get_sys_time() * 1.0e-3f, _hgt_setpoint);
 	}
 	else if ((_hgt_setpoint - _hgt_setpoint_prev) < (-_max_sink_rate * _dt))
 	{
@@ -624,7 +642,7 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 {
 	// Calculate the time since last update (seconds)
 	uint64_t now = get_sys_time();
-	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
+	float time_intvl = (now - _pitch_update_timestamp) * 1.0e-3f;
 	_dt = constrain(time_intvl, DT_MIN, DT_MAX);
 	cout << "tecs_dt" << _dt << endl;
 	// Set class variables from inputs
