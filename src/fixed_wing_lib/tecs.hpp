@@ -42,6 +42,8 @@
 #pragma once
 
 #include "mathlib.hpp"
+#include <fstream>
+using namespace std;
 
 class TECS
 {
@@ -189,7 +191,7 @@ private:
 	// controller parameters
 	float _hgt_estimate_freq{0.0f};		  ///< cross-over frequency of the height rate complementary filter (rad/sec)
 	float _tas_estimate_freq{0.0f};		  ///< cross-over frequency of the true airspeed complementary filter (rad/sec)
-	float _max_climb_rate{2.0f};		  ///< climb rate produced by max allowed throttle (m/sec)
+	float _max_climb_rate{5.0f};		  ///< climb rate produced by max allowed throttle (m/sec)
 	float _min_sink_rate{1.0f};			  ///< sink rate produced by min allowed throttle (m/sec)
 	float _max_sink_rate{2.0f};			  ///< maximum safe sink rate (m/sec)
 	float _pitch_time_constant{5.0f};	 ///< control time constant used by the pitch demand calculation (sec)
@@ -331,4 +333,9 @@ private:
 	 * Calculate specific total energy rate limits
 	 */
 	void _update_STE_rate_lim();
+
+	/**
+	 * 写入文件
+	*/
+	void write_to_files(string file_path_name, float time_stamp, float data);
 };
