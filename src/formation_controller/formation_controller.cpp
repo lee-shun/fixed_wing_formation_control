@@ -177,6 +177,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
                                 tecs_params.throttle_max, tecs_params.throttle_cruise,
                                 tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
     //这个是tecs控制器状态，可以作为调试的窗口用
+    cout << "STE_error====" << _tecs.STE_error() << endl;
 
     _cmd.pitch = _tecs.get_pitch_setpoint();
     _cmd.thrust = _tecs.get_throttle_setpoint();

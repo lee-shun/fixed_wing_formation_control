@@ -202,7 +202,7 @@ void PACK_FW_STATES::msg_to_mavros()
 
   angle[0] = fixed_wing_sub_pub.cmd_from_controller.roll_angle_sp;
   angle[1] = -fixed_wing_sub_pub.cmd_from_controller.pitch_angle_sp; //
-  angle[2] = -fixed_wing_sub_pub.cmd_from_controller.roll_angle_sp + deg_2_rad(90.0);
+  angle[2] = -fixed_wing_sub_pub.cmd_from_controller.yaw_angle_sp + deg_2_rad(90.0);
 
   euler_2_quaternion(angle, quat);
 
