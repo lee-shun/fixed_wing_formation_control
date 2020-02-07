@@ -156,15 +156,16 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
     _tecs.enable_airspeed(true);
     fw_states.in_air = true;
-    if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
 
-    {
-        tecs_params.climboutdem = true;
-    }
-    else
-    {
-        tecs_params.climboutdem = false;
-    }
+    // if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
+
+    // {
+    //     tecs_params.climboutdem = true;
+    // }
+    // else
+    // {
+    //     tecs_params.climboutdem = false;
+    // }
 
     _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc,
                                          fw_states.altitude_lock, fw_states.in_air, fw_states.altitude,
