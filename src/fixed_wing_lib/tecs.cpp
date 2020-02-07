@@ -88,7 +88,6 @@ void TECS::update_vehicle_state_estimates(float airspeed, const float rotMat[3][
 
 	if (reset_altitude)
 	{
-		cout << "in_reset_altitude" << endl;
 		_vert_pos_state = altitude;
 
 		if (vz_valid)
@@ -264,28 +263,23 @@ void TECS::_update_height_setpoint(float desired, float state)
 
 	_hgt_setpoint_in_prev = _hgt_setpoint;
 
-	cout << "desired==" << desired << endl;
-	cout << "_hgt_setpoint==" << _hgt_setpoint << endl;
-	cout << "dt____" << _dt << endl;
-
 	// Apply a rate limit to respect vehicle performance limitations
 	if ((_hgt_setpoint - _hgt_setpoint_prev) > (_max_climb_rate * _dt))
 	{
 
 		_hgt_setpoint = _hgt_setpoint_prev + _max_climb_rate * _dt;
-		cout << "hhh11" << endl;
 	}
 	else if ((_hgt_setpoint - _hgt_setpoint_prev) < (-_max_sink_rate * _dt))
 	{
 		_hgt_setpoint = _hgt_setpoint_prev - _max_sink_rate * _dt;
-		cout << "hhh22" << endl;
 	}
 	_hgt_setpoint_prev = _hgt_setpoint;
-	//write_to_files("/home/lee/_hgt_setpoint", get_sys_time(), _hgt_setpoint);
+	// //write_to_files("/home/lee/_hgt_setpoint", get_sys_time(), _hgt_setpoint);
+	// cout << "state==" << state << endl;
+	// cout << "_hgt_setpoint==" << _hgt_setpoint << endl;
 	// Apply a first order noise filter
 	_hgt_setpoint_adj = 0.1f * _hgt_setpoint + 0.9f * _hgt_setpoint_adj_prev;
 
-	cout << "_hgt_setpoint_adj==" << _hgt_setpoint_adj << endl;
 	// Calculate the demanded climb rate proportional to height error plus a feedforward term to provide
 	// tight tracking during steady climb and descent manoeuvres.
 	_hgt_rate_setpoint = (_hgt_setpoint_adj - state) * _height_error_gain + _height_setpoint_gain_ff *
@@ -358,6 +352,7 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 	{
 		// always use full throttle to recover from an underspeed condition
 		_throttle_setpoint = 1.0f;
+		cout << "_throttle_setpoint = 1.0f;" << endl;
 	}
 	else
 	{
@@ -442,6 +437,7 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 		}
 
 		_throttle_setpoint = constrain(_throttle_setpoint, _throttle_setpoint_min, _throttle_setpoint_max);
+		//write_to_files("/home/lee/_throttle_setpoint", get_sys_time(), _throttle_setpoint);
 	}
 }
 
@@ -576,13 +572,9 @@ void TECS::_update_pitch_setpoint()
 void TECS::_initialize_states(float pitch, float throttle_cruise, float baro_altitude, float pitch_min_climbout,
 							  float EAS2TAS)
 {
-	cout << "in__initialize_states" << endl;
-	if (_pitch_update_timestamp == 0 || _dt > DT_MAX || !_in_air || !_states_initalized)
+	//cout << "in__initialize_states" << endl;
+	if (_pitch_update_timestamp == 0 || _dt > DT_MAX || !_in_air || !_states_initalized) //此处的_states_initalized有待考证
 	{
-		cout << "_pitch_update_timestamp" << _pitch_update_timestamp << endl;
-		cout << "_in_air===" << _in_air << endl;
-		cout << "_states_initalized==" << _states_initalized << endl;
-		cout << "in__initialize_states_first_if" << endl;
 		// On first time through or when not using TECS of if there has been a large time slip,
 		// states must be reset to allow filters to a clean start
 		_vert_accel_state = 0.0f;
@@ -613,7 +605,7 @@ void TECS::_initialize_states(float pitch, float throttle_cruise, float baro_alt
 	}
 	else if (_climbout_mode_active)
 	{
-		cout << "in__initialize_states_2_if" << endl;
+		// cout << "in__initialize_states_2_if" << endl;
 		// During climbout use the lower pitch angle limit specified by the
 		// calling controller
 		_pitch_setpoint_min = pitch_min_climbout;
@@ -654,19 +646,12 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 	// Calculate the time since last update (seconds)
 	uint64_t now = get_sys_time();
 	_dt = constrain((now - _pitch_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
-	cout << "tecs_dt" << _dt << endl;
 	// Set class variables from inputs
 	_throttle_setpoint_max = throttle_max;
 	_throttle_setpoint_min = throttle_min;
 	_pitch_setpoint_max = pitch_limit_max;
 	_pitch_setpoint_min = pitch_limit_min;
 	_climbout_mode_active = climb_out_setpoint;
-
-	cout << "baro_altitude==" << baro_altitude << endl;
-	cout << "hgt_setpoint==" << hgt_setpoint << endl;
-
-	cout << "indicated_airspeed==" << indicated_airspeed << endl;
-	cout << "airspeed_setpoint==" << EAS_setpoint << endl;
 
 	// Initialize selected states and variables as required
 	//初始化控制器，使用的情况有
