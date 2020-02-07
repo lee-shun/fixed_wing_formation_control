@@ -93,7 +93,7 @@ void TASK_MAIN::control_formation()
     thisfw_states.in_air = fwstates.in_air;
 
     thisfw_states.altitude = fwstates.altitude;
-    thisfw_states.altitude_lock = fwstates.altitude_lock;
+    thisfw_states.altitude_lock = true;
     thisfw_states.latitude = fwstates.latitude;
     thisfw_states.longtitude = fwstates.longtitude;
     thisfw_states.relative_alt = fwstates.relative_alt;

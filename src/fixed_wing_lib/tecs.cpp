@@ -49,14 +49,29 @@ static constexpr float DT_MAX = 1.0f;   ///< max value of _dt allowed before a f
  * inertial nav data is not available. It also calculates a true airspeed derivative
  * which is used by the airspeed complimentary filter.
  */
+void TECS::write_to_files(string file_path_name, long time_stamp, float data)
+{
+	//打开一个文件，将它的值以及时间戳写进去，文件命名为值的名字
+
+	fstream oufile;
+
+	oufile.open(file_path_name.c_str(), ios::app | ios::out);
+	oufile << fixed << time_stamp << "\t"
+		   << "\t" << data << endl;
+
+	if (!oufile)
+		cout << file_path_name << "-->"
+			 << "something wrong to open or write" << endl;
+	oufile.close();
+}
+
 void TECS::update_vehicle_state_estimates(float airspeed, const float rotMat[3][3],
 										  const float accel_body[3], bool altitude_lock, bool in_air,
 										  float altitude, bool vz_valid, float vz, float az)
 {
 	// calculate the time lapsed since the last update
 	uint64_t now = get_sys_time();
-	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
-	float dt = constrain(time_intvl, DT_MIN, DT_MAX);
+	float dt = constrain((now - _state_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
 
 	bool reset_altitude = false;
 
@@ -155,8 +170,7 @@ void TECS::_update_speed_states(float airspeed_setpoint, float indicated_airspee
 {
 	// Calculate the time in seconds since the last update and use the default time step value if out of bounds
 	uint64_t now = get_sys_time();
-	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
-	const float dt = constrain(time_intvl, DT_MIN, DT_MAX);
+	const float dt = constrain((now - _speed_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
 
 	// Convert equivalent airspeed quantities to true airspeed
 	_EAS_setpoint = airspeed_setpoint;
@@ -185,6 +199,7 @@ void TECS::_update_speed_states(float airspeed_setpoint, float indicated_airspee
 	// Obtain a smoothed airspeed estimate using a second order complementary filter
 
 	// Update TAS rate state
+	//更新空速的变化率，此时，_tas_estimate_freq注意参数的值
 	float tas_error = (_EAS * EAS2TAS) - _tas_state;
 	float tas_rate_state_input = tas_error * _tas_estimate_freq * _tas_estimate_freq;
 
@@ -213,14 +228,14 @@ void TECS::_update_speed_setpoint()
 		_TAS_setpoint = _TAS_min;
 	}
 
-	_TAS_setpoint = constrain(_TAS_setpoint, _TAS_min, _TAS_max);
+	_TAS_setpoint = constrain(_TAS_setpoint, _TAS_min, _TAS_max); //来自外部赋值的_TAS_setpoint
 
 	// Calculate limits for the demanded rate of change of speed based on physical performance limits
 	// with a 50% margin to allow the total energy controller to correct for errors.
 	float velRateMax = 0.5f * _STE_rate_max / _tas_state;
 	float velRateMin = 0.5f * _STE_rate_min / _tas_state;
 
-	_TAS_setpoint_adj = constrain(_TAS_setpoint, _TAS_min, _TAS_max);
+	_TAS_setpoint_adj = constrain(_TAS_setpoint, _TAS_min, _TAS_max); //adj是经过限幅之后的标志
 
 	// calculate the demanded rate of change of speed proportional to speed error
 	// and apply performance limits
@@ -251,15 +266,17 @@ void TECS::_update_height_setpoint(float desired, float state)
 	// Apply a rate limit to respect vehicle performance limitations
 	if ((_hgt_setpoint - _hgt_setpoint_prev) > (_max_climb_rate * _dt))
 	{
+
 		_hgt_setpoint = _hgt_setpoint_prev + _max_climb_rate * _dt;
 	}
 	else if ((_hgt_setpoint - _hgt_setpoint_prev) < (-_max_sink_rate * _dt))
 	{
 		_hgt_setpoint = _hgt_setpoint_prev - _max_sink_rate * _dt;
 	}
-
 	_hgt_setpoint_prev = _hgt_setpoint;
-
+	// //write_to_files("/home/lee/_hgt_setpoint", get_sys_time(), _hgt_setpoint);
+	// cout << "state==" << state << endl;
+	// cout << "_hgt_setpoint==" << _hgt_setpoint << endl;
 	// Apply a first order noise filter
 	_hgt_setpoint_adj = 0.1f * _hgt_setpoint + 0.9f * _hgt_setpoint_adj_prev;
 
@@ -335,6 +352,7 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 	{
 		// always use full throttle to recover from an underspeed condition
 		_throttle_setpoint = 1.0f;
+		cout << "_throttle_setpoint = 1.0f;" << endl;
 	}
 	else
 	{
@@ -351,7 +369,7 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 		// Specific total energy rate = _STE_rate_min is achieved when throttle is set to _throttle_setpoint_min
 		float throttle_predicted = 0.0f;
 
-		if (STE_rate_setpoint >= 0)
+		if (STE_rate_setpoint >= 0) //计算前馈
 		{
 			// throttle is between cruise and maximum
 			throttle_predicted = throttle_cruise + STE_rate_setpoint / _STE_rate_max * (_throttle_setpoint_max - throttle_cruise);
@@ -419,6 +437,7 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 		}
 
 		_throttle_setpoint = constrain(_throttle_setpoint, _throttle_setpoint_min, _throttle_setpoint_max);
+		//write_to_files("/home/lee/_throttle_setpoint", get_sys_time(), _throttle_setpoint);
 	}
 }
 
@@ -553,7 +572,8 @@ void TECS::_update_pitch_setpoint()
 void TECS::_initialize_states(float pitch, float throttle_cruise, float baro_altitude, float pitch_min_climbout,
 							  float EAS2TAS)
 {
-	if (_pitch_update_timestamp == 0 || _dt > DT_MAX || !_in_air || !_states_initalized)
+	//cout << "in__initialize_states" << endl;
+	if (_pitch_update_timestamp == 0 || _dt > DT_MAX || !_in_air || !_states_initalized) //此处的_states_initalized有待考证
 	{
 		// On first time through or when not using TECS of if there has been a large time slip,
 		// states must be reset to allow filters to a clean start
@@ -585,6 +605,7 @@ void TECS::_initialize_states(float pitch, float throttle_cruise, float baro_alt
 	}
 	else if (_climbout_mode_active)
 	{
+		// cout << "in__initialize_states_2_if" << endl;
 		// During climbout use the lower pitch angle limit specified by the
 		// calling controller
 		_pitch_setpoint_min = pitch_min_climbout;
@@ -624,9 +645,7 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 {
 	// Calculate the time since last update (seconds)
 	uint64_t now = get_sys_time();
-	float time_intvl = (now - _speed_update_timestamp) * 1.0e-3f;
-	_dt = constrain(time_intvl, DT_MIN, DT_MAX);
-	cout << "tecs_dt" << _dt << endl;
+	_dt = constrain((now - _pitch_update_timestamp) * 1.0e-3f, DT_MIN, DT_MAX);
 	// Set class variables from inputs
 	_throttle_setpoint_max = throttle_max;
 	_throttle_setpoint_min = throttle_min;
@@ -634,12 +653,14 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 	_pitch_setpoint_min = pitch_limit_min;
 	_climbout_mode_active = climb_out_setpoint;
 
-	cout << "baro_altitude==" << baro_altitude << endl;
-	cout << "pitch==" << pitch << endl;
-	cout << "EAS_setpoint==" << EAS_setpoint << endl;
-	cout << "hgt_setpoint==" << hgt_setpoint << endl;
-
 	// Initialize selected states and variables as required
+	//初始化控制器，使用的情况有
+	/**
+	 * 1. 初次进入
+	 * 2.控制器使用间隔超时
+	 * 3. 不在空中
+	 * 4. 调用reset函数之后
+	*/
 	_initialize_states(pitch, throttle_cruise, baro_altitude, pitch_min_climbout, eas_to_tas);
 
 	// Don't run TECS control algorithms when not in flight
@@ -649,9 +670,16 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 	}
 
 	// Update the true airspeed state estimate
+	/**
+	 * 1.此函数更新飞机的空速，以及空速的变化率
+	 * 2.将飞机的空速做一个二阶低通滤波
+	*/
 	_update_speed_states(EAS_setpoint, indicated_airspeed, eas_to_tas);
 
 	// Calculate rate limits for specific total energy
+	/**
+	 * 所谓STE为specif total energy，单位总能量
+	*/
 	_update_STE_rate_lim();
 
 	// Detect an underspeed condition
@@ -661,15 +689,27 @@ void TECS::update_pitch_throttle(const float rotMat[3][3], float pitch, float ba
 	_detect_uncommanded_descent();
 
 	// Calculate the demanded true airspeed
+	/**
+	 * 1.将期望的空速以及期望的空速变化率（加速度）限幅
+	*/
 	_update_speed_setpoint();
 
 	// Calculate the demanded height
+	/**
+	 * 1.计算期望的高度值以及高度变化率的值
+	*/
 	_update_height_setpoint(hgt_setpoint, baro_altitude);
 
 	// Calculate the specific energy values required by the control loop
+	/**
+	 * 计算能量
+	*/
 	_update_energy_estimates();
 
 	// Calculate the throttle demand
+	/**
+	 * 更新油门值
+	*/
 	_update_throttle_setpoint(throttle_cruise, rotMat);
 
 	// Calculate the pitch demand

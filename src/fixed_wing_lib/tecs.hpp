@@ -42,6 +42,8 @@
 #pragma once
 
 #include "mathlib.hpp"
+#include <fstream>
+using namespace std;
 
 class TECS
 {
@@ -187,22 +189,22 @@ private:
 	uint64_t _pitch_update_timestamp{0}; ///< last timestamp of the pitch function call
 
 	// controller parameters
-	float _hgt_estimate_freq{0.0f};		  ///< cross-over frequency of the height rate complementary filter (rad/sec)
-	float _tas_estimate_freq{0.0f};		  ///< cross-over frequency of the true airspeed complementary filter (rad/sec)
-	float _max_climb_rate{2.0f};		  ///< climb rate produced by max allowed throttle (m/sec)
-	float _min_sink_rate{1.0f};			  ///< sink rate produced by min allowed throttle (m/sec)
-	float _max_sink_rate{2.0f};			  ///< maximum safe sink rate (m/sec)
+	float _hgt_estimate_freq{3.0f};		  ///< cross-over frequency of the height rate complementary filter (rad/sec)
+	float _tas_estimate_freq{2.0f};		  ///< cross-over frequency of the true airspeed complementary filter (rad/sec)
+	float _max_climb_rate{5.0f};		  ///< climb rate produced by max allowed throttle (m/sec)
+	float _min_sink_rate{2.0f};			  ///< sink rate produced by min allowed throttle (m/sec)
+	float _max_sink_rate{5.0f};			  ///< maximum safe sink rate (m/sec)
 	float _pitch_time_constant{5.0f};	 ///< control time constant used by the pitch demand calculation (sec)
 	float _throttle_time_constant{8.0f};  ///< control time constant used by the throttle demand calculation (sec)
 	float _pitch_damping_gain{0.0f};	  ///< damping gain of the pitch demand calculation (sec)
-	float _throttle_damping_gain{0.0f};   ///< damping gain of the throttle demand calculation (sec)
-	float _integrator_gain{0.0f};		  ///< integrator gain used by the throttle and pitch demand calculation
-	float _vert_accel_limit{0.0f};		  ///< magnitude of the maximum vertical acceleration allowed (m/sec**2)
-	float _load_factor_correction{0.0f};  ///< gain from normal load factor increase to total energy rate demand (m**2/sec**3)
+	float _throttle_damping_gain{0.5f};   ///< damping gain of the throttle demand calculation (sec)
+	float _integrator_gain{0.1f};		  ///< integrator gain used by the throttle and pitch demand calculation
+	float _vert_accel_limit{10.0f};		  ///< magnitude of the maximum vertical acceleration allowed (m/sec**2)
+	float _load_factor_correction{15.0f};  ///< gain from normal load factor increase to total energy rate demand (m**2/sec**3)
 	float _pitch_speed_weight{1.0f};	  ///< speed control weighting used by pitch demand calculation
-	float _height_error_gain{0.0f};		  ///< gain from height error to demanded climb rate (1/sec)
-	float _height_setpoint_gain_ff{0.0f}; ///< gain from height demand derivative to demanded climb rate
-	float _speed_error_gain{0.0f};		  ///< gain from speed error to demanded speed rate (1/sec)
+	float _height_error_gain{0.05f};	  ///< gain from height error to demanded climb rate (1/sec)
+	float _height_setpoint_gain_ff{0.8f}; ///< gain from height demand derivative to demanded climb rate
+	float _speed_error_gain{0.02f};		  ///< gain from speed error to demanded speed rate (1/sec)
 	float _indicated_airspeed_min{3.0f};  ///< equivalent airspeed demand lower limit (m/sec)
 	float _indicated_airspeed_max{30.0f}; ///< equivalent airspeed demand upper limit (m/sec)
 	float _throttle_slewrate{0.0f};		  ///< throttle demand slew rate limit (1/sec)
@@ -331,4 +333,9 @@ private:
 	 * Calculate specific total energy rate limits
 	 */
 	void _update_STE_rate_lim();
+
+	/**
+	 * 写入文件
+	*/
+	void write_to_files(string file_path_name, long time_stamp, float data);
 };

@@ -145,6 +145,12 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
     fw_sp.air_speed = fw_sp.ground_speed - wind_Xb;
 
+    fw_sp.air_speed = 20.0;
+    /**
+    test,此处显示了TECS直接追动态的速度过于不好，期望速度的噪声过大
+    （或者变化范围过大）直接导致总能量的变化过大，飞机的油门就会抽搐
+    */
+
     if (rest_tecs)
     {
         _tecs.reset_state();
@@ -156,15 +162,16 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
     _tecs.enable_airspeed(true);
     fw_states.in_air = true;
-    // if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
 
-    // {
-    //     tecs_params.climboutdem = true;
-    // }
-    // else
-    // {
-    //     tecs_params.climboutdem = false;
-    // }
+    if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
+
+    {
+        tecs_params.climboutdem = true;
+    }
+    else
+    {
+        tecs_params.climboutdem = false;
+    }
 
     _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc,
                                          fw_states.altitude_lock, fw_states.in_air, fw_states.altitude,
@@ -176,8 +183,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
                                 tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
                                 tecs_params.throttle_max, tecs_params.throttle_cruise,
                                 tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
-    //这个是tecs控制器状态，可以作为调试的窗口用
-    cout << "STE_error====" << _tecs.STE_error() << endl;
 
     _cmd.pitch = _tecs.get_pitch_setpoint();
     _cmd.thrust = _tecs.get_throttle_setpoint();
