@@ -145,6 +145,12 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
     fw_sp.air_speed = fw_sp.ground_speed - wind_Xb;
 
+    fw_sp.air_speed = 20.0;
+    /**
+    test,此处显示了TECS直接追动态的速度过于不好，期望速度的噪声过大
+    （或者变化范围过大）直接导致总能量的变化过大，飞机的油门就会抽搐
+    */
+
     if (rest_tecs)
     {
         _tecs.reset_state();
