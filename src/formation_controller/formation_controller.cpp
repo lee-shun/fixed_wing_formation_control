@@ -157,15 +157,15 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     _tecs.enable_airspeed(true);
     fw_states.in_air = true;
 
-    // if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
+    if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
 
-    // {
-    //     tecs_params.climboutdem = true;
-    // }
-    // else
-    // {
-    //     tecs_params.climboutdem = false;
-    // }
+    {
+        tecs_params.climboutdem = true;
+    }
+    else
+    {
+        tecs_params.climboutdem = false;
+    }
 
     _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc,
                                          fw_states.altitude_lock, fw_states.in_air, fw_states.altitude,
@@ -177,8 +177,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
                                 tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
                                 tecs_params.throttle_max, tecs_params.throttle_cruise,
                                 tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
-    //这个是tecs控制器状态，可以作为调试的窗口用
-    cout << "STE_error====" << _tecs.STE_error() << endl;
 
     _cmd.pitch = _tecs.get_pitch_setpoint();
     _cmd.thrust = _tecs.get_throttle_setpoint();

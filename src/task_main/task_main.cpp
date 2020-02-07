@@ -93,7 +93,7 @@ void TASK_MAIN::control_formation()
     thisfw_states.in_air = fwstates.in_air;
 
     thisfw_states.altitude = fwstates.altitude;
-    thisfw_states.altitude_lock = fwstates.altitude_lock;
+    thisfw_states.altitude_lock = true;
     thisfw_states.latitude = fwstates.latitude;
     thisfw_states.longtitude = fwstates.longtitude;
     thisfw_states.relative_alt = fwstates.relative_alt;
@@ -154,7 +154,7 @@ void TASK_MAIN::control_formation()
 
 void TASK_MAIN::run()
 {
-    ros::Rate rate(50.0);
+    ros::Rate rate(60.0);
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
 

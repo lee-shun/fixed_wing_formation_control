@@ -199,7 +199,7 @@ private:
 	float _pitch_damping_gain{0.0f};	  ///< damping gain of the pitch demand calculation (sec)
 	float _throttle_damping_gain{0.5f};   ///< damping gain of the throttle demand calculation (sec)
 	float _integrator_gain{0.8f};		  ///< integrator gain used by the throttle and pitch demand calculation
-	float _vert_accel_limit{0.0f};		  ///< magnitude of the maximum vertical acceleration allowed (m/sec**2)
+	float _vert_accel_limit{10.0f};		  ///< magnitude of the maximum vertical acceleration allowed (m/sec**2)
 	float _load_factor_correction{0.0f};  ///< gain from normal load factor increase to total energy rate demand (m**2/sec**3)
 	float _pitch_speed_weight{1.0f};	  ///< speed control weighting used by pitch demand calculation
 	float _height_error_gain{0.05f};	  ///< gain from height error to demanded climb rate (1/sec)
