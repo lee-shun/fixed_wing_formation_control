@@ -29,7 +29,7 @@ void VIR_DIR_LEADER::show_vir_leader_status()
 
 void VIR_DIR_LEADER::run(int argc, char **argv)
 {
-    ros::Rate rate(2.0);
+    ros::Rate rate(20.0);
     begin_time = get_sys_time(); // 记录启控时间
     ros_sub_pub();
 
@@ -39,7 +39,7 @@ void VIR_DIR_LEADER::run(int argc, char **argv)
 
     leaderstates.global_vel_x = 0;
     leaderstates.global_vel_z = 0;
-    distance_e = 7.5;
+    distance_e = 0.75;
 
     double ref[3];
     double result[3];

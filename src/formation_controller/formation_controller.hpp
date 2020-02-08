@@ -28,14 +28,22 @@ public:
 
         float kp_p{0.8}; //从机期望与实际位置误差比例
 
-        float mix_kp{0.6};
+        float mix_kp{0.6}; //总混合产生期望空速pid参数
 
-        float mix_kd{0.0};
+        float mix_kd{0.0}; //总混合产生期望空速pid参数
 
-        float mix_ki{0.01};
+        float mix_ki{0.01}; //总混合产生期望空速pid参数
+
+        float maxinc_acc{5.0}; //飞机前向最大瞬时加速度
+
+        float maxdec_acc{3.0}; //飞机减速最大瞬时加速度
+
+        float max_arispd_sp{25.0}; //飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动
+
+        float min_arispd_sp{8.0}; //飞机空速最小设定值
     };
 
-    struct rel_states //领机从机相对状态
+    struct _s_rel_states //领机从机相对状态
     {
         /* data */
     };
@@ -75,6 +83,8 @@ public:
 
     struct _s_fw_states //本机状态信息
     {
+        string flight_mode;
+
         float pitch_angle{0};
 
         float yaw_angle{0};
@@ -235,12 +245,18 @@ public:
     struct FORMATION_CONTROL::_s_formation_params get_formation_params(); //得到编队控制器参数
 
 private:
+    long abs_pos_vel_ctrl_timestamp{0};   //绝对速度位置控制器时间戳
+    float _dt{0.02};                      //控制时间间隔
+    float _dtMax{0.1};                    //控制时间间隔max
+    float _dtMin{0.01};                   //控制时间间隔min
     _s_formation_offset formation_offset; //编队偏移量
     _s_formation_params formation_params; //编队控制器混合误差产生参数,编队控制器参数
     _s_fw_sp fw_sp;                       //本机的期望
     _s_fw_error fw_error;                 //本机误差，包括与期望的差和领机的偏差
-    double led_cos_yaw;                   //领机yaw_cos
-    double led_sin_yaw;                   //领机yaw_sin
+    double led_cos_yaw{0};                //领机yaw_cos
+    double led_sin_yaw{0};                //领机yaw_sin
+    float airspd_sp_prev{0};              //飞机期望空速（前一时刻）
+    float airspd_sp{0};                   //飞机期望空速
 
     TECS _tecs;                 //TECS
     bool rest_tecs{false};      //重置TECS

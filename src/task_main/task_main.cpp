@@ -89,6 +89,8 @@ void TASK_MAIN::control_formation()
     leader_states.yaw_valid = false; //目前来讲，领机的yaw不能直接获得
 
     //从机状态赋值
+    thisfw_states.flight_mode = fwstates.control_mode;
+
     thisfw_states.air_speed = fwstates.air_speed;
     thisfw_states.in_air = fwstates.in_air;
 
