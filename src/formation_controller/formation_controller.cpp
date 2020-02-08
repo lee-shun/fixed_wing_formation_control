@@ -36,7 +36,10 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
     /*    
     *领机绝对位置以及绝对速度GPS控制器
     * */
+    long now = get_sys_time();
+    _dt = constrain((now - abs_pos_vel_ctrl_timestamp) * 1.0e-3f, _dtMin, _dtMax);
 
+    cout << "formation_control_dt == " << _dt << endl;
     //测试数据通断
     print_data(&fw_states);
 
@@ -143,14 +146,28 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     Point wind_vector(fw_states.wind_estimate_x, fw_states.wind_estimate_y);
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
-    fw_sp.air_speed = fw_sp.ground_speed - wind_Xb;
 
-    fw_sp.air_speed = 20.0;
+    airspd_sp = fw_sp.ground_speed - wind_Xb;
+
+    //符合飞机本身的加速减速特性
+    if ((airspd_sp - airspd_sp_prev) > formation_params.maxinc_acc * _dt)
+    {
+        airspd_sp = airspd_sp_prev + formation_params.maxinc_acc * _dt;
+    }
+    else if ((airspd_sp - airspd_sp_prev) < -formation_params.maxdec_acc * _dt)
+    {
+        airspd_sp = airspd_sp_prev - formation_params.maxdec_acc * _dt;
+    }
+
+    airspd_sp_prev = airspd_sp;
+
+    fw_sp.air_speed = constrain(airspd_sp, formation_params.min_arispd_sp, formation_params.max_arispd_sp);
+    //fw_sp.air_speed = 20.0;
     /**
     test,此处显示了TECS直接追动态的速度过于不好，期望速度的噪声过大
     （或者变化范围过大）直接导致总能量的变化过大，飞机的油门就会抽搐
     */
-   /**
+    /**
     * 此处应该完成的任务是：
     * 1.将期望空速记录一下，看一下和时间的关系
     * 2.实现空速期望值的阶跃式增加或者减少，增加的量不超过飞机的最大加速度以及最小减速加速度×dt
@@ -199,6 +216,16 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     _cmd.roll = constrain(_lateral_controller.nav_roll(),
                           -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
+
+    abs_pos_vel_ctrl_timestamp = now;
+
+    //7. 数据记录
+    float data[5];
+    data[0] = fw_sp.air_speed;
+    data[1] = _cmd.thrust;
+    data[2] = _cmd.pitch;
+    data[3] = _cmd.roll;
+    write_to_files("/home/lee/fw_sp.air_speed", fw_states.flight_mode, data);
 }
 
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
