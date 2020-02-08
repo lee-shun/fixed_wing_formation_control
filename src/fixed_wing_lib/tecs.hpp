@@ -42,7 +42,6 @@
 #pragma once
 
 #include "mathlib.hpp"
-#include <fstream>
 using namespace std;
 
 class TECS
@@ -200,7 +199,7 @@ private:
 	float _throttle_damping_gain{0.5f};   ///< damping gain of the throttle demand calculation (sec)
 	float _integrator_gain{0.1f};		  ///< integrator gain used by the throttle and pitch demand calculation
 	float _vert_accel_limit{10.0f};		  ///< magnitude of the maximum vertical acceleration allowed (m/sec**2)
-	float _load_factor_correction{15.0f};  ///< gain from normal load factor increase to total energy rate demand (m**2/sec**3)
+	float _load_factor_correction{15.0f}; ///< gain from normal load factor increase to total energy rate demand (m**2/sec**3)
 	float _pitch_speed_weight{1.0f};	  ///< speed control weighting used by pitch demand calculation
 	float _height_error_gain{0.05f};	  ///< gain from height error to demanded climb rate (1/sec)
 	float _height_setpoint_gain_ff{0.8f}; ///< gain from height demand derivative to demanded climb rate
@@ -333,9 +332,4 @@ private:
 	 * Calculate specific total energy rate limits
 	 */
 	void _update_STE_rate_lim();
-
-	/**
-	 * 写入文件
-	*/
-	void write_to_files(string file_path_name, long time_stamp, float data);
 };

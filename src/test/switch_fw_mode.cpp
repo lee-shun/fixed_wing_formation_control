@@ -66,6 +66,9 @@ int main(int argc, char **argv)
             set_mode_client.call(mode_cmd);
         }
 
+        ros::spinOnce(); //挂起一段时间，等待切换结果
+        rate.sleep();
+
         if ((counters <= times_out) && (mode_cmd.request.custom_mode == current_state.mode))
         { //成功切换，而且没有问题
             cout << "切换成功" << endl;
@@ -75,9 +78,6 @@ int main(int argc, char **argv)
             cout << "切换失败" << endl;
         }
         counters = 0;
-
-        ros::spinOnce(); //挂起一段时间(rate为 50HZ)
-        rate.sleep();
     }
     return 0;
 }

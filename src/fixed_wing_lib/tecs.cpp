@@ -49,21 +49,6 @@ static constexpr float DT_MAX = 1.0f;   ///< max value of _dt allowed before a f
  * inertial nav data is not available. It also calculates a true airspeed derivative
  * which is used by the airspeed complimentary filter.
  */
-void TECS::write_to_files(string file_path_name, long time_stamp, float data)
-{
-	//打开一个文件，将它的值以及时间戳写进去，文件命名为值的名字
-
-	fstream oufile;
-
-	oufile.open(file_path_name.c_str(), ios::app | ios::out);
-	oufile << fixed << time_stamp << "\t"
-		   << "\t" << data << endl;
-
-	if (!oufile)
-		cout << file_path_name << "-->"
-			 << "something wrong to open or write" << endl;
-	oufile.close();
-}
 
 void TECS::update_vehicle_state_estimates(float airspeed, const float rotMat[3][3],
 										  const float accel_body[3], bool altitude_lock, bool in_air,
@@ -274,9 +259,7 @@ void TECS::_update_height_setpoint(float desired, float state)
 		_hgt_setpoint = _hgt_setpoint_prev - _max_sink_rate * _dt;
 	}
 	_hgt_setpoint_prev = _hgt_setpoint;
-	// //write_to_files("/home/lee/_hgt_setpoint", get_sys_time(), _hgt_setpoint);
-	// cout << "state==" << state << endl;
-	// cout << "_hgt_setpoint==" << _hgt_setpoint << endl;
+
 	// Apply a first order noise filter
 	_hgt_setpoint_adj = 0.1f * _hgt_setpoint + 0.9f * _hgt_setpoint_adj_prev;
 
@@ -437,7 +420,6 @@ void TECS::_update_throttle_setpoint(const float throttle_cruise, const float ro
 		}
 
 		_throttle_setpoint = constrain(_throttle_setpoint, _throttle_setpoint_min, _throttle_setpoint_max);
-		//write_to_files("/home/lee/_throttle_setpoint", get_sys_time(), _throttle_setpoint);
 	}
 }
 
