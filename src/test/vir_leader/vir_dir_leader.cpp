@@ -39,7 +39,7 @@ void VIR_DIR_LEADER::run(int argc, char **argv)
 
     leaderstates.global_vel_x = 0;
     leaderstates.global_vel_z = 0;
-    distance_e = 9.0;
+    distance_e = 7.5;
 
     double ref[3];
     double result[3];
