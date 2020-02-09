@@ -1,3 +1,11 @@
+/*
+ * @Author: lee-shun
+ * @Date: 2020-02-08 00:01:47
+ * @LastEditTime : 2020-02-09 16:41:45
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.cpp
+ */
 #include "task_main.hpp"
 float TASK_MAIN::get_ros_time(ros::Time begin)
 {
@@ -15,24 +23,30 @@ void TASK_MAIN::leader_states_cb(const fixed_wing_formation_control::Leaderstate
 {
     leaderstates = *msg;
 }
+void TASK_MAIN::fw_fwmonitor_cb(const fixed_wing_formation_control::Fwmonitor::ConstPtr &msg)
+{
+    fwmonitor_flag = *msg;
+}
 
 void TASK_MAIN::ros_sub_pub()
 {
-    //1.【订阅】固定翼全部状态量
-    fw_states_sub = nh.subscribe<fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
 
-    //2. 【订阅】领机信息
-    leader_states_sub = nh.subscribe<fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
+    fw_states_sub = nh.subscribe ////1.【订阅】固定翼全部状态量
+                    <fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
 
-    //3.【订阅】监控节点飞机以及任务状态
+    leader_states_sub = nh.subscribe ////2. 【订阅】领机信息
+                        <fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
 
-    //4.【发布】固定翼四通道控制量
-    fw_cmd_pub = nh.advertise<fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
+    fwmonitor_sub = nh.subscribe ////3.【订阅】监控节点飞机以及任务状态
+                    <fixed_wing_formation_control::Fwmonitor>("fixed_wing_formation_control/fwmonitor_flags", 10, &TASK_MAIN::fw_fwmonitor_cb, this);
 
-    //5.【发布】编队控制器状态
-    formation_control_states_pub = nh.advertise<fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
+    fw_cmd_pub = nh.advertise ////4.【发布】固定翼四通道控制量
+                 <fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
+
+    formation_control_states_pub = nh.advertise ////5.【发布】编队控制器状态
+                                   <fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 }
-
+//TODO:CICHU
 void TASK_MAIN::formation_states_pub()
 {
     formation_control_states.planeID = planeID;
