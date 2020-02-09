@@ -63,6 +63,7 @@ add_message_files(
    FWcmd.msg
    Formation_control_states.msg
    Leaderstates.msg
+   Fwmonitor.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -143,9 +144,9 @@ include_directories(
 add_library(tecs
 src/fixed_wing_lib/tecs.cpp
 )
- add_library(formation_controller
-   src/formation_controller/formation_controller.cpp
- )
+add_library(formation_controller
+src/formation_controller/formation_controller.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -157,7 +158,7 @@ src/fixed_wing_lib/tecs.cpp
 ## The recommended prefix ensures that target names across packages don't collide
 
 ###########任务主节点##############
-add_executable(task_main src/task_main/task_main.cpp)
+#add_executable(task_main src/task_main/task_main.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -170,6 +171,9 @@ add_executable(task_main src/task_main/task_main.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+
+###########比赛任务主节点##############
+add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
@@ -198,9 +202,16 @@ add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
 target_link_libraries(vir_sim_leader
 ${catkin_LIBRARIES}
 )
+
 ###########模式切换##############
 add_executable(switch_fw_mode src/test/switch_fw_mode.cpp)
 target_link_libraries(switch_fw_mode
+${catkin_LIBRARIES}
+)
+
+###########任务状态flags##############
+add_executable(control_monitor src/fw_control_monitor/control_monitor.cpp)
+target_link_libraries(control_monitor
 ${catkin_LIBRARIES}
 )
 
