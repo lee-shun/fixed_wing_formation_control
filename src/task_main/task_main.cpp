@@ -1,7 +1,7 @@
 /*
  * @Author: lee-shun
  * @Date: 2020-02-08 00:01:47
- * @LastEditTime : 2020-02-09 16:41:45
+ * @LastEditTime : 2020-02-10 19:21:50
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.cpp
@@ -168,6 +168,9 @@ void TASK_MAIN::control_formation()
     fw_col_mode_last = fw_col_mode_current; //上一次模式的纪录
 }
 
+void TASK_MAIN::input_params()
+{
+}
 void TASK_MAIN::run()
 {
     ros::Rate rate(50.0);

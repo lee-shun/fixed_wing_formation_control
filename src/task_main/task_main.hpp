@@ -1,4 +1,12 @@
 /*
+ * @Author: CGNC-LAB
+ * @Date: 2020-02-06 17:28:05
+ * @LastEditTime : 2020-02-10 18:13:06
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.hpp
+ */
+/*
 比赛任务主程序
 */
 #include <ros/ros.h>
@@ -49,6 +57,11 @@ private:
     FORMATION_CONTROL formation_controller; //编队控制器
     string fw_col_mode_current{"MANUAL"};   //当前模式
     string fw_col_mode_last{"MANUAL"};      //上一时刻模式
+
+    struct FORMATION_CONTROL::_s_formation_params form_ctrller_params;        //编队控制器参数
+    struct FORMATION_CONTROL::_s_tecs_params tecs_params;                     //编队控制器内部TECS控制器参数
+    struct FORMATION_CONTROL::_s_lateral_controller_params later_ctrl_params; //编队控制器内部横侧向控制器参数
+    void input_params();                                                      //将外部的文件之中的参数加载到相应的函数当中去
 
     struct FORMATION_CONTROL::_s_leader_states leader_states;       //领机信息
     struct FORMATION_CONTROL::_s_fw_states thisfw_states;           //本机信息

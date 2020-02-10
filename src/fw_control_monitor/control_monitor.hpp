@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-01-09 11:24:53
+ * @LastEditTime : 2020-02-10 11:09:23
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /fixed_wing_formation_control/src/fw_control_monitor/control_monitor.hpp
+ */
 /*本程序实现的飞机任务状态，飞行状态，控制状态的全监控并发送消息以及记录log*/
 #ifndef _CONTROL_MONITOR_HPP_
 #define _CONTROL_MONITOR_HPP_
@@ -5,6 +13,7 @@
 #include <ros/ros.h>
 #include <iostream>
 #include "../fixed_wing_lib/syslib.hpp"
+#include "../fixed_wing_lib/mathlib.hpp"
 #include "fixed_wing_formation_control/FWstates.h"
 #include "fixed_wing_formation_control/FWcmd.h"
 #include "fixed_wing_formation_control/Leaderstates.h"
@@ -14,6 +23,24 @@
 using namespace std;
 class CONTROL_MONITOR
 {
+public:
+    struct _s_monitor_param
+    {
+        /**
+         * 此处的要求时间，从飞机达标开始计时，如果中间断开，则需要重新开始计时
+        */
+        float STAND_TIME{20.0}; //编队控制任务要求时间<s>
+        /**
+         * 此处要求的距离，在标准点附近都是可以的，因而在领机的圆柱体结构内都是可以的
+        */
+        float STAND_POS_XB{5.0}; //编队控制任务要求机体前向分量距离<m>
+        float STAND_POS_YB{1.0}; //编队控制任务要求机体横向分量距离<m>
+        float STAND_POS_ZB{1.0}; //编队控制任务要求机体高度分量距离<m>
+
+        float form_start_time{0}; //编队控制任务达标时刻
+    };
+    void run();
+
 private:
     int planeID{2}; //飞机编号
 
@@ -40,7 +67,9 @@ private:
     void leader_states_cb(const fixed_wing_formation_control::Leaderstates::ConstPtr &msg);                        //领机状态callback
     void fw_4cmd_cb(const fixed_wing_formation_control::FWcmd::ConstPtr &msg);                                     //本机指令callback
 
-public:
-    void run();
+    _s_monitor_param monitor_params; //一些监控常量
+
+    bool is_connected(); //判断飞机是否失联
+    bool is_underctrl();//判断是否失控，或者说进入危险状态
 };
 #endif
