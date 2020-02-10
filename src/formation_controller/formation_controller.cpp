@@ -30,6 +30,21 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
+void FORMATION_CONTROL::set_formation_params(struct FORMATION_CONTROL::_s_formation_params input_params)
+{
+    formation_params = input_params;
+}
+
+void FORMATION_CONTROL::set_tecs_params(struct FORMATION_CONTROL::_s_tecs_params input_params)
+{
+    tecs_params = input_params;
+}
+
+void FORMATION_CONTROL::set_lateral_ctrller_params(struct FORMATION_CONTROL::_s_lateral_controller_params input_params)
+{
+    lateral_controller_params = input_params;
+}
+
 void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_states,
                                                struct _s_fw_states fw_states)
 {
@@ -235,7 +250,7 @@ Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
 
-void FORMATION_CONTROL::print_data(struct _s_fw_states *p)
+void FORMATION_CONTROL::print_data(struct FORMATION_CONTROL::_s_fw_states *p)
 {
     cout << "***************以下是本飞机状态******************" << endl;
     cout << "***************以下是本飞机状态******************" << endl;

@@ -1,4 +1,12 @@
 /*
+ * @Author: your name
+ * @Date: 2020-01-09 11:24:53
+ * @LastEditTime : 2020-02-10 11:01:42
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /fixed_wing_formation_control/src/fw_control_monitor/control_monitor.cpp
+ */
+/*
 control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控
 */
 #include "control_monitor.hpp"
@@ -55,12 +63,17 @@ void CONTROL_MONITOR::run()
     ros::Rate rate(50.0);
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
+    cout << "current_time::" << current_time << "\t"
+         << "in_the_monitor_run" << endl;
     while (ros::ok())
     {
         current_time = get_ros_time(begin_time);
-        cout << "current_time::" << current_time << "\t"
-             << "in_the_monitor_run" << endl;
-             //TODO:要进行监控节点的主要功能的实现
+
+        if ((abs_num(formation_control_states.err_PXb) < monitor_params.STAND_POS_XB) &&
+            (abs_num(formation_control_states.err_PYb) < monitor_params.STAND_POS_YB) &&
+            (abs_num(formation_control_states.err_PZb) < monitor_params.STAND_POS_ZB))
+        {
+        }
         ros::spinOnce();
         rate.sleep();
     }

@@ -228,8 +228,11 @@ public:
         float thrust{0};
     };
 
-    void set_formation_type(int formation_type); //设定编队形状
-    void reset_formation_controller();           //重置控制器，防止不同阶段控制器的状态混乱。
+    void set_formation_type(int formation_type);                                       //设定编队形状
+    void reset_formation_controller();                                                 //重置控制器，防止不同阶段控制器的状态混乱
+    void set_formation_params(struct _s_formation_params input_params);                //设定编队控制器参数（主管产生期望空速）
+    void set_tecs_params(struct _s_tecs_params input_params);                          //设定TECS控制器参数
+    void set_lateral_ctrller_params(struct _s_lateral_controller_params input_params); //设定横侧向控制器参数
 
     //几个编队控制器类型,根据能得到的领机信息分类
     void att_vel_pos_controller();                                     //得到领机的位置，速度，姿态
