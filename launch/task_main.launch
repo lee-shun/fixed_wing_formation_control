@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="fixed_wing_formation_control" type="task_main" name="task_main" output="screen">
+ 
+	<!-- Read Mavlink_mission parameters -->
+    	<rosparam command="load" file="$(find fixed_wing_formation_control)/config/formation_ctrller_params.yaml" />
+  </node>
+</launch>

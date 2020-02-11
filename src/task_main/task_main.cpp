@@ -1,7 +1,7 @@
 /*
  * @Author: lee-shun
  * @Date: 2020-02-08 00:01:47
- * @LastEditTime : 2020-02-10 19:21:50
+ * @LastEditTime : 2020-02-11 10:55:21
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.cpp
@@ -46,7 +46,7 @@ void TASK_MAIN::ros_sub_pub()
     formation_control_states_pub = nh.advertise ////5.【发布】编队控制器状态
                                    <fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 }
-//TODO:CICHU
+
 void TASK_MAIN::formation_states_pub()
 {
     formation_control_states.planeID = planeID;
@@ -170,6 +170,49 @@ void TASK_MAIN::control_formation()
 
 void TASK_MAIN::input_params()
 {
+    /*########################################################################################
+    ##########################################################################################
+    ################################编队控制器外部参数##########################################
+    ##########################################################################################
+    ##########################################################################################*/
+
+    nh.param<float>("kv_p", form_ctrller_params.kv_p, 0.5);
+    nh.param<float>("kp_p", form_ctrller_params.kp_p, 0.8);
+    nh.param<float>("mix_kp", form_ctrller_params.mix_kp, 0.6);
+    nh.param<float>("mix_kd", form_ctrller_params.mix_kd, 0.0);
+    nh.param<float>("mix_ki", form_ctrller_params.mix_ki, 0.01);
+    nh.param<float>("maxinc_acc", form_ctrller_params.maxinc_acc, 5.0);
+    nh.param<float>("maxdec_acc", form_ctrller_params.maxdec_acc, 3.0);
+    nh.param<float>("max_arispd_sp", form_ctrller_params.max_arispd_sp, 25.0);
+    nh.param<float>("min_arispd_sp", form_ctrller_params.min_arispd_sp, 8.0);
+
+    /*########################################################################################
+    ##########################################################################################
+    ################################TECS控制器外部参数##########################################
+    ##########################################################################################
+    ##########################################################################################*/
+
+    nh.param<int>("EAS2TAS", tecs_params.EAS2TAS, 1);
+    nh.param<bool>("climboutdem", tecs_params.climboutdem, false);
+    nh.param<float>("climbout_pitch_min_rad", tecs_params.climbout_pitch_min_rad, 0.2);
+    nh.param<float>("throttle_min", tecs_params.throttle_min, 0.1);
+    nh.param<float>("throttle_max", tecs_params.throttle_max, 1);
+    nh.param<float>("throttle_cruise", tecs_params.throttle_cruise, 0.1);
+    nh.param<float>("pitch_min_rad", tecs_params.pitch_min_rad, -0.5);
+    nh.param<float>("pitch_max_rad", tecs_params.pitch_max_rad, 0.5);
+    nh.param<float>("speed_weight", tecs_params.speed_weight, 1);
+    nh.param<float>("time_const_throt", tecs_params.time_const_throt, 8.0);
+    nh.param<float>("time_const", tecs_params.time_const, 0.0);
+    cout << "input_params->tecs_params.time_const," << tecs_params.time_const << endl;
+
+    /*########################################################################################
+    ##########################################################################################
+    ################################横侧控制器外部参数##########################################
+    ##########################################################################################
+    ##########################################################################################*/
+
+    nh.param<float>("roll_max", later_ctrl_params.roll_max, 0.0);
+    cout << "input_params->later_ctrl_params.roll_max" << later_ctrl_params.roll_max << endl;
 }
 void TASK_MAIN::run()
 {
@@ -190,7 +233,7 @@ void TASK_MAIN::run()
         {
             /*编队控制代码*/
             current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
-
+            //input_params();TODO:虽然完成了节点参数的输入函数以及各个通路，但是节点的参数并没有加载进来
             if (true) //监控节点的并没有发现飞机完成时间，距离任务
             {
                 cout << "编队启控时间：[" << current_time << "]秒" << endl;
