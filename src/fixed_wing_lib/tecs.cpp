@@ -1,3 +1,9 @@
+/*
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:40:35 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:40:35 
+ */
 /****************************************************************************
  *
  *   Copyright (c) 2017 Estimation and Control Library (ECL). All rights reserved.
@@ -35,7 +41,6 @@
  *
  * @author Paul Riseborough
  * 
- * TECS新版程序作者--BIT--CGNC_LAB
  */
 
 #include "tecs.hpp"

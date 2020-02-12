@@ -1,3 +1,9 @@
+/*
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:42:16 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:42:16 
+ */
 /*本程序的作用是提供几个类型下的编队控制器
 例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
 */

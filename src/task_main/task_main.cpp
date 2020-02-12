@@ -1,11 +1,10 @@
 /*
- * @Author: lee-shun
- * @Date: 2020-02-08 00:01:47
- * @LastEditTime : 2020-02-11 10:55:21
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.cpp
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:42:02 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:42:02 
  */
+
 #include "task_main.hpp"
 float TASK_MAIN::get_ros_time(ros::Time begin)
 {
