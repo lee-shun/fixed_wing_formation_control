@@ -1,3 +1,9 @@
+/*
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:43:08 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:43:08 
+ */
 /**
  * 本程序的作用是将飞控的模式切换为需要的模式
 */
