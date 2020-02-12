@@ -6,8 +6,9 @@
 *(向量），空速，目标位置点，输出的是期望的偏航角以及期望的滚转角
 *估计应该会写几个种类的横向控制器，看最后用那个吧。。。。。。。。
 *
-*
+*李顺
 */
+
 #include <iostream>
 #include <math.h>
 #include "mathlib.hpp"
