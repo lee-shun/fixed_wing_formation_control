@@ -1,9 +1,11 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:39:56 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:39:56 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
  */
+
 #ifndef _MATHLIB_H_
 #define _MATHLIB_H_
 #include <math.h>

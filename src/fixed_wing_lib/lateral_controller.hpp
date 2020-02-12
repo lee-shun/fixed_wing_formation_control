@@ -1,19 +1,16 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:39:22 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:39:22 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:
+ *本程序是基于L1控制器的改动版本，输入是飞机的当前的位置，当前的地速
+ *(向量），空速，目标位置点，输出的是期望的偏航角以及期望的滚转角
+ *估计应该会写几个种类的横向控制器，看最后用那个吧。。。。。。。。
  */
+
 #ifndef _LATERAL_CONTROLLER_HPP_
 #define _LATERAL_CONTROLLER_HPP_
-/*
-*作者：lee-shun
-*本程序是基于L1控制器的改动版本，输入是飞机的当前的位置，当前的地速
-*(向量），空速，目标位置点，输出的是期望的偏航角以及期望的滚转角
-*估计应该会写几个种类的横向控制器，看最后用那个吧。。。。。。。。
-*
-*李顺
-*/
 
 #include <iostream>
 #include <math.h>

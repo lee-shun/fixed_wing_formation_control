@@ -1,13 +1,13 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:43:38 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:43:38 
- */
-/**
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
  * 本程序是虚拟领机，领机获取的是仿真环境的数据，速度以及航线不是固定不变的
  * 订阅打包程序的飞机状态，打包成虚拟领机的状态发布。
-*/
+ */
+
 #include "vir_sim_leader.hpp"
 
 void VIR_SIM_LEADER::fw_state_cb(const fixed_wing_formation_control::FWstates::ConstPtr &msg)

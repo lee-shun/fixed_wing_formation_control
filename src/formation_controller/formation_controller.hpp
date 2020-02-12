@@ -1,15 +1,15 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:38:25 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:38:25 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
+ * 本程序的作用是提供几个类型下的编队控制器
+ * 例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等 
  */
+
 #ifndef _FORMATION_CONTROL_HPP_
 #define _FORMATION_CONTROL_HPP_
-/**
- * 本程序的作用是提供几个类型下的编队控制器
- * 例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
-*/
 
 #include <iostream>
 #include "../fixed_wing_lib/lateral_controller.hpp"

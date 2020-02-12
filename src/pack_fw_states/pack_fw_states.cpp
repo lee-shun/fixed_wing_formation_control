@@ -1,14 +1,14 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:41:43 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:41:43 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description: 
+ * 本程序的作用是：
+ *1. 将来自于mavros的消息坐标变换后打包成Fw_state消息，便于以后使用。
+ *2. 将需要发送给飞机的四通道控制量消息坐标变换解包，发给mavros 
  */
-/*
-本程序的作用是：
-1. 将来自于mavros的消息坐标变换后打包成Fw_state消息，便于以后使用。
-2. 将需要发送给飞机的四通道控制量消息坐标变换解包，发给mavros
-*/
+
 #include "pack_fw_states.hpp"
 
 void PACK_FW_STATES::ros_sub_and_pub()

@@ -1,12 +1,10 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:43:08 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:43:08 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description: 本程序的作用是将飞控的模式切换为需要的模式 
  */
-/**
- * 本程序的作用是将飞控的模式切换为需要的模式
-*/
 
 // ros程序必备头文件
 #include <ros/ros.h>
