@@ -1,9 +1,11 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:40:04 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:40:04 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
  */
+
 #ifndef _PID_CONTROLLER_H
 #define _PID_CONTROLLER_H
 

@@ -1,13 +1,12 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:39:05 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:39:05 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description: 
+ * control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控 
  */
 
-/*
-control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控
-*/
 #include "control_monitor.hpp"
 
 float CONTROL_MONITOR::get_ros_time(ros::Time begin)

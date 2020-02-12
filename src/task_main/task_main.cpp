@@ -1,9 +1,11 @@
 /*
- * @Author: lee-shun 
- * @Date: 2020-02-12 22:42:02 
- * @Last Modified by:   lee-shun 
- * @Last Modified time: 2020-02-12 22:42:02 
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  比赛任务主程序
  */
+
 
 #include "task_main.hpp"
 float TASK_MAIN::get_ros_time(ros::Time begin)
