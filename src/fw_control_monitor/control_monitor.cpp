@@ -1,11 +1,10 @@
 /*
- * @Author: your name
- * @Date: 2020-01-09 11:24:53
- * @LastEditTime : 2020-02-10 11:01:42
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /fixed_wing_formation_control/src/fw_control_monitor/control_monitor.cpp
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:39:05 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:39:05 
  */
+
 /*
 control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控
 */

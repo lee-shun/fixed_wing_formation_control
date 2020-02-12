@@ -1,11 +1,10 @@
 /*
- * @Author: your name
- * @Date: 2020-01-09 11:24:53
- * @LastEditTime : 2020-02-10 11:09:23
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /fixed_wing_formation_control/src/fw_control_monitor/control_monitor.hpp
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:41:24 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:41:24 
  */
+
 /*本程序实现的飞机任务状态，飞行状态，控制状态的全监控并发送消息以及记录log*/
 #ifndef _CONTROL_MONITOR_HPP_
 #define _CONTROL_MONITOR_HPP_

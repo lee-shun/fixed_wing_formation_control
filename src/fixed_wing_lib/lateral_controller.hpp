@@ -1,3 +1,9 @@
+/*
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:39:22 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:39:22 
+ */
 #ifndef _LATERAL_CONTROLLER_HPP_
 #define _LATERAL_CONTROLLER_HPP_
 /*

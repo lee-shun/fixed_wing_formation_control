@@ -1,12 +1,19 @@
+/*
+ * @Author: lee-shun 
+ * @Date: 2020-02-12 22:39:10 
+ * @Last Modified by:   lee-shun 
+ * @Last Modified time: 2020-02-12 22:39:10 
+ */
 #ifndef _VECTOR_HPP_
 #define _VECTOR_HPP_
+
 #include <math.h>
 #include <iostream>
 #include "mathlib.hpp"
 using namespace std;
+
 class Point;
 typedef Point Vec;
-
 class Point
 {
 private:
