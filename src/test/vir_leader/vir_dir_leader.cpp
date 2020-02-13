@@ -1,6 +1,20 @@
-/**
- * 本程序是虚拟领机，领机从西向东按照一定的速度飞行
-*/
+/*
+ * @------------------------------------------1: 1------------------------------------------@
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
+ *  本程序是虚拟领机，领机从西向东按照一定的速度飞行
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:24:23
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
+ */
+
 #include "vir_dir_leader.hpp"
 
 void VIR_DIR_LEADER::ros_sub_pub()

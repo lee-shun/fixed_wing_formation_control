@@ -1,4 +1,18 @@
-#此脚本开启的是几何从机+仿真的从机之间的程序
+###
+ # @------------------------------------------1: 1------------------------------------------@
+ # @Author: lee-shun
+ # @Email: 2015097272@qq.com
+ # @Date: 2020-02-06 17:28:05
+ # @Organization: BIT-CGNC, fixed_wing_group
+ # @Description:  #此脚本开启的是几何从机+仿真的从机之间的程序 
+ # @------------------------------------------2: 2------------------------------------------@
+ # @LastEditors  : lee-shun
+ # @LastEditors_Email: 2015097272@qq.com
+ # @LastEditTime : 2020-02-13 10:31:34
+ # @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ # @LastEditors_Description:  
+ # @------------------------------------------3: 3------------------------------------------@
+ ###
 
 gnome-terminal --window -e 'bash -c "cd ~/catkin_ws; catkin_make; exec bash"' \
 --tab -e 'bash -c "sleep 2; cd ~/src/Firmware; make px4_sitl gazebo_plane;  exec bash"' \
