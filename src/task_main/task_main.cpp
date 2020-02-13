@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:23:25
+ * @LastEditTime : 2020-02-13 17:08:22
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -121,7 +121,6 @@ void TASK_MAIN::control_formation()
     thisfw_states.latitude = fwstates.latitude;
     thisfw_states.longitude = fwstates.longitude;
 
-
     thisfw_states.relative_alt = fwstates.relative_alt;
 
     thisfw_states.ned_vel_x = fwstates.ned_vel_x;
@@ -160,11 +159,11 @@ void TASK_MAIN::control_formation()
     //选定控制器类型，并进行控制
     formation_controller.abs_pos_vel_controller(leader_states, thisfw_states);
     //获得最终控制量
-    formation_cmd = formation_controller.get_formation_4cmd();
+    formation_controller.get_formation_4cmd(formation_cmd);
     //获得编队控制期望值
-    formation_sp = formation_controller.get_formation_sp();
+    formation_controller.get_formation_sp(formation_sp);
     //获得编队误差信息
-    formation_error = formation_controller.get_formation_error();
+    formation_controller.get_formation_error(formation_error);
 
     //控制量赋值
     fw_4cmd.throttle_sp = formation_cmd.thrust;
