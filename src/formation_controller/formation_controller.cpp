@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 14:16:40
+ * @LastEditTime : 2020-02-13 17:49:34
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -22,7 +22,6 @@ void FORMATION_CONTROL::reset_formation_controller() //重置控制器中有“�
 {
     rest_speed_pid = true;
     rest_tecs = true;
-    
 };
 
 void FORMATION_CONTROL::set_formation_type(int formation_type)
@@ -45,23 +44,23 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
-void FORMATION_CONTROL::set_formation_params(struct FORMATION_CONTROL::_s_formation_params input_params)
+void FORMATION_CONTROL::set_formation_params(struct _s_formation_params &input_params)
 {
     formation_params = input_params;
 }
 
-void FORMATION_CONTROL::set_tecs_params(struct FORMATION_CONTROL::_s_tecs_params input_params)
+void FORMATION_CONTROL::set_tecs_params(struct _s_tecs_params &input_params)
 {
     tecs_params = input_params;
 }
 
-void FORMATION_CONTROL::set_lateral_ctrller_params(struct FORMATION_CONTROL::_s_lateral_controller_params input_params)
+void FORMATION_CONTROL::set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params)
 {
     lateral_controller_params = input_params;
 }
 
-void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_states,
-                                               struct _s_fw_states fw_states)
+void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_states,
+                                               struct _s_fw_states &fw_states)
 {
     /*    
     *领机绝对位置以及绝对速度GPS控制器
@@ -113,8 +112,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     //2. 计算领机的期望位置与当前位置的误差在从机坐标系下的投影
 
-    Point pos_sp(fw_sp.latitude, fw_sp.longitude),                         //期望位置
-        current_pos(fw_states.latitude, fw_states.longitude),              //当前位置
+    Point pos_sp(fw_sp.latitude, fw_sp.longitude),                          //期望位置
+        current_pos(fw_states.latitude, fw_states.longitude),               //当前位置
         fw_ground_speed_2d(fw_states.global_vel_x, fw_states.global_vel_y); //当前地速
 
     Point vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); //计算飞机到期望点向量
@@ -321,22 +320,22 @@ void FORMATION_CONTROL::print_data(struct FORMATION_CONTROL::_s_fw_states *p)
         cout << endl;
 }
 
-struct FORMATION_CONTROL::_s_4cmd FORMATION_CONTROL::get_formation_4cmd()
+void FORMATION_CONTROL::get_formation_4cmd(struct _s_4cmd &fw_cmd)
 {
-    return _cmd;
+    fw_cmd = _cmd;
 }
 
-struct FORMATION_CONTROL::_s_fw_error FORMATION_CONTROL::get_formation_error()
+void FORMATION_CONTROL::get_formation_sp(struct _s_fw_sp &formation_sp) //得到编队中本机的运动学期望值
 {
-    return fw_error;
+    formation_sp = fw_sp;
 }
 
-struct FORMATION_CONTROL::_s_formation_params FORMATION_CONTROL::get_formation_params()
+void FORMATION_CONTROL::get_formation_error(struct _s_fw_error &formation_error) //得到编队控制误差
 {
-    return formation_params;
+    formation_error = fw_error;
 }
 
-struct FORMATION_CONTROL::_s_fw_sp FORMATION_CONTROL::get_formation_sp()
+void FORMATION_CONTROL::get_formation_params(struct _s_formation_params &format_params)
 {
-    return fw_sp;
+    format_params = formation_params;
 }
