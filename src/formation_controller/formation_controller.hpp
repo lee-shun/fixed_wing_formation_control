@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:16:07
+ * @LastEditTime : 2020-02-13 14:14:23
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -86,7 +86,7 @@ public:
 
         double latitude{0};
 
-        double longtitude{0};
+        double longitude{0};
 
         double altitude{0};
 
@@ -127,7 +127,7 @@ public:
 
         double latitude{0};
 
-        double longtitude{0};
+        double longitude{0};
 
         double altitude{0};
 
@@ -169,7 +169,7 @@ public:
 
         double latitude{0};
 
-        double longtitude{0};
+        double longitude{0};
 
         double altitude{0};
 

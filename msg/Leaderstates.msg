@@ -16,7 +16,7 @@ float64 latitude
 
 float64 altitude
 
-float64 longtitude
+float64 longitude
 
 float64 relative_alt
 
