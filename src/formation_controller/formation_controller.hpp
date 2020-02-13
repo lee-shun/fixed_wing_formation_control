@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 17:13:17
+ * @LastEditTime : 2020-02-13 23:23:00
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -36,6 +36,10 @@ using namespace std;
 class FORMATION_CONTROL
 {
 public:
+    /**
+    * 控制器重要的结构体，承担着数据载体与容器的作用、
+    * 将控制器内部的数据规整，方便传递与维护
+    */
     struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
     {
         float kv_p{0.5}; //主从机速度差比例项
@@ -242,26 +246,61 @@ public:
         float thrust{0};
     };
 
-    void set_formation_type(int formation_type);                                        //设定编队形状
-    void reset_formation_controller();                                                  //重置控制器，防止不同阶段控制器的状态混乱
-    void set_formation_params(struct _s_formation_params &input_params);                //设定编队控制器参数（主管产生期望空速）
-    void set_tecs_params(struct _s_tecs_params &input_params);                          //设定TECS控制器参数
-    void set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params); //设定横侧向控制器参数
+    /**
+    * 控制器初始化、设置函数（组）
+    */
 
-    //几个编队控制器类型,根据能得到的领机信息分类
-    void att_vel_pos_controller();                                      //得到领机的位置，速度，姿态
-    void abs_pos_vel_controller(struct _s_leader_states &leader_states, //
-                                struct _s_fw_states &fw_states);        //得到领机的绝对位置，绝对速度
-    void abs_pos_controller();                                          //得到领机的仅仅有绝对位置
-    void rel_pos_vel_controller();                                      //得到领机的相对位置与相对速度
-    void rel_pos_controller();                                          //得到领机的相对位置
+    //设定编队形状
+    void set_formation_type(int formation_type);
 
+    //重置控制器，防止不同阶段控制器的状态混乱
+    void reset_formation_controller();
+
+    //设定编队控制器参数（主管产生期望空速）
+    void set_formation_params(struct _s_formation_params &input_params);
+
+    //设定TECS控制器参数
+    void set_tecs_params(struct _s_tecs_params &input_params);
+
+    //设定横侧向控制器参数
+    void set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params);
+
+    /**
+     * TODO：5种编队控制器类型
+     * 几个编队控制器类型,根据能得到的领机信息分类;，
+     * 此处传入的领机状态以及本机的状态写成静态变量的形式
+     * 保证控制器内不会更改飞机状态信息。
+    */
+
+    //1. 输入领机的位置，速度，姿态
+    void att_vel_pos_controller();
+
+    //2. 输入领机的绝对位置，绝对速度
+    void abs_pos_vel_controller(const struct _s_leader_states &leader_states,
+                                const struct _s_fw_states &fw_states);
+
+    //3. 输入领机的仅仅有绝对位置
+    void abs_pos_controller();
+
+    //4. 输入领机的相对位置与相对速度
+    void rel_pos_vel_controller();
+
+    //5. 输入领机的相对位置
+    void rel_pos_controller();
+
+    /**
+    * 控制输出获取函数（组）
+    */
     void get_formation_4cmd(struct _s_4cmd &fw_cmd);                      //得到编队控制后的四通道控制量
     void get_formation_sp(struct _s_fw_sp &formation_sp);                 //得到编队中本机的运动学期望值
     void get_formation_error(struct _s_fw_error &formation_error);        //得到编队控制误差
     void get_formation_params(struct _s_formation_params &format_params); //得到编队控制器参数
 
 private:
+    /**
+    * 编队控制器外函数，变量（组）
+    */
+
     long abs_pos_vel_ctrl_timestamp{0};   //绝对速度位置控制器时间戳
     float _dt{0.02};                      //控制时间间隔
     float _dtMax{0.1};                    //控制时间间隔max
@@ -275,20 +314,32 @@ private:
     float airspd_sp_prev{0};              //飞机期望空速（前一时刻）
     float airspd_sp{0};                   //飞机期望空速
 
+    /**
+    * TECS函数，变量（组）
+    */
+
     TECS _tecs;                 //TECS
     bool rest_tecs{false};      //重置TECS
     bool vz_valid{false};       //纵向速度有效标志位
     _s_tecs_params tecs_params; //TECS参数
+
+    /**
+    * 横侧性控制器函数，变量（组）
+    */
 
     LATERAL_CONTROLLER _lateral_controller;                 //横侧向控制器
     PID_CONTROLLER gspeed_pid;                              //产生期望地速的pid
     bool rest_speed_pid{false};                             //重置内部控器标志量
     _s_lateral_controller_params lateral_controller_params; //横侧向控制器参数
 
+    /**
+    * 其他函数，变量（组）
+    */
+
     _s_4cmd _cmd; //最后的控制量
 
     Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
-    void print_data(struct _s_fw_states *p);                  //测试数据通断
+    void print_data(const struct _s_fw_states *p);            //测试数据通断
 };
 
 #endif
