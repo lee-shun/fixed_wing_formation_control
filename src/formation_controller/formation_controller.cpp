@@ -1,11 +1,19 @@
 /*
+ * @------------------------------------------1: 1------------------------------------------@
  * @Author: lee-shun
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description:
- * 本程序的作用是提供几个类型下的编队控制器
- * 例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等  
+ * @Description:  
+ *  本程序的作用是提供几个类型下的编队控制器
+ *  例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:16:50
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
 
 #include "formation_controller.hpp"
@@ -14,6 +22,7 @@ void FORMATION_CONTROL::reset_formation_controller() //重置控制器中有“�
 {
     rest_speed_pid = true;
     rest_tecs = true;
+    
 };
 
 void FORMATION_CONTROL::set_formation_type(int formation_type)

@@ -1,9 +1,17 @@
 /*
+ * @------------------------------------------1: 1------------------------------------------@
  * @Author: lee-shun
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
  * @Description:  比赛任务主程序
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:23:51
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
 
 #ifndef _TASK_MAIN_HPP_
