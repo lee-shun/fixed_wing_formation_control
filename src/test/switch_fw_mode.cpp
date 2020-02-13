@@ -1,9 +1,18 @@
 /*
+ * @------------------------------------------1: 1------------------------------------------@
  * @Author: lee-shun
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description: 本程序的作用是将飞控的模式切换为需要的模式 
+ * @Description:  
+ * 本程序的作用是将飞控的模式切换为需要的模式 
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:27:47
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
 
 // ros程序必备头文件

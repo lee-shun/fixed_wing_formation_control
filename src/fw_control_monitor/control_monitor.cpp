@@ -1,10 +1,17 @@
 /*
+ * @------------------------------------------1: 1------------------------------------------@
  * @Author: lee-shun
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description: 
- * control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控 
+ * @Description:  control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控 
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:14:32
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
 
 #include "control_monitor.hpp"
