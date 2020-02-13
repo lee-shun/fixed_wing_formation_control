@@ -1,14 +1,22 @@
 /*
- * @Author: CGNC-LAB
- * @Date: 2020-02-06 17:28:05
- * @LastEditTime : 2020-02-10 18:13:06
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /fixed_wing_formation_control/src/task_main/task_main.hpp
+ * @------------------------------------------1: 1------------------------------------------@
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  比赛任务主程序
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:23:51
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
-/*
-比赛任务主程序
-*/
+
+#ifndef _TASK_MAIN_HPP_
+#define _TASK_MAIN_HPP_
+
 #include <ros/ros.h>
 #include <iostream>
 #include "../fixed_wing_lib/syslib.hpp"
@@ -76,3 +84,5 @@ private:
 public:
     void run();
 };
+
+#endif

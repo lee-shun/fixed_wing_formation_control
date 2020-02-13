@@ -1,12 +1,19 @@
 /*
- * @Author: your name
- * @Date: 2020-01-09 11:24:53
- * @LastEditTime : 2020-02-10 11:09:23
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /fixed_wing_formation_control/src/fw_control_monitor/control_monitor.hpp
+ * @------------------------------------------1: 1------------------------------------------@
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控 
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:15:24
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
  */
-/*本程序实现的飞机任务状态，飞行状态，控制状态的全监控并发送消息以及记录log*/
+
 #ifndef _CONTROL_MONITOR_HPP_
 #define _CONTROL_MONITOR_HPP_
 
@@ -70,6 +77,6 @@ private:
     _s_monitor_param monitor_params; //一些监控常量
 
     bool is_connected(); //判断飞机是否失联
-    bool is_underctrl();//判断是否失控，或者说进入危险状态
+    bool is_underctrl(); //判断是否失控，或者说进入危险状态
 };
 #endif

@@ -1,8 +1,23 @@
+/*
+ * @------------------------------------------1: 1------------------------------------------@
+ * @Author: lee-shun
+ * @Email: 2015097272@qq.com
+ * @Date: 2020-02-12 23:23:34
+ * @Organization: BIT-CGNC, fixed_wing_group
+ * @Description:  
+ *  本程序是虚拟领机，领机从西向东按照一定的速度飞行
+ * @------------------------------------------2: 2------------------------------------------@
+ * @LastEditors  : lee-shun
+ * @LastEditors_Email: 2015097272@qq.com
+ * @LastEditTime : 2020-02-13 10:24:59
+ * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
+ * @LastEditors_Description:  
+ * @------------------------------------------3: 3------------------------------------------@
+ */
+
 #ifndef VIR_DIR_LEADER_HPP
 #define VIR_DIR_LEADER_HPP
-/**
- * 本程序是虚拟领机，领机从西向东按照一定的速度飞行
-*/
+
 #include <ros/ros.h>
 #include <iostream>
 #include <fixed_wing_formation_control/Leaderstates.h>
