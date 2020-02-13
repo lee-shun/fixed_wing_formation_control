@@ -41,7 +41,7 @@ void VIR_SIM_LEADER::run(int argc, char **argv)
         leaderstates.airspeed = fwstates.air_speed;
         leaderstates.altitude = fwstates.altitude;
         leaderstates.latitude = fwstates.latitude;
-        leaderstates.longtitude = fwstates.longtitude;
+        leaderstates.longitude = fwstates.longitude;
         leaderstates.ned_vel_x = fwstates.ned_vel_x;
         leaderstates.ned_vel_y = fwstates.ned_vel_y;
         leaderstates.ned_vel_z = fwstates.ned_vel_z;

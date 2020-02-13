@@ -77,7 +77,7 @@ void TASK_MAIN::formation_states_pub()
     formation_control_states.sp_altitude = formation_sp.altitude;
     formation_control_states.sp_ground_speed = formation_sp.ground_speed;
     formation_control_states.sp_latitude = formation_sp.latitude;
-    formation_control_states.sp_longtitude = formation_sp.longtitude;
+    formation_control_states.sp_longitude = formation_sp.longitude;
     formation_control_states.sp_ned_vel_x = formation_sp.ned_vel_x;
     formation_control_states.sp_ned_vel_y = formation_sp.ned_vel_y;
     formation_control_states.sp_ned_vel_z = formation_sp.ned_vel_z;
@@ -94,7 +94,7 @@ void TASK_MAIN::control_formation()
 
     leader_states.altitude = leaderstates.altitude;
     leader_states.latitude = leaderstates.latitude;
-    leader_states.longtitude = leaderstates.longtitude;
+    leader_states.longitude = leaderstates.longitude;
     leader_states.relative_alt = leaderstates.relative_alt;
 
     leader_states.global_vel_x = leaderstates.global_vel_x;
@@ -119,7 +119,9 @@ void TASK_MAIN::control_formation()
     thisfw_states.altitude = fwstates.altitude;
     thisfw_states.altitude_lock = true;
     thisfw_states.latitude = fwstates.latitude;
-    thisfw_states.longtitude = fwstates.longtitude;
+    thisfw_states.longitude = fwstates.longitude;
+
+
     thisfw_states.relative_alt = fwstates.relative_alt;
 
     thisfw_states.ned_vel_x = fwstates.ned_vel_x;

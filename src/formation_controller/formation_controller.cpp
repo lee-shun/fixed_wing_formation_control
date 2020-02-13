@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:16:50
+ * @LastEditTime : 2020-02-13 14:16:40
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -102,19 +102,19 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     double ref[3], result[3];
     ref[0] = leader_states.latitude;
-    ref[1] = leader_states.longtitude;
+    ref[1] = leader_states.longitude;
     ref[2] = leader_states.altitude;
 
     cov_m_2_lat_long_alt(ref, formation_offset.ned_n, formation_offset.ned_e, formation_offset.ned_d, result);
 
     fw_sp.latitude = result[0];
-    fw_sp.longtitude = result[1];
+    fw_sp.longitude = result[1];
     fw_sp.altitude = result[2];
 
     //2. 计算领机的期望位置与当前位置的误差在从机坐标系下的投影
 
-    Point pos_sp(fw_sp.latitude, fw_sp.longtitude),                         //期望位置
-        current_pos(fw_states.latitude, fw_states.longtitude),              //当前位置
+    Point pos_sp(fw_sp.latitude, fw_sp.longitude),                         //期望位置
+        current_pos(fw_states.latitude, fw_states.longitude),              //当前位置
         fw_ground_speed_2d(fw_states.global_vel_x, fw_states.global_vel_y); //当前地速
 
     Point vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); //计算飞机到期望点向量
@@ -127,9 +127,9 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states leader_st
 
     double a_pos[2], b_pos[2], m[2]; //计算ned坐标系下的位置误差
     a_pos[0] = fw_states.latitude;
-    a_pos[1] = fw_states.longtitude;
+    a_pos[1] = fw_states.longitude;
     b_pos[0] = fw_sp.latitude;
-    b_pos[1] = fw_sp.longtitude;
+    b_pos[1] = fw_sp.longitude;
     cov_lat_long_2_m(a_pos, b_pos, m);
 
     fw_error.P_N = m[0];
@@ -303,7 +303,7 @@ void FORMATION_CONTROL::print_data(struct FORMATION_CONTROL::_s_fw_states *p)
         cout << endl;
 
     cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] " //待完成
-         << p->longtitude << " [] "
+         << p->longitude << " [] "
          << p->altitude << " [] "
          << p->relative_alt << " [] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)

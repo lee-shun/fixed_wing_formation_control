@@ -29,7 +29,7 @@ float64 sp_ned_vel_z
 
 #编队期望经纬度
 float64 sp_latitude
-float64 sp_longtitude
+float64 sp_longitude
 float64 sp_altitude
 float64 sp_relative_alt
 

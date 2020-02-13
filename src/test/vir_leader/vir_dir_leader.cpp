@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:24:23
+ * @LastEditTime : 2020-02-13 14:22:36
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -28,11 +28,11 @@ void VIR_DIR_LEADER::show_vir_leader_status()
          << endl
          << endl;
 
-    cout << fixed << setprecision(10) << "leaderstates.longtitude = " << leaderstates.longtitude << endl
+    cout << fixed << setprecision(10) << "leaderstates.longitude = " << leaderstates.longitude << endl
          << endl
          << endl;
 
-    cout << fixed << setprecision(10) << "leaderstates.altitiude = " << leaderstates.altitude << endl
+    cout << fixed << setprecision(10) << "leaderstates.altitude = " << leaderstates.altitude << endl
          << endl
          << endl;
 
@@ -48,7 +48,7 @@ void VIR_DIR_LEADER::run(int argc, char **argv)
     ros_sub_pub();
 
     leaderstates.latitude = LEADER_HOME_LAT;
-    leaderstates.longtitude = LEADER_HOME_LONG;
+    leaderstates.longitude = LEADER_HOME_LONG;
     leaderstates.altitude = LEADER_HOME_ALT;
 
     leaderstates.global_vel_x = 0;
@@ -67,13 +67,13 @@ void VIR_DIR_LEADER::run(int argc, char **argv)
 
         //当前位置作为参考点
         ref[0] = leaderstates.latitude;
-        ref[1] = leaderstates.longtitude;
+        ref[1] = leaderstates.longitude;
         ref[2] = leaderstates.altitude;
 
         cov_m_2_lat_long_alt(ref, 0, distance_e, 0, result); //本函数计算的是将偏移量加入之后的最终的坐标值
 
         leaderstates.latitude = result[0];
-        leaderstates.longtitude = result[1];
+        leaderstates.longitude = result[1];
         leaderstates.altitude = result[2];
 
         double ref1[2], result1[2], m[2];

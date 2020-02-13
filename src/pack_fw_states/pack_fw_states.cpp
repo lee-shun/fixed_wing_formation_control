@@ -11,7 +11,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:21:17
+ * @LastEditTime : 2020-02-13 14:23:50
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -141,7 +141,7 @@ void PACK_FW_STATES::pack_fw_states()
   //以下为GPS信息
   fixed_wing_sub_pub.fw_states_form_mavros.altitude = fixed_wing_sub_pub.global_position_form_px4.altitude;
   fixed_wing_sub_pub.fw_states_form_mavros.latitude = fixed_wing_sub_pub.global_position_form_px4.latitude;
-  fixed_wing_sub_pub.fw_states_form_mavros.longtitude = fixed_wing_sub_pub.global_position_form_px4.longitude;
+  fixed_wing_sub_pub.fw_states_form_mavros.longitude = fixed_wing_sub_pub.global_position_form_px4.longitude;
 
   //GPS速度是在ned下的，
   fixed_wing_sub_pub.fw_states_form_mavros.global_vel_x = fixed_wing_sub_pub.velocity_global_fused_from_px4.twist.linear.y;
