@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 17:49:34
+ * @LastEditTime : 2020-02-13 23:05:37
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -59,8 +59,8 @@ void FORMATION_CONTROL::set_lateral_ctrller_params(struct _s_lateral_controller_
     lateral_controller_params = input_params;
 }
 
-void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_states,
-                                               struct _s_fw_states &fw_states)
+void FORMATION_CONTROL::abs_pos_vel_controller(const struct _s_leader_states &leader_states,
+                                               const struct _s_fw_states &fw_states)
 {
     /*    
     *领机绝对位置以及绝对速度GPS控制器
@@ -111,6 +111,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_s
     fw_sp.altitude = result[2];
 
     //2. 计算领机的期望位置与当前位置的误差在从机坐标系下的投影
+    //TODO:当领机的速度很小的时候,空速的方向实际上很是不稳定，
+    //此时要完成坐标变换的话，需要使用到本机而机头朝向,需要将这个地方更改一下
 
     Point pos_sp(fw_sp.latitude, fw_sp.longitude),                          //期望位置
         current_pos(fw_states.latitude, fw_states.longitude),               //当前位置
@@ -197,7 +199,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_s
     （或者变化范围过大）直接导致总能量的变化过大，飞机的油门就会抽搐
     */
     /**
-    * 此处应该完成的任务是：
+    * TODO:此处应该完成的任务是：
     * 1.将期望空速记录一下，看一下和时间的关系
     * 2.实现空速期望值的阶跃式增加或者减少，增加的量不超过飞机的最大加速度以及最小减速加速度×dt
     * 3.实现空速期望值的给定值平稳，给的频率要降下来，因为TECS内环的带宽有限
@@ -213,7 +215,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_s
     _tecs.set_time_const_throt(tecs_params.time_const_throt); //这个值影响到总能量-->油门的（相当于Kp，他越大，kp越小）
     _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
     _tecs.enable_airspeed(true);
-    fw_states.in_air = true;
 
     if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
 
@@ -249,12 +250,12 @@ void FORMATION_CONTROL::abs_pos_vel_controller(struct _s_leader_states &leader_s
     abs_pos_vel_ctrl_timestamp = now;
 
     //7. 数据记录
-    float data[5];
+    /*     float data[5];
     data[0] = fw_sp.air_speed;
     data[1] = _cmd.thrust;
     data[2] = _cmd.pitch;
     data[3] = _cmd.roll;
-    write_to_files("/home/lee/fw_sp.air_speed", fw_states.flight_mode, data);
+    write_to_files("/home/lee/fw_sp.air_speed", fw_states.flight_mode, data); */
 }
 
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
@@ -264,7 +265,7 @@ Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
 
-void FORMATION_CONTROL::print_data(struct FORMATION_CONTROL::_s_fw_states *p)
+void FORMATION_CONTROL::print_data(const struct _s_fw_states *p)
 {
     cout << "***************以下是本飞机状态******************" << endl;
     cout << "***************以下是本飞机状态******************" << endl;
@@ -283,32 +284,32 @@ void FORMATION_CONTROL::print_data(struct FORMATION_CONTROL::_s_fw_states *p)
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] " //待完成
+    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] " 
          << p->body_acc[1] << " [m/ss] "
          << p->body_acc[2] << " [m/ss] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] " //待完成
+    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] " 
          << p->ned_vel_y << " [m/s] "
          << p->ned_vel_z << " [m/s] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] " //待完成
+    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] " 
          << p->ned_acc[1] << " [m/ss] "
          << p->ned_acc[2] << " [m/ss] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] " //待完成
+    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] " 
          << p->longitude << " [] "
          << p->altitude << " [] "
          << p->relative_alt << " [] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] " //待完成
+    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] " 
          << p->wind_estimate_y << " [m/s] "
          << p->wind_estimate_z << " [m/s] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)

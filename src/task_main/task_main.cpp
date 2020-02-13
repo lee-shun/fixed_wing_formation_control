@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 17:08:22
+ * @LastEditTime : 2020-02-13 23:01:13
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -117,7 +117,8 @@ void TASK_MAIN::control_formation()
     thisfw_states.in_air = fwstates.in_air;
 
     thisfw_states.altitude = fwstates.altitude;
-    thisfw_states.altitude_lock = true;
+    thisfw_states.altitude_lock = true;//保证TECS
+    thisfw_states.in_air = true;//保证tecs
     thisfw_states.latitude = fwstates.latitude;
     thisfw_states.longitude = fwstates.longitude;
 
