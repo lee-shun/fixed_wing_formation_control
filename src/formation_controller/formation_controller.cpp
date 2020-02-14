@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 23:05:37
+ * @LastEditTime : 2020-02-14 18:01:18
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -72,6 +72,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(const struct _s_leader_states &le
     //测试数据通断
     print_data(&fw_states);
 
+    //TODO:0.需要原始数据的滤波(一阶平滑滤波)
+
     //1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置-->GPS位置
 
     //没有直接得到领机的yaw的信息，需要计算一下
@@ -110,8 +112,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller(const struct _s_leader_states &le
     fw_sp.longitude = result[1];
     fw_sp.altitude = result[2];
 
-    //2. 计算领机的期望位置与当前位置的误差在从机坐标系下的投影
-    //TODO:当领机的速度很小的时候,空速的方向实际上很是不稳定，
+    //2. 计算从机的期望位置与当前位置的误差在从机坐标系下的投影
+    //TODO:当从机的速度很小的时候,空速的方向实际上很是不稳定，
     //此时要完成坐标变换的话，需要使用到本机而机头朝向,需要将这个地方更改一下
 
     Point pos_sp(fw_sp.latitude, fw_sp.longitude),                          //期望位置
@@ -284,32 +286,32 @@ void FORMATION_CONTROL::print_data(const struct _s_fw_states *p)
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] " 
+    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] "
          << p->body_acc[1] << " [m/ss] "
          << p->body_acc[2] << " [m/ss] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] " 
+    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] "
          << p->ned_vel_y << " [m/s] "
          << p->ned_vel_z << " [m/s] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] " 
+    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] "
          << p->ned_acc[1] << " [m/ss] "
          << p->ned_acc[2] << " [m/ss] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] " 
+    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] "
          << p->longitude << " [] "
          << p->altitude << " [] "
          << p->relative_alt << " [] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
         cout << endl;
 
-    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] " 
+    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] "
          << p->wind_estimate_y << " [m/s] "
          << p->wind_estimate_z << " [m/s] " << endl;
     for (int i = 1; i <= the_space_between_lines; i++)
