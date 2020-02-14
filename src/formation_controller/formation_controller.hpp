@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 23:23:00
+ * @LastEditTime : 2020-02-14 18:31:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -25,6 +25,7 @@
 #include "../fixed_wing_lib/mathlib.hpp"
 #include "../fixed_wing_lib/pid_controller.hpp"
 #include "../fixed_wing_lib/vector.hpp"
+#include "../fixed_wing_lib/fliter.hpp"
 
 using namespace std;
 
@@ -333,14 +334,14 @@ private:
     bool rest_speed_pid{false};                             //重置内部控器标志量
     _s_lateral_controller_params lateral_controller_params; //横侧向控制器参数
 
-    /**
-    * 其他函数，变量（组）
-    */
-
     _s_4cmd _cmd; //最后的控制量
 
+    /**
+    * 其他计算函数，变量（组）
+    */
     Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
-    void print_data(const struct _s_fw_states *p);            //测试数据通断
+
+    void print_data(const struct _s_fw_states *p); //测试数据通断
 };
 
 #endif
