@@ -191,17 +191,6 @@ target_link_libraries(task_main
  ${catkin_LIBRARIES}
 )
 
-###########几何虚拟领机##############
-add_executable(vir_dir_leader src/test/vir_leader/vir_dir_leader.cpp)
-target_link_libraries(vir_dir_leader
-${catkin_LIBRARIES}
-)
-
-###########仿真虚拟领机##############
-add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
-target_link_libraries(vir_sim_leader
-${catkin_LIBRARIES}
-)
 
 ###########模式切换##############
 add_executable(switch_fw_mode src/test/switch_fw_mode.cpp)
@@ -214,6 +203,30 @@ add_executable(control_monitor src/fw_control_monitor/control_monitor.cpp)
 target_link_libraries(control_monitor
 ${catkin_LIBRARIES}
 )
+
+
+######################################################
+###################TEST文件节点########################
+######################################################
+
+###########几何虚拟领机##############
+add_executable(vir_dir_leader src/test/vir_leader/vir_dir_leader.cpp)
+target_link_libraries(vir_dir_leader
+${catkin_LIBRARIES}
+)
+
+###########仿真虚拟领机##############
+add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
+target_link_libraries(vir_sim_leader
+${catkin_LIBRARIES}
+)
+
+###########test_filter##############
+add_executable(test_filter src/test/test_filter.cpp)
+target_link_libraries(test_filter
+${catkin_LIBRARIES}
+)
+
 
 #############
 ## Install ##
