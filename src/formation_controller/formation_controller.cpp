@@ -10,13 +10,20 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-14 18:01:18
+ * @LastEditTime : 2020-02-14 20:54:03
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
  */
 
 #include "formation_controller.hpp"
+
+void FORMATION_CONTROL::update_led_fol_states(struct _s_leader_states &leaderstates,
+                                              struct _s_fw_states &thisfw_states)
+{
+    leader_states = leaderstates;
+    fw_states = thisfw_states;
+}
 
 void FORMATION_CONTROL::reset_formation_controller() //重置控制器中有“记忆”的量。
 {
@@ -59,8 +66,19 @@ void FORMATION_CONTROL::set_lateral_ctrller_params(struct _s_lateral_controller_
     lateral_controller_params = input_params;
 }
 
-void FORMATION_CONTROL::abs_pos_vel_controller(const struct _s_leader_states &leader_states,
-                                               const struct _s_fw_states &fw_states)
+bool FORMATION_CONTROL::use_speed_sp_cal()
+{
+    if (abs_num(fw_error.PXb) <= 50.0) //当飞机超过领机50米以内，或者落后从机50m以内的时候，也得启用tecs速度高度控制
+    {
+        return true;
+    }
+    else
+    { //从机的距离误差在50m以上，直接使用飞机的最大速度追踪！
+        return false;
+    }
+}
+
+void FORMATION_CONTROL::abs_pos_vel_controller()
 {
     /*    
     *领机绝对位置以及绝对速度GPS控制器
