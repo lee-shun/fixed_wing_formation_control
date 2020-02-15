@@ -8,13 +8,13 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-14 18:40:05
+ * @LastEditTime : 2020-02-15 19:07:18
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
  */
 #include <iostream>
-#include "../fixed_wing_lib/fliter.hpp"
+#include "../fixed_wing_lib/filter.hpp"
 
 using namespace std;
 
