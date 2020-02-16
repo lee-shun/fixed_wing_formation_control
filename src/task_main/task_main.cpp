@@ -6,7 +6,7 @@
  * @Organization: BIT-CGNC, fixed_wing_group
  * @Description:  比赛任务主程序
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
  * @LastEditTime : 2020-02-14 20:37:14
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
@@ -161,6 +161,8 @@ void TASK_MAIN::control_formation()
     formation_controller.update_led_fol_states(leader_states, thisfw_states);
     //选定控制器类型，并进行控制
     formation_controller.abs_pos_vel_controller();
+
+    formation_controller.abs_pos_vel_controller1();
     //获得最终控制量
     formation_controller.get_formation_4cmd(formation_cmd);
     //获得编队控制期望值
