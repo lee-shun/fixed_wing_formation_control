@@ -11,9 +11,9 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:19:46
+ * @LastEditTime : 2020-02-15 21:23:34
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
- * @LastEditors_Description:  
+ * @LastEditors_Description: TODO:更改此部分的函数设置，当飞机的距离远以及距离近的时候分别考虑 
  * @------------------------------------------3: 3------------------------------------------@
  */
 
