@@ -209,10 +209,10 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
 
     //5. 转换期望速度成为期望空速，与期望高度一起进入TECS，产生油门以及俯仰角。
 
-    Point wind_vector(fw_states.wind_estimate_x, fw_states.wind_estimate_y);
+    Point wind_vector(fw_states_filtered.wind_estimate_x, fw_states_filtered.wind_estimate_y);
     float wind_Xb = wind_vector * fw_ground_speed_2d_unit;
 
-    airspd_sp = fw_sp.ground_speed - wind_Xb;
+    airspd_sp = fw_sp.ground_speed + wind_Xb; //此处的空速应该是加法
 
     //符合飞机本身的加速减速特性
     if ((airspd_sp - airspd_sp_prev) > formation_params.maxinc_acc * _dt)
@@ -260,13 +260,13 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
         tecs_params.climboutdem = false;
     }
 
-    _tecs.update_vehicle_state_estimates(fw_states.air_speed, fw_states.rotmat, fw_states.body_acc,
-                                         fw_states.altitude_lock, fw_states.in_air, fw_states.altitude,
-                                         vz_valid, fw_states.ned_vel_z, fw_states.body_acc[2]);
+    _tecs.update_vehicle_state_estimates(fw_states_filtered.air_speed, fw_states_filtered.rotmat, fw_states_filtered.body_acc,
+                                         fw_states_filtered.altitude_lock, fw_states_filtered.in_air, fw_states_filtered.altitude,
+                                         vz_valid, fw_states_filtered.ned_vel_z, fw_states_filtered.body_acc[2]);
 
-    _tecs.update_pitch_throttle(fw_states.rotmat, fw_states.pitch_angle,
-                                fw_states.altitude, fw_sp.altitude, fw_sp.air_speed,
-                                fw_states.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
+    _tecs.update_pitch_throttle(fw_states_filtered.rotmat, fw_states_filtered.pitch_angle,
+                                fw_states_filtered.altitude, fw_sp.altitude, fw_sp.air_speed,
+                                fw_states_filtered.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
                                 tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
                                 tecs_params.throttle_max, tecs_params.throttle_cruise,
                                 tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
@@ -276,7 +276,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
 
     //6. 机体侧向混合误差,或者只有位置误差（当前）,由L1控制器解算滚转以及偏航角。
 
-    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_ground_speed_2d, fw_states.air_speed);
+    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_ground_speed_2d, fw_states_filtered.air_speed);
 
     _cmd.roll = constrain(_lateral_controller.nav_roll(),
                           -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
@@ -313,15 +313,17 @@ void FORMATION_CONTROL::abs_pos_vel_controller1()
     /**
     * 1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置，然后再到->GPS位置（期望经纬高）；
     * 在此之中注意领机机体方向的选择。
-    *   a. 计算机头方向
-    *   b. 
+    *   a. 计算领机机头方向
+    *   b. 计算从机期望位置的gps位置
     */
-    float led_airspd_x = -leader_states_filtered.wind_estimate_x + leader_states_filtered.global_vel_x; //此处的空速算法有待验证
-    float led_airspd_y = -leader_states_filtered.wind_estimate_y + leader_states_filtered.global_vel_y;
+    //TODO:此处的空速像这样计算才算正确，使用加法
+    float led_airspd_x = leader_states_filtered.wind_estimate_x + leader_states_filtered.global_vel_x; //此处的空速算法有待验证
+    float led_airspd_y = leader_states_filtered.wind_estimate_y + leader_states_filtered.global_vel_y;
 
-    Vec led_arispd(led_airspd_x, led_airspd_y);                                                  //领机空速向量
-    Vec led_gspeed_2d(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
+    led_arispd.set_vec_ele(led_airspd_x, led_airspd_y);                                                  //领机空速向量
+    led_gspeed_2d.set_vec_ele(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
 
+    cout << "领机状态" << endl;
     cout << "验证用，滤波后的地速x大小为：" << leader_states_filtered.global_vel_x << endl;
     cout << "验证用，滤波后的地速y大小为：" << leader_states_filtered.global_vel_y << endl;
     cout << "验证用，计算的空速大小为：" << led_arispd.len() << endl;
@@ -375,30 +377,181 @@ void FORMATION_CONTROL::abs_pos_vel_controller1()
     * 飞机侧滑角为0，最后根据飞机的地速方向，认为空速方向与地速方向一致
     */
 
+    float fw_airspd_x = fw_states_filtered.wind_estimate_x + fw_states_filtered.global_vel_x; //此处的空速算法有待验证
+    float fw_airspd_y = fw_states_filtered.wind_estimate_y + fw_states_filtered.global_vel_y;
+
+    fw_arispd.set_vec_ele(fw_airspd_x, fw_airspd_y);                                            //本机空速向量
+    fw_gspeed_2d.set_vec_ele(fw_states_filtered.global_vel_x, fw_states_filtered.global_vel_y); //本机地速向量
+
+    cout << "本机机状态" << endl;
+    cout << "验证用，滤波后的地速x大小为：" << fw_states_filtered.global_vel_x << endl;
+    cout << "验证用，滤波后的地速y大小为：" << fw_states_filtered.global_vel_y << endl;
+    cout << "验证用，计算的空速大小为：" << fw_arispd.len() << endl;
+    cout << "验证用，实际获取空速为：" << fw_states_filtered.air_speed << endl;
+    cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (fw_arispd.len() - fw_states_filtered.air_speed) << endl;
+
+    if (fw_states_filtered.yaw_valid) //将认为机头实际指向
+    {
+        fw_cos_yaw = cosf(fw_states_filtered.yaw_angle);
+        fw_sin_yaw = sinf(fw_states_filtered.yaw_angle);
+    }
+    else if ((!fw_states_filtered.yaw_valid) && //将认为空速方向与机头方向一致
+             (fw_arispd.len2() != 0.0))
+    {
+
+        fw_cos_yaw = fw_arispd.x / fw_arispd.len();
+        fw_sin_yaw = fw_arispd.y / fw_arispd.len();
+    }
+    else if ((!fw_states_filtered.yaw_valid) && //将认为地速方向与机头方向一致
+             (fw_arispd.len2() == 0.0) &&
+             (fw_gspeed_2d.len2() != 0.0))
+    {
+        fw_cos_yaw = fw_gspeed_2d.x / fw_gspeed_2d.len();
+        fw_sin_yaw = fw_gspeed_2d.y / fw_gspeed_2d.len();
+    }
+    else //三种可用情况之外
+    {
+        fw_cos_yaw = 0;
+        fw_sin_yaw = 0;
+        cout << "警告：无法计算从机机头朝向，请检查输入信息是否有误" << endl;
+        return;
+    }
+
+    Vec fw_body_unit(fw_cos_yaw, fw_sin_yaw);
+    fw_body_unit = fw_body_unit.normalized(); //保证归一化的结果，此向量十分重要
+
     /**
     * 3. 计算从机的期望位置与当前位置的误差在从机坐标系下的投影
     */
+    Point pos_sp(fw_sp.latitude, fw_sp.longitude);                                //期望位置
+    Point current_pos(fw_states_filtered.latitude, fw_states_filtered.longitude); //当前位置
+    Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp);            //计算飞机到期望点向量(本质来说是误差向量)
+
+    fw_error.PXb = fw_body_unit * vector_plane_sp;               //沿速度（机体x）方向距离误差（待检验）
+    fw_error.PYb = fw_body_unit ^ vector_plane_sp;               //垂直于速度（机体x）方向距离误差
+    fw_error.PZb = fw_sp.altitude - fw_states_filtered.altitude; //高度方向误差
+
+    double a_pos[2], b_pos[2], m[2]; //计算ned坐标系下的位置误差
+    a_pos[0] = fw_states_filtered.latitude;
+    a_pos[1] = fw_states_filtered.longitude;
+    b_pos[0] = fw_sp.latitude;
+    b_pos[1] = fw_sp.longitude;
+    cov_lat_long_2_m(a_pos, b_pos, m);
+
+    //NED误差记录
+    fw_error.P_N = m[0];
+    fw_error.P_E = m[1];
+    fw_error.P_D = fw_sp.altitude - fw_states_filtered.altitude;
+    fw_error.P_NE = sqrt((m[0] * m[0] + m[1] * m[1]));
 
     /**
-    * 4. 计算领机从机地速“差”在从机坐标系之中的投影
+    * 4. 计算领机从机地速“差”在从机坐标系之中的投影，控制量是地速，所以是地速之差
     */
-
+    Vec led_fol_vel_error = led_gspeed_2d - fw_gspeed_2d;
+    fw_error.led_fol_vxb = fw_body_unit * led_fol_vel_error; //沿速度（机体x）方向速度偏差（已检验）
+    fw_error.led_fol_vyb = fw_body_unit ^ led_fol_vel_error; //垂直速度（机体x）方向速度偏差（已检验）
     /**
     * 5. 根据飞机机体前向混合误差产生原始空速期望值，并对此空速先后进行滤波、增量限幅、最终限幅约束
     * 得到最终期望空速。
     * 机体前向误差分类，超过一定误差，最大空速直接给满，迅速减小误差。小于一定误差，按照控制逻辑正常产生
     */
+    float mix_v_p_Xb = formation_params.kp_p * fw_error.PXb + formation_params.kv_p * fw_error.led_fol_vxb;
 
+    gspeed_pid.init_pid(formation_params.mix_kp, formation_params.mix_ki, formation_params.mix_kd);
+
+    if (rest_speed_pid) //若要重置编队控制器，这个pid得重置一下
+    {
+        gspeed_pid.reset_pid();
+        rest_speed_pid = false;
+    }
+
+    bool use_integ = false;
+    bool use_diff = false;
+    if (abs_num(fw_error.PXb) < 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
+    {
+        use_integ = true;
+        cout << "use_the_integ" << endl;
+    }
+    if (abs_num(fw_error.PXb) < 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
+    {
+        use_diff = true;
+        cout << "use_the_diff" << endl;
+    }
+
+    del_fol_gspeed = gspeed_pid.pid_anti_saturated(mix_v_p_Xb, use_integ, use_diff); //飞机机头方向期望速度增量
+    fw_sp.ground_speed = del_fol_gspeed + fw_body_unit * led_gspeed_2d;              //沿着从机机头方向（飞机空速方向）的期望值
+
+    //期望地速按照风估计转化为期望空速
+    fw_wind_vector.set_vec_ele(fw_states_filtered.wind_estimate_x, fw_states_filtered.wind_estimate_y);
+    float wind_Xb = fw_body_unit * fw_wind_vector; //沿着飞机机体前向的风估计
+
+    airspd_sp = fw_sp.ground_speed + wind_Xb; //此处的空速应该是加法
+
+    if (fw_error.PXb > 50.0) //如果距离误差很大，那么就直接给满
+    {
+        airspd_sp = formation_params.max_arispd_sp;
+    }
+
+    //符合飞机本身的加速减速特性
+    if ((airspd_sp - airspd_sp_prev) > formation_params.maxinc_acc * _dt)
+    {
+        airspd_sp = airspd_sp_prev + formation_params.maxinc_acc * _dt;
+    }
+    else if ((airspd_sp - airspd_sp_prev) < -formation_params.maxdec_acc * _dt)
+    {
+        airspd_sp = airspd_sp_prev - formation_params.maxdec_acc * _dt;
+    }
+
+    airspd_sp_prev = airspd_sp;
+
+    fw_sp.air_speed = constrain(airspd_sp, formation_params.min_arispd_sp, formation_params.max_arispd_sp);
     /**
     * 6.期望GPS高度以及期望空速进入TECS得到油门以及俯仰角
     */
+    if (rest_tecs)
+    {
+        _tecs.reset_state();
+        rest_tecs = false;
+    }
+    //设置参数,真实的飞机还需要另外调参
+    _tecs.set_speed_weight(tecs_params.speed_weight);
+    _tecs.set_time_const_throt(tecs_params.time_const_throt); //这个值影响到总能量-->油门的（相当于Kp，他越大，kp越小）
+    _tecs.set_time_const(tecs_params.time_const);             //这个值影响到能量分配-->俯仰角他越大，kp越小
+    _tecs.enable_airspeed(true);
 
+    if (fw_sp.altitude - fw_states.altitude >= 10) //判断一下是否要进入爬升
+
+    {
+        tecs_params.climboutdem = true;
+    }
+    else
+    {
+        tecs_params.climboutdem = false;
+    }
+
+    _tecs.update_vehicle_state_estimates(fw_states_filtered.air_speed, fw_states_filtered.rotmat, fw_states_filtered.body_acc,
+                                         fw_states_filtered.altitude_lock, fw_states_filtered.in_air, fw_states_filtered.altitude,
+                                         vz_valid, fw_states_filtered.ned_vel_z, fw_states_filtered.body_acc[2]);
+
+    _tecs.update_pitch_throttle(fw_states_filtered.rotmat, fw_states_filtered.pitch_angle,
+                                fw_states_filtered.altitude, fw_sp.altitude, fw_sp.air_speed,
+                                fw_states_filtered.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
+                                tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
+                                tecs_params.throttle_max, tecs_params.throttle_cruise,
+                                tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
+
+    _cmd.pitch = _tecs.get_pitch_setpoint();
+    _cmd.thrust = _tecs.get_throttle_setpoint();
     /**
     * 7.根据飞机机体侧向混合误差，进入横侧向控制器，产生原始期望滚转角。
     */
+    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
+
+    _cmd.roll = constrain(_lateral_controller.nav_roll(),
+                          -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
 
     /**
-    * 8.原始期望滚转角平滑滤波，限幅，角速度限幅，
+    * 8.TODO:原始期望滚转角平滑滤波，限幅，角速度限幅，
     */
 
     abs_pos_vel_ctrl_timestamp = now;
