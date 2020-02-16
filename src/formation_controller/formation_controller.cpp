@@ -8,7 +8,7 @@
  *  本程序的作用是提供几个类型下的编队控制器
  *  例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
  * @LastEditTime : 2020-02-15 21:20:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
@@ -89,7 +89,7 @@ void FORMATION_CONTROL::filter_led_fol_states()
             led_gol_vel_x_filter.one_order_filter(leader_states.global_vel_x);
 
         leader_states_filtered.global_vel_y =
-            led_gol_vel_x_filter.one_order_filter(leader_states.global_vel_y);
+            led_gol_vel_y_filter.one_order_filter(leader_states.global_vel_y);
     }
 }
 
@@ -115,16 +115,16 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     }
     else
     {
-        Vec len_gspeed_2d(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
-        if (len_gspeed_2d.len2() == 0)                                                               //领机的地速为零，无方向可言
+        Vec led_gspeed_2d(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
+        if (led_gspeed_2d.len2() == 0)                                                               //领机的地速为零，无方向可言
         {
             led_sin_yaw = 0;
             led_cos_yaw = 0;
         }
         else
         {
-            led_cos_yaw = len_gspeed_2d.x / len_gspeed_2d.len2();
-            led_sin_yaw = len_gspeed_2d.y / len_gspeed_2d.len2();
+            led_cos_yaw = led_gspeed_2d.x / led_gspeed_2d.len2();
+            led_sin_yaw = led_gspeed_2d.y / led_gspeed_2d.len2();
         }
     }
 
@@ -300,13 +300,75 @@ void FORMATION_CONTROL::abs_pos_vel_controller1()
     long now = get_sys_time();
     _dt = constrain((now - abs_pos_vel_ctrl_timestamp) * 1.0e-3f, _dtMin, _dtMax);
     /**
-    * 0. 原始数据滤波
+    * 0. 原始数据滤波,从此之后，飞机的状态保存在了滤波后的状态值里面
     */
+    filter_led_fol_states();
+
+    if (!identify_led_fol_states())
+    {
+        cout << "警告：领机或从机未在飞行之中，无法执行编队控制器" << endl;
+        return;
+    }
 
     /**
-    * 1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置-然后再到->GPS位置（期望经纬高）；
+    * 1. 根据队形要求，计算出从机期望的在领机机体坐标系下的位置，然后再到->GPS位置（期望经纬高）；
     * 在此之中注意领机机体方向的选择。
+    *   a. 计算机头方向
+    *   b. 
     */
+    float led_airspd_x = -leader_states_filtered.wind_estimate_x + leader_states_filtered.global_vel_x; //此处的空速算法有待验证
+    float led_airspd_y = -leader_states_filtered.wind_estimate_y + leader_states_filtered.global_vel_y;
+
+    Vec led_arispd(led_airspd_x, led_airspd_y);                                                  //领机空速向量
+    Vec led_gspeed_2d(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
+
+    cout << "验证用，滤波后的地速x大小为：" << leader_states_filtered.global_vel_x << endl;
+    cout << "验证用，滤波后的地速y大小为：" << leader_states_filtered.global_vel_y << endl;
+    cout << "验证用，计算的空速大小为：" << led_arispd.len() << endl;
+    cout << "验证用，实际获取空速为：" << leader_states_filtered.air_speed << endl;
+    cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (led_arispd.len() - leader_states_filtered.air_speed) << endl;
+
+    if (leader_states_filtered.yaw_valid) //将认为机头实际指向
+    {
+        led_cos_yaw = cosf(leader_states_filtered.yaw_angle);
+        led_sin_yaw = sinf(leader_states_filtered.yaw_angle);
+    }
+    else if ((!leader_states_filtered.yaw_valid) && //将认为空速方向与机头方向一致
+             (led_arispd.len2() != 0.0))
+    {
+
+        led_cos_yaw = led_arispd.x / led_arispd.len();
+        led_sin_yaw = led_arispd.y / led_arispd.len();
+    }
+    else if ((!leader_states_filtered.yaw_valid) && //将认为地速方向与机头方向一致
+             (led_arispd.len2() == 0.0) &&
+             (led_gspeed_2d.len2() != 0.0))
+    {
+        led_cos_yaw = led_gspeed_2d.x / led_gspeed_2d.len();
+        led_sin_yaw = led_gspeed_2d.y / led_gspeed_2d.len();
+    }
+    else //三种可用情况之外
+    {
+        led_cos_yaw = 0;
+        led_sin_yaw = 0;
+        cout << "警告：无法计算领机机头朝向，请检查输入信息是否有误" << endl;
+        return;
+    }
+
+    formation_offset.ned_n = led_cos_yaw * formation_offset.xb + (-led_sin_yaw * formation_offset.yb);
+    formation_offset.ned_e = led_sin_yaw * formation_offset.xb + led_cos_yaw * formation_offset.yb;
+    formation_offset.ned_d = formation_offset.zb;
+
+    double ref[3], result[3];
+    ref[0] = leader_states_filtered.latitude;
+    ref[1] = leader_states_filtered.longitude;
+    ref[2] = leader_states_filtered.altitude;
+
+    cov_m_2_lat_long_alt(ref, formation_offset.ned_n, formation_offset.ned_e, formation_offset.ned_d, result);
+
+    fw_sp.latitude = result[0];
+    fw_sp.longitude = result[1];
+    fw_sp.altitude = result[2];
 
     /**
     * 2. 计算从机机体坐标系，优先根据yaw角度，其次根据“空速方向==机体方向”，即：
@@ -340,6 +402,40 @@ void FORMATION_CONTROL::abs_pos_vel_controller1()
     */
 
     abs_pos_vel_ctrl_timestamp = now;
+}
+
+bool FORMATION_CONTROL::identify_led_fol_states()
+{
+    if ((leader_states_filtered.global_vel_x > 3.0) ||
+        (leader_states_filtered.global_vel_y > 3.0) ||
+        (leader_states_filtered.relative_alt > 3.0))
+    {
+        led_in_fly = true;
+    }
+    else
+    {
+        led_in_fly = false;
+    }
+
+    if ((fw_states_filtered.global_vel_x > 3.0) ||
+        (fw_states_filtered.global_vel_y > 3.0) ||
+        (fw_states_filtered.relative_alt > 3.0))
+    {
+        fol_in_fly = true;
+    }
+    else
+    {
+        fol_in_fly = false;
+    }
+
+    if (led_in_fly && fol_in_fly)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)

@@ -8,7 +8,7 @@
  *  本程序的作用是提供几个类型下的编队控制器
  *  例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
  * @LastEditTime : 2020-02-15 20:51:59
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
@@ -99,6 +99,12 @@ public:
         float relative_alt{0};
 
         float air_speed{0};
+
+        float wind_estimate_x{0};
+
+        float wind_estimate_y{0};
+
+        float wind_estimate_z{0};
     };
 
     struct _s_fw_states //本机状态信息
@@ -332,6 +338,9 @@ private:
     void filter_led_fol_states();                   //完成对于领机从机的滤波函数
     FILTER led_gol_vel_x_filter;                    //领机gol速度x滤波器
     FILTER led_gol_vel_y_filter;                    //领机gol速度y滤波器
+    bool identify_led_fol_states();                 //领机从机起飞识别函数
+    bool led_in_fly{false};                         //领机正在飞行标志位
+    bool fol_in_fly{false};                         //从机正在飞行标志位
 
     /**
     * TECS函数，变量（组）
