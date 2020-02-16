@@ -6,7 +6,7 @@
  * @Organization: BIT-CGNC, fixed_wing_group
  * @Description:  比赛任务主程序
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
  * @LastEditTime : 2020-02-13 10:23:51
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
@@ -32,6 +32,7 @@ class TASK_MAIN
 {
 private:
     int planeID{2}; //飞机编号
+    //void print_data(const struct _s_fw_states *p); //测试数据通断
 
     ros::NodeHandle nh; //ros句柄
     ros::Time begin_time;

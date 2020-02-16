@@ -8,9 +8,9 @@
  *  本程序的作用是提供几个类型下的编队控制器
  *  例如只有GPS位置，有相对位置以及相对速度，有绝对位置以及绝对速度等
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-14 20:43:31
+ * @LastEditTime : 2020-02-15 20:51:59
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -25,7 +25,7 @@
 #include "../fixed_wing_lib/mathlib.hpp"
 #include "../fixed_wing_lib/pid_controller.hpp"
 #include "../fixed_wing_lib/vector.hpp"
-#include "../fixed_wing_lib/fliter.hpp"
+#include "../fixed_wing_lib/filter.hpp"
 
 using namespace std;
 
@@ -99,6 +99,12 @@ public:
         float relative_alt{0};
 
         float air_speed{0};
+
+        float wind_estimate_x{0};
+
+        float wind_estimate_y{0};
+
+        float wind_estimate_z{0};
     };
 
     struct _s_fw_states //本机状态信息
@@ -150,6 +156,8 @@ public:
         bool in_air{true};
 
         bool altitude_lock{false};
+
+        bool yaw_valid{true}; //TODO:添加yaw_valid的判断，因为此是一个十分重要的计算量，将来的控制量基本与之有关
     };
 
     struct _s_formation_offset //编队队形几何偏移
@@ -252,8 +260,11 @@ public:
     * 控制器初始化、设置函数（组）
     */
 
-    //更新领从机状态
-    void update_led_fol_states(struct _s_leader_states &leaderstates, struct _s_fw_states &thisfw_states);
+    //更新领从机状态//使用指针，避免内存浪费
+    void update_led_fol_states(struct _s_leader_states *leaderstates, struct _s_fw_states *thisfw_states);
+
+    //设定是否使用滤波器
+    void set_if_use_filter(bool use);
 
     //设定编队形状
     void set_formation_type(int formation_type);
@@ -294,6 +305,7 @@ public:
 
     /**
     * 控制输出获取函数（组）
+    * 全部使用的引用，避免内存浪费
     */
     void get_formation_4cmd(struct _s_4cmd &fw_cmd);                      //得到编队控制后的四通道控制量
     void get_formation_sp(struct _s_fw_sp &formation_sp);                 //得到编队中本机的运动学期望值
@@ -305,21 +317,45 @@ private:
     * 编队控制器外函数，变量（组）
     */
 
-    long abs_pos_vel_ctrl_timestamp{0};    //绝对速度位置控制器时间戳
-    float _dt{0.02};                       //控制时间间隔
-    float _dtMax{0.1};                     //控制时间间隔max
-    float _dtMin{0.01};                    //控制时间间隔min
-    _s_formation_offset formation_offset;  //编队偏移量
-    _s_formation_params formation_params;  //编队控制器混合误差产生参数,编队控制器参数
-    _s_fw_sp fw_sp;                        //本机的期望
-    _s_fw_error fw_error;                  //本机误差，包括与期望的差和领机的偏差
-    double led_cos_yaw{0};                 //领机yaw_cos
-    double led_sin_yaw{0};                 //领机yaw_sin
-    float airspd_sp_prev{0};               //飞机期望空速（前一时刻）
-    float airspd_sp{0};                    //飞机期望空速
-    bool use_speed_sp_cal();               //按照距离误差分配，是否启用空速产生的模块
-    struct _s_leader_states leader_states; //领机状态
-    struct _s_fw_states fw_states;         //从机状态
+    long abs_pos_vel_ctrl_timestamp{0}; //绝对速度位置控制器时间戳
+    float _dt{0.02};                    //控制时间间隔
+    float _dtMax{0.1};                  //控制时间间隔max
+    float _dtMin{0.01};                 //控制时间间隔min
+
+    _s_leader_states leader_states;          //领机状态
+    _s_leader_states leader_states_filtered; //滤波后的领机信息
+    _s_fw_states fw_states;                  //从机状态
+    _s_fw_states fw_states_filtered;         //滤波后的从机信息
+    _s_formation_offset formation_offset;    //编队偏移量
+    _s_formation_params formation_params;    //编队控制器混合误差产生参数,编队控制器参数
+    _s_fw_sp fw_sp;                          //本机的期望
+    _s_fw_error fw_error;                    //本机误差，包括与期望的差和领机的偏差
+
+    Vec led_arispd;     //领机空速向量
+    Vec led_gspeed_2d;  //领机地速向量
+    Vec fw_arispd;      //本机空速向量
+    Vec fw_gspeed_2d;   //本机地速向量
+    Vec fw_wind_vector; //本机风估计向量
+
+    bool identify_led_fol_states(); //领机从机起飞识别函数
+    bool led_in_fly{false};         //领机正在飞行标志位
+    bool fol_in_fly{false};         //从机正在飞行标志位
+
+    bool use_the_filter{true};    //是否使用滤波器对原始数据滤波
+    void filter_led_fol_states(); //完成对于领机从机的滤波函数
+    FILTER led_gol_vel_x_filter;  //领机gol速度x滤波器
+    FILTER led_gol_vel_y_filter;  //领机gol速度y滤波器
+
+    double led_cos_yaw{0}; //领机yaw_cos
+    double led_sin_yaw{0}; //领机yaw_sin
+    double fw_cos_yaw{0};  //本机yaw_cos
+    double fw_sin_yaw{0};  //本机yaw_sin
+
+    float del_fol_gspeed{0}; //从机期望地速增量，最终实现的是领机与从机地速一致
+    float airspd_sp_prev{0}; //飞机期望空速（前一时刻）
+    float airspd_sp{0};      //飞机期望空速
+    bool use_speed_sp_cal(); //按照距离误差分配，是否启用空速产生的模块
+    FILTER airspd_sp_filter; //本机空速期望值滤波器
 
     /**
     * TECS函数，变量（组）
@@ -345,8 +381,6 @@ private:
     * 其他计算函数，变量（组）
     */
     Point get_plane_to_sp_vector(Point origin, Point target); //原始信息预处理
-
-    void print_data(const struct _s_fw_states *p); //测试数据通断
 };
 
 #endif
