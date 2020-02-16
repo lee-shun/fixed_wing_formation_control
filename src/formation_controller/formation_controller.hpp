@@ -156,6 +156,8 @@ public:
         bool in_air{true};
 
         bool altitude_lock{false};
+
+        bool yaw_valid{true}; //TODO:添加yaw_valid的判断，因为此是一个十分重要的计算量，将来的控制量基本与之有关
     };
 
     struct _s_formation_offset //编队队形几何偏移
@@ -325,6 +327,8 @@ private:
     _s_fw_error fw_error;                           //本机误差，包括与期望的差和领机的偏差
     double led_cos_yaw{0};                          //领机yaw_cos
     double led_sin_yaw{0};                          //领机yaw_sin
+    double fw_cos_yaw{0};                           //本机yaw_cos
+    double fw_sin_yaw{0};                           //本机yaw_sin
     float del_fol_gspeed{0};                        //从机期望地速增量，最终实现的是领机与从机地速一致
     float airspd_sp_prev{0};                        //飞机期望空速（前一时刻）
     float airspd_sp{0};                             //飞机期望空速
@@ -341,6 +345,12 @@ private:
     bool identify_led_fol_states();                 //领机从机起飞识别函数
     bool led_in_fly{false};                         //领机正在飞行标志位
     bool fol_in_fly{false};                         //从机正在飞行标志位
+
+    Vec led_arispd;    //领机空速向量
+    Vec led_gspeed_2d; //领机地速向量
+    Vec fw_arispd;     //本机空速向量
+    Vec fw_gspeed_2d;  //本机地速向量
+    Vec fw_wind_vector;   //风估计向量
 
     /**
     * TECS函数，变量（组）
