@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors  : lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-14 20:43:31
+ * @LastEditTime : 2020-02-15 20:51:59
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -25,7 +25,7 @@
 #include "../fixed_wing_lib/mathlib.hpp"
 #include "../fixed_wing_lib/pid_controller.hpp"
 #include "../fixed_wing_lib/vector.hpp"
-#include "../fixed_wing_lib/fliter.hpp"
+#include "../fixed_wing_lib/filter.hpp"
 
 using namespace std;
 
@@ -255,6 +255,9 @@ public:
     //更新领从机状态
     void update_led_fol_states(struct _s_leader_states &leaderstates, struct _s_fw_states &thisfw_states);
 
+    //设定是否使用滤波器
+    void set_if_use_filter(bool use);
+
     //设定编队形状
     void set_formation_type(int formation_type);
 
@@ -282,6 +285,7 @@ public:
 
     //2. 输入领机的绝对位置，绝对速度
     void abs_pos_vel_controller();
+    void abs_pos_vel_controller1(); //临时
 
     //3. 输入领机的仅仅有绝对位置
     void abs_pos_controller();
@@ -305,21 +309,29 @@ private:
     * 编队控制器外函数，变量（组）
     */
 
-    long abs_pos_vel_ctrl_timestamp{0};    //绝对速度位置控制器时间戳
-    float _dt{0.02};                       //控制时间间隔
-    float _dtMax{0.1};                     //控制时间间隔max
-    float _dtMin{0.01};                    //控制时间间隔min
-    _s_formation_offset formation_offset;  //编队偏移量
-    _s_formation_params formation_params;  //编队控制器混合误差产生参数,编队控制器参数
-    _s_fw_sp fw_sp;                        //本机的期望
-    _s_fw_error fw_error;                  //本机误差，包括与期望的差和领机的偏差
-    double led_cos_yaw{0};                 //领机yaw_cos
-    double led_sin_yaw{0};                 //领机yaw_sin
-    float airspd_sp_prev{0};               //飞机期望空速（前一时刻）
-    float airspd_sp{0};                    //飞机期望空速
-    bool use_speed_sp_cal();               //按照距离误差分配，是否启用空速产生的模块
-    struct _s_leader_states leader_states; //领机状态
-    struct _s_fw_states fw_states;         //从机状态
+    long abs_pos_vel_ctrl_timestamp{0};             //绝对速度位置控制器时间戳
+    float _dt{0.02};                                //控制时间间隔
+    float _dtMax{0.1};                              //控制时间间隔max
+    float _dtMin{0.01};                             //控制时间间隔min
+    _s_formation_offset formation_offset;           //编队偏移量
+    _s_formation_params formation_params;           //编队控制器混合误差产生参数,编队控制器参数
+    _s_fw_sp fw_sp;                                 //本机的期望
+    _s_fw_error fw_error;                           //本机误差，包括与期望的差和领机的偏差
+    double led_cos_yaw{0};                          //领机yaw_cos
+    double led_sin_yaw{0};                          //领机yaw_sin
+    float del_fol_gspeed{0};                        //从机期望地速增量，最终实现的是领机与从机地速一致
+    float airspd_sp_prev{0};                        //飞机期望空速（前一时刻）
+    float airspd_sp{0};                             //飞机期望空速
+    FILTER arispd_sp_filter;                        //期望空速滤波器
+    bool use_speed_sp_cal();                        //按照距离误差分配，是否启用空速产生的模块
+    struct _s_leader_states leader_states;          //领机状态
+    struct _s_leader_states leader_states_filtered; //滤波后的领机信息
+    struct _s_fw_states fw_states;                  //从机状态
+    struct _s_fw_states fw_states_filtered;         //滤波后的从机信息
+    bool use_the_filter{true};                      //是否使用滤波器对原始数据滤波
+    void filter_led_fol_states();                   //完成对于领机从机的滤波函数
+    FILTER led_gol_vel_x_filter;                    //领机gol速度x滤波器
+    FILTER led_gol_vel_y_filter;                    //领机gol速度y滤波器
 
     /**
     * TECS函数，变量（组）
