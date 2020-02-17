@@ -7,9 +7,9 @@
  * @Description:  
  *  本程序是虚拟领机，领机从西向东按照一定的速度飞行
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 14:22:36
+ * @LastEditTime: 2020-02-17 15:23:55
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -43,7 +43,7 @@ void VIR_DIR_LEADER::show_vir_leader_status()
 
 void VIR_DIR_LEADER::run(int argc, char **argv)
 {
-    ros::Rate rate(20.0);
+    ros::Rate rate(10.0);
     begin_time = get_sys_time(); // 记录启控时间
     ros_sub_pub();
 
@@ -53,7 +53,7 @@ void VIR_DIR_LEADER::run(int argc, char **argv)
 
     leaderstates.global_vel_x = 0;
     leaderstates.global_vel_z = 0;
-    distance_e = 0.75;
+    distance_e = 1.1;
 
     double ref[3];
     double result[3];

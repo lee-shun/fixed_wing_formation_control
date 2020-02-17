@@ -141,6 +141,10 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
+
+add_library(lateral_controller
+src/fixed_wing_lib/lateral_controller.cpp
+)
 add_library(tecs
 src/fixed_wing_lib/tecs.cpp
 )
@@ -179,6 +183,9 @@ target_link_libraries(task_main
  )
  target_link_libraries(formation_controller
  tecs
+ )
+ target_link_libraries(formation_controller
+ lateral_controller
  )
  target_link_libraries(task_main
  formation_controller
@@ -264,12 +271,12 @@ ${catkin_LIBRARIES}
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
- install(FILES
- scripts/monitor_msg.sh
- scripts/sim_env.sh
- scripts/vir_dir_leader.sh
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
- )
+#install(FILES
+#scripts/monitor_msg.sh
+#scripts/sim_env.sh
+#scripts/vir_dir_leader.sh
+# DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+#)
 
 #############
 ## Testing ##

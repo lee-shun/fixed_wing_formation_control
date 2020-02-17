@@ -10,9 +10,19 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-15 20:51:59
+ * @LastEditTime: 2020-02-17 16:07:31
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
+ * 
+ *  TODO:有一个潜在的问题：
+ *  本控制器之中的结构体赋值是使用的直接“=”，使用的是浅拷贝，但是会存在结构体内部指针指向同一个地址的问题，
+ *  解决方法是：
+ *  定义“=”运算符重载，手动为结构体内部指针分配新内存，并拷贝指向的内容
+ *  详情参考：https://www.cnblogs.com/weekbo/p/8202754.html
+ * 
+ *  TODO:涉及本函数的运行频率问题：
+ *  产生滚转角期望值，期望速度控制量是可以与位置环的频率一致，但是由速度期望值到内环的俯仰角以及油门的TECS需要50.0Hz及以上
+
  * @------------------------------------------3: 3------------------------------------------@
  */
 
@@ -41,12 +51,6 @@ public:
     * 控制器重要的结构体，承担着数据载体与容器的作用、
     * 将控制器内部的数据规整，方便传递与维护
     * 十分重要的数据桥梁，写成public为了外部访问结构体的声明
-    * 
-    * TODO:有一个潜在的问题：
-    * 本控制器之中的结构体赋值是使用的直接“=”，使用的是浅拷贝，但是会存在结构体内部指针指向同一个地址的问题，
-    * 解决方法是：
-    * 定义“=”运算符重载，手动为结构体内部指针分配新内存，并拷贝指向的内容
-    * 详情参考：https://www.cnblogs.com/weekbo/p/8202754.html
     */
 
     struct _s_fw_model_params //一系列的飞机动力学模型参数
@@ -73,9 +77,9 @@ public:
 
         /*for generate the airspeed setpoint use*/
 
-        float maxinc_acc{5.0}; //飞机前向最大瞬时加速度
+        float maxinc_acc{10.0}; //飞机前向最大瞬时加速度
 
-        float maxdec_acc{3.0}; //飞机减速最大瞬时加速度
+        float maxdec_acc{10.0}; //飞机减速最大瞬时加速度
 
         float max_arispd_sp{25.0}; //飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动
 
@@ -84,15 +88,15 @@ public:
 
     struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
     {
-        float kv_p{0.5}; //主从机速度差比例项
+        float kv_p{0.2}; //主从机速度差比例项
 
-        float kp_p{0.8}; //从机期望与实际位置误差比例
+        float kp_p{0.3}; //从机期望与实际位置误差比例
 
-        float mix_kp{0.6}; //总混合产生期望空速pid参数
+        float mix_kp{0.5}; //总混合产生期望空速pid参数
 
         float mix_kd{0.0}; //总混合产生期望空速pid参数
 
-        float mix_ki{0.01}; //总混合产生期望空速pid参数
+        float mix_ki{0.0}; //总混合产生期望空速pid参数
     };
 
     struct _s_rel_states //领机从机相对状态
@@ -306,7 +310,7 @@ public:
     void set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params);
 
     /**
-     * TODO:5种编队控制器类型
+     * 5种编队控制器类型
      * 几个编队控制器类型,根据能得到的领机信息分类;，
      * 此处传入的领机状态以及本机的状态写成静态变量的形式
      * 保证控制器内不会更改飞机状态信息。
