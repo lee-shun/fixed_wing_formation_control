@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-15 21:20:49
+ * @LastEditTime: 2020-02-17 16:18:28
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -103,11 +103,14 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     /*    
     *领机绝对位置以及绝对速度GPS控制器，以机体坐标系为准，误差直接投影到从机机体坐标系之中，并在机体系之中产生控制量
     * */
+
     long now = get_sys_time();
     _dt = constrain((now - abs_pos_vel_ctrl_timestamp) * 1.0e-3f, _dtMin, _dtMax);
+
     /**
     * 0. 原始数据滤波,从此之后，飞机的状态保存在了滤波后的状态值里面
     */
+
     filter_led_fol_states();
 
     if (!identify_led_fol_states())
@@ -247,6 +250,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     /**
     * 3. 计算从机的期望位置与当前位置的误差在从机坐标系下的投影
     */
+
     Point pos_sp(fw_sp.latitude, fw_sp.longitude);                                //期望位置
     Point current_pos(fw_states_filtered.latitude, fw_states_filtered.longitude); //当前位置
     Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp);            //计算飞机到期望点向量(本质来说是误差向量)
@@ -271,14 +275,17 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     /**
     * 4. 计算领机从机地速“差”在从机坐标系之中的投影，控制量是地速，所以是地速之差
     */
+
     Vec led_fol_vel_error = led_gspeed_2d - fw_gspeed_2d;
     fw_error.led_fol_vxb = fw_body_unit * led_fol_vel_error; //沿速度（机体x）方向速度偏差（已检验）
     fw_error.led_fol_vyb = fw_body_unit ^ led_fol_vel_error; //垂直速度（机体x）方向速度偏差（已检验）
+
     /**
     * 5. 根据飞机机体前向混合误差产生原始空速期望值，并对此空速先后进行滤波、增量限幅、最终限幅约束
     * 得到最终期望空速。
     * 机体前向误差分类，超过一定误差，最大空速直接给满，迅速减小误差。小于一定误差，按照控制逻辑正常产生
     */
+
     float mix_v_p_Xb = formation_params.kp_p * fw_error.PXb + formation_params.kv_p * fw_error.led_fol_vxb;
 
     gspeed_pid.init_pid(formation_params.mix_kp, formation_params.mix_ki, formation_params.mix_kd);
@@ -291,12 +298,12 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
 
     bool use_integ = false;
     bool use_diff = false;
-    if (abs_num(fw_error.PXb) < 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
+    if (abs_num(fw_error.PXb) <= 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
     {
         use_integ = true;
         cout << "use_the_integ" << endl;
     }
-    if (abs_num(fw_error.PXb) < 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
+    if (abs_num(fw_error.PXb) <= 50) //小于50m开始使用积分器，防止积分饱和。小于50m开始使用微分器，加快响应速度
     {
         use_diff = true;
         cout << "use_the_diff" << endl;
@@ -311,12 +318,15 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
 
     airspd_sp = fw_sp.ground_speed + wind_Xb; //此处的空速应该是加法
 
+    cout << "最原始的空速设定值为" << airspd_sp << endl;
+
     if (!use_speed_sp_cal()) //如果距离误差很大，那么就直接给满
     {
         airspd_sp = fw_params.max_arispd_sp;
     }
 
-    //符合飞机本身的加速减速特性
+    //符合飞机本身的加速减速特性：
+    //TODO:慎用，加上之后,需要加大飞机的前向后相加速度，由于延时作用太强，可能导致不稳定。
     if ((airspd_sp - airspd_sp_prev) > fw_params.maxinc_acc * _dt)
     {
         airspd_sp = airspd_sp_prev + fw_params.maxinc_acc * _dt;
@@ -331,9 +341,11 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     airspd_sp_prev = airspd_sp;
 
     fw_sp.air_speed = constrain(airspd_sp, fw_params.min_arispd_sp, fw_params.max_arispd_sp);
+
     /**
     * 6.期望GPS高度以及期望空速进入TECS得到油门以及俯仰角
     */
+
     if (rest_tecs)
     {
         _tecs.reset_state();
@@ -372,12 +384,14 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     /**
     * 7.根据飞机机体侧向混合误差，进入横侧向控制器，产生原始期望滚转角。
     */
+
     _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
     roll_cmd = _lateral_controller.nav_roll(); //获取期望控制滚转
 
     /**
     * 8.原始期望滚转角平滑滤波，限幅，角速度限幅，
     */
+
     roll_cmd = roll_cmd_filter.one_order_filter(roll_cmd);
 
     if ((roll_cmd - roll_cmd_prev) > fw_params.roll_rate_max * _dt)
@@ -398,6 +412,7 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     /**
     * 9. 下一次计算准备，以及其他工作
     */
+
     abs_pos_vel_ctrl_timestamp = now;
 }
 
