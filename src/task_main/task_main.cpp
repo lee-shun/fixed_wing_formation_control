@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-14 20:37:14
+ * @LastEditTime: 2020-02-17 16:34:42
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -228,61 +228,61 @@ void TASK_MAIN::input_params()
     cout << "input_params->later_ctrl_params.roll_max" << fw_params.roll_max << endl;
 }
 
-// void TASK_MAIN::print_data(const struct _s_fw_states *p)
-// {
-//     cout << "***************以下是本飞机状态******************" << endl;
-//     cout << "***************以下是本飞机状态******************" << endl;
+void TASK_MAIN::print_data(const struct FORMATION_CONTROL::_s_fw_states *p)
+{
+    cout << "***************以下是本飞机状态******************" << endl;
+    cout << "***************以下是本飞机状态******************" << endl;
 
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
-//     cout << "飞机当前姿态欧美系【roll，pitch，yaw】" << rad_2_deg(p->roll_angle) << " [deg] "
-//          << rad_2_deg(p->pitch_angle) << " [deg] "
-//          << rad_2_deg(p->yaw_angle) << " [deg] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
+    cout << "飞机当前姿态欧美系【roll，pitch，yaw】" << rad_2_deg(p->roll_angle) << " [deg] "
+         << rad_2_deg(p->pitch_angle) << " [deg] "
+         << rad_2_deg(p->yaw_angle) << " [deg] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "飞机当前姿态的旋转矩阵【第2行】" << p->rotmat[2][0] << " [] "
-//          << p->rotmat[2][1] << " [] "
-//          << p->rotmat[2][2] << " [] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "飞机当前姿态的旋转矩阵【第2行】" << p->rotmat[2][0] << " [] "
+         << p->rotmat[2][1] << " [] "
+         << p->rotmat[2][2] << " [] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] "
-//          << p->body_acc[1] << " [m/ss] "
-//          << p->body_acc[2] << " [m/ss] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "body下的加速度【XYZ】" << p->body_acc[0] << " [m/ss] "
+         << p->body_acc[1] << " [m/ss] "
+         << p->body_acc[2] << " [m/ss] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] "
-//          << p->ned_vel_y << " [m/s] "
-//          << p->ned_vel_z << " [m/s] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "ned下的速度【XYZ】" << p->ned_vel_x << " [m/s] "
+         << p->ned_vel_y << " [m/s] "
+         << p->ned_vel_z << " [m/s] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] "
-//          << p->ned_acc[1] << " [m/ss] "
-//          << p->ned_acc[2] << " [m/ss] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "ned下的加速度【XYZ】(由旋转矩阵得来)" << p->ned_acc[0] << " [m/ss] "
+         << p->ned_acc[1] << " [m/ss] "
+         << p->ned_acc[2] << " [m/ss] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] "
-//          << p->longitude << " [] "
-//          << p->altitude << " [] "
-//          << p->relative_alt << " [] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "GPS位置【lat,long,alt,rel_alt】" << p->latitude << " [] "
+         << p->longitude << " [] "
+         << p->altitude << " [] "
+         << p->relative_alt << " [] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] "
-//          << p->wind_estimate_y << " [m/s] "
-//          << p->wind_estimate_z << " [m/s] " << endl;
-//     for (int i = 1; i <= the_space_between_lines; i++)
-//         cout << endl;
+    cout << "风估计【x,y,z】" << p->wind_estimate_x << " [m/s] "
+         << p->wind_estimate_y << " [m/s] "
+         << p->wind_estimate_z << " [m/s] " << endl;
+    for (int i = 1; i <= the_space_between_lines; i++)
+        cout << endl;
 
-//     cout << "***************以上是本飞机状态******************" << endl;
-//     cout << "***************以上是本飞机状态******************" << endl;
-//     for (int i = 1; i <= the_space_between_blocks; i++)
-//         cout << endl;
-// }
+    cout << "***************以上是本飞机状态******************" << endl;
+    cout << "***************以上是本飞机状态******************" << endl;
+    for (int i = 1; i <= the_space_between_blocks; i++)
+        cout << endl;
+}
 
 void TASK_MAIN::run()
 {
