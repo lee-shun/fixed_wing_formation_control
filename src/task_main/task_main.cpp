@@ -194,10 +194,10 @@ void TASK_MAIN::input_params()
     nh.param<float>("mix_kp", form_ctrller_params.mix_kp, 0.6);
     nh.param<float>("mix_kd", form_ctrller_params.mix_kd, 0.0);
     nh.param<float>("mix_ki", form_ctrller_params.mix_ki, 0.01);
-    nh.param<float>("maxinc_acc", form_ctrller_params.maxinc_acc, 5.0);
-    nh.param<float>("maxdec_acc", form_ctrller_params.maxdec_acc, 3.0);
-    nh.param<float>("max_arispd_sp", form_ctrller_params.max_arispd_sp, 25.0);
-    nh.param<float>("min_arispd_sp", form_ctrller_params.min_arispd_sp, 8.0);
+    nh.param<float>("maxinc_acc", fw_params.maxinc_acc, 5.0);
+    nh.param<float>("maxdec_acc", fw_params.maxdec_acc, 3.0);
+    nh.param<float>("max_arispd_sp", fw_params.max_arispd_sp, 25.0);
+    nh.param<float>("min_arispd_sp", fw_params.min_arispd_sp, 8.0);
 
     /*########################################################################################
     ##########################################################################################
@@ -208,11 +208,11 @@ void TASK_MAIN::input_params()
     nh.param<int>("EAS2TAS", tecs_params.EAS2TAS, 1);
     nh.param<bool>("climboutdem", tecs_params.climboutdem, false);
     nh.param<float>("climbout_pitch_min_rad", tecs_params.climbout_pitch_min_rad, 0.2);
-    nh.param<float>("throttle_min", tecs_params.throttle_min, 0.1);
-    nh.param<float>("throttle_max", tecs_params.throttle_max, 1);
-    nh.param<float>("throttle_cruise", tecs_params.throttle_cruise, 0.1);
-    nh.param<float>("pitch_min_rad", tecs_params.pitch_min_rad, -0.5);
-    nh.param<float>("pitch_max_rad", tecs_params.pitch_max_rad, 0.5);
+    nh.param<float>("throttle_min", fw_params.throttle_min, 0.1);
+    nh.param<float>("throttle_max", fw_params.throttle_max, 1);
+    nh.param<float>("throttle_cruise", fw_params.throttle_cruise, 0.1);
+    nh.param<float>("pitch_min_rad", fw_params.pitch_min_rad, -0.5);
+    nh.param<float>("pitch_max_rad", fw_params.pitch_max_rad, 0.5);
     nh.param<float>("speed_weight", tecs_params.speed_weight, 1);
     nh.param<float>("time_const_throt", tecs_params.time_const_throt, 8.0);
     nh.param<float>("time_const", tecs_params.time_const, 0.0);
@@ -224,8 +224,8 @@ void TASK_MAIN::input_params()
     ##########################################################################################
     ##########################################################################################*/
 
-    nh.param<float>("roll_max", later_ctrl_params.roll_max, 0.0);
-    cout << "input_params->later_ctrl_params.roll_max" << later_ctrl_params.roll_max << endl;
+    nh.param<float>("roll_max", fw_params.roll_max, 0.0);
+    cout << "input_params->later_ctrl_params.roll_max" << fw_params.roll_max << endl;
 }
 
 // void TASK_MAIN::print_data(const struct _s_fw_states *p)

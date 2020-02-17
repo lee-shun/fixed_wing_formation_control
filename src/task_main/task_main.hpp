@@ -67,6 +67,7 @@ private:
     string fw_col_mode_current{"MANUAL"};   //当前模式
     string fw_col_mode_last{"MANUAL"};      //上一时刻模式
 
+    struct FORMATION_CONTROL::_s_fw_model_params fw_params;                   //飞机模型参数
     struct FORMATION_CONTROL::_s_formation_params form_ctrller_params;        //编队控制器参数
     struct FORMATION_CONTROL::_s_tecs_params tecs_params;                     //编队控制器内部TECS控制器参数
     struct FORMATION_CONTROL::_s_lateral_controller_params later_ctrl_params; //编队控制器内部横侧向控制器参数
