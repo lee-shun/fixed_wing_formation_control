@@ -51,6 +51,11 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
+void FORMATION_CONTROL::set_fw_model_params(struct _s_fw_model_params &input_params)
+{
+    fw_params = input_params;
+}
+
 void FORMATION_CONTROL::set_formation_params(struct _s_formation_params &input_params)
 {
     formation_params = input_params;
@@ -118,14 +123,12 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     *   b. 计算从机期望位置的gps位置
     */
 
-    //TODO:已经初步得到验证
     float led_airspd_x = leader_states_filtered.wind_estimate_x + leader_states_filtered.global_vel_x; //此处的空速算法有待验证
     float led_airspd_y = leader_states_filtered.wind_estimate_y + leader_states_filtered.global_vel_y;
 
     led_arispd.set_vec_ele(led_airspd_x, led_airspd_y);                                                  //领机空速向量
     led_gspeed_2d.set_vec_ele(leader_states_filtered.global_vel_x, leader_states_filtered.global_vel_y); //领机地速向量
 
-    //TODO:还需要新的标志量来表示风估计的合法性，辅助判断使用的机头方向
     cout << "领机状态" << endl;
     cout << "验证用，滤波后的地速x大小为：" << leader_states_filtered.global_vel_x << endl;
     cout << "验证用，滤波后的地速y大小为：" << leader_states_filtered.global_vel_y << endl;
@@ -133,21 +136,30 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     cout << "验证用，实际获取空速为：" << leader_states_filtered.air_speed << endl;
     cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (led_arispd.len() - leader_states_filtered.air_speed) << endl;
 
-    if (leader_states_filtered.yaw_valid) //将认为机头实际指向
+    if ((led_arispd.len() - leader_states_filtered.air_speed) >= 3.0) //计算获得的空速与读取的空速差距较大
+    {
+        led_airspd_states_valid = false; //此时选用地速方向
+    }
+    else
+    {
+        led_airspd_states_valid = true;
+    }
+
+    if ((leader_states_filtered.yaw_valid)) //将认为机头实际指向
     {
         led_cos_yaw = cosf(leader_states_filtered.yaw_angle);
         led_sin_yaw = sinf(leader_states_filtered.yaw_angle);
     }
     else if ((!leader_states_filtered.yaw_valid) && //将认为空速方向与机头方向一致
-             (led_arispd.len2() != 0.0))
+             (led_arispd.len2() >= 3.0) &&          //速度太小也不行，空速方向十分不稳定
+             (led_airspd_states_valid))
     {
 
         led_cos_yaw = led_arispd.x / led_arispd.len();
         led_sin_yaw = led_arispd.y / led_arispd.len();
     }
-    else if ((!leader_states_filtered.yaw_valid) && //将认为地速方向与机头方向一致
-             (led_arispd.len2() == 0.0) &&
-             (led_gspeed_2d.len2() != 0.0))
+    else if (((!leader_states_filtered.yaw_valid) && (led_gspeed_2d.len2() >= 3.0) && (!led_airspd_states_valid)) //将认为地速方向与机头方向一致
+             || ((!leader_states_filtered.yaw_valid) && (led_gspeed_2d.len2() >= 3.0) && (led_arispd.len2() < 3.0)))
     {
         led_cos_yaw = led_gspeed_2d.x / led_gspeed_2d.len();
         led_sin_yaw = led_gspeed_2d.y / led_gspeed_2d.len();
@@ -186,7 +198,6 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     fw_arispd.set_vec_ele(fw_airspd_x, fw_airspd_y);                                            //本机空速向量
     fw_gspeed_2d.set_vec_ele(fw_states_filtered.global_vel_x, fw_states_filtered.global_vel_y); //本机地速向量
 
-    //TODO:还需要新的标志量来表示风估计的合法性
     cout << "本机机状态" << endl;
     cout << "验证用，滤波后的地速x大小为：" << fw_states_filtered.global_vel_x << endl;
     cout << "验证用，滤波后的地速y大小为：" << fw_states_filtered.global_vel_y << endl;
@@ -194,21 +205,30 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     cout << "验证用，实际获取空速为：" << fw_states_filtered.air_speed << endl;
     cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (fw_arispd.len() - fw_states_filtered.air_speed) << endl;
 
+    if ((fw_arispd.len() - fw_states_filtered.air_speed) >= 3.0) //计算获得的空速与读取的空速差距较大
+    {
+        fw_airspd_states_valid = false; //此时选用地速方向
+    }
+    else
+    {
+        fw_airspd_states_valid = true;
+    }
+
     if (fw_states_filtered.yaw_valid) //将认为机头实际指向
     {
         fw_cos_yaw = cosf(fw_states_filtered.yaw_angle);
         fw_sin_yaw = sinf(fw_states_filtered.yaw_angle);
     }
     else if ((!fw_states_filtered.yaw_valid) && //将认为空速方向与机头方向一致
-             (fw_arispd.len2() != 0.0))
+             (fw_arispd.len2() >= 3.0) &&
+             fw_airspd_states_valid)
     {
 
         fw_cos_yaw = fw_arispd.x / fw_arispd.len();
         fw_sin_yaw = fw_arispd.y / fw_arispd.len();
     }
-    else if ((!fw_states_filtered.yaw_valid) && //将认为地速方向与机头方向一致
-             (fw_arispd.len2() == 0.0) &&
-             (fw_gspeed_2d.len2() != 0.0))
+    else if (((!fw_states_filtered.yaw_valid) && (fw_arispd.len2() < 3.0) && (fw_gspeed_2d.len2() >= 3.0)) || //将认为地速方向与机头方向一致
+             ((!fw_states_filtered.yaw_valid) && (!fw_airspd_states_valid) && (fw_gspeed_2d.len2() >= 3.0)))
     {
         fw_cos_yaw = fw_gspeed_2d.x / fw_gspeed_2d.len();
         fw_sin_yaw = fw_gspeed_2d.y / fw_gspeed_2d.len();
@@ -291,26 +311,26 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
 
     airspd_sp = fw_sp.ground_speed + wind_Xb; //此处的空速应该是加法
 
-    if (fw_error.PXb > 50.0) //如果距离误差很大，那么就直接给满
+    if (!use_speed_sp_cal()) //如果距离误差很大，那么就直接给满
     {
-        airspd_sp = formation_params.max_arispd_sp;
+        airspd_sp = fw_params.max_arispd_sp;
     }
 
     //符合飞机本身的加速减速特性
-    if ((airspd_sp - airspd_sp_prev) > formation_params.maxinc_acc * _dt)
+    if ((airspd_sp - airspd_sp_prev) > fw_params.maxinc_acc * _dt)
     {
-        airspd_sp = airspd_sp_prev + formation_params.maxinc_acc * _dt;
+        airspd_sp = airspd_sp_prev + fw_params.maxinc_acc * _dt;
     }
-    else if ((airspd_sp - airspd_sp_prev) < -formation_params.maxdec_acc * _dt)
+    else if ((airspd_sp - airspd_sp_prev) < -fw_params.maxdec_acc * _dt)
     {
-        airspd_sp = airspd_sp_prev - formation_params.maxdec_acc * _dt;
+        airspd_sp = airspd_sp_prev - fw_params.maxdec_acc * _dt;
     }
 
     airspd_sp = airspd_sp_filter.one_order_filter(airspd_sp); //进入一阶低通滤波器
 
     airspd_sp_prev = airspd_sp;
 
-    fw_sp.air_speed = constrain(airspd_sp, formation_params.min_arispd_sp, formation_params.max_arispd_sp);
+    fw_sp.air_speed = constrain(airspd_sp, fw_params.min_arispd_sp, fw_params.max_arispd_sp);
     /**
     * 6.期望GPS高度以及期望空速进入TECS得到油门以及俯仰角
     */
@@ -342,9 +362,9 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     _tecs.update_pitch_throttle(fw_states_filtered.rotmat, fw_states_filtered.pitch_angle,
                                 fw_states_filtered.altitude, fw_sp.altitude, fw_sp.air_speed,
                                 fw_states_filtered.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
-                                tecs_params.climbout_pitch_min_rad, tecs_params.throttle_min,
-                                tecs_params.throttle_max, tecs_params.throttle_cruise,
-                                tecs_params.pitch_min_rad, tecs_params.pitch_max_rad);
+                                tecs_params.climbout_pitch_min_rad, fw_params.throttle_min,
+                                fw_params.throttle_max, fw_params.throttle_cruise,
+                                fw_params.pitch_min_rad, fw_params.pitch_max_rad);
 
     _cmd.pitch = _tecs.get_pitch_setpoint();
     _cmd.thrust = _tecs.get_throttle_setpoint();
@@ -353,14 +373,31 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     * 7.根据飞机机体侧向混合误差，进入横侧向控制器，产生原始期望滚转角。
     */
     _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
-
-    _cmd.roll = constrain(_lateral_controller.nav_roll(),
-                          -lateral_controller_params.roll_max, lateral_controller_params.roll_max);
+    roll_cmd = _lateral_controller.nav_roll(); //获取期望控制滚转
 
     /**
-    * 8.TODO:原始期望滚转角平滑滤波，限幅，角速度限幅，
+    * 8.原始期望滚转角平滑滤波，限幅，角速度限幅，
     */
+    roll_cmd = roll_cmd_filter.one_order_filter(roll_cmd);
 
+    if ((roll_cmd - roll_cmd_prev) > fw_params.roll_rate_max * _dt)
+    {
+        roll_cmd = roll_cmd_prev + fw_params.roll_rate_max * _dt;
+    }
+    else if ((roll_cmd - roll_cmd_prev) < -fw_params.roll_rate_max * _dt)
+    {
+        roll_cmd = roll_cmd_prev - fw_params.roll_rate_max * _dt;
+    }
+
+    roll_cmd = constrain(roll_cmd, -fw_params.roll_max, fw_params.roll_max);
+
+    _cmd.roll = roll_cmd;
+
+    roll_cmd_prev = roll_cmd;
+
+    /**
+    * 9. 下一次计算准备，以及其他工作
+    */
     abs_pos_vel_ctrl_timestamp = now;
 }
 

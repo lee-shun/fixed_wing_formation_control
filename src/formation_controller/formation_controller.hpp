@@ -41,7 +41,47 @@ public:
     * 控制器重要的结构体，承担着数据载体与容器的作用、
     * 将控制器内部的数据规整，方便传递与维护
     * 十分重要的数据桥梁，写成public为了外部访问结构体的声明
+    * 
+    * TODO:有一个潜在的问题：
+    * 本控制器之中的结构体赋值是使用的直接“=”，使用的是浅拷贝，但是会存在结构体内部指针指向同一个地址的问题，
+    * 解决方法是：
+    * 定义“=”运算符重载，手动为结构体内部指针分配新内存，并拷贝指向的内容
+    * 详情参考：https://www.cnblogs.com/weekbo/p/8202754.html
     */
+
+    struct _s_fw_model_params //一系列的飞机动力学模型参数
+    {
+        /*for tecs use*/
+
+        float throttle_min{0.1}; //最小油门
+
+        float throttle_max{1}; //最大油门
+
+        float throttle_cruise{0.3}; //巡航油门
+
+        float pitch_min_rad{-PI / 4}; //最小俯仰角rad
+
+        float pitch_max_rad{PI / 4}; //最大俯仰角rad
+
+        float pitch_rate_max{PI / 3}; //最大俯仰角速度
+
+        /* for later_controller use*/
+
+        float roll_max{PI / 2}; //最大滚转角rad
+
+        float roll_rate_max{PI / 3}; //最大滚转角速度rad/s
+
+        /*for generate the airspeed setpoint use*/
+
+        float maxinc_acc{5.0}; //飞机前向最大瞬时加速度
+
+        float maxdec_acc{3.0}; //飞机减速最大瞬时加速度
+
+        float max_arispd_sp{25.0}; //飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动
+
+        float min_arispd_sp{8.0}; //飞机空速最小设定值
+    };
+
     struct _s_formation_params //编队控制器混合误差产生参数,编队控制器参数
     {
         float kv_p{0.5}; //主从机速度差比例项
@@ -53,14 +93,6 @@ public:
         float mix_kd{0.0}; //总混合产生期望空速pid参数
 
         float mix_ki{0.01}; //总混合产生期望空速pid参数
-
-        float maxinc_acc{5.0}; //飞机前向最大瞬时加速度
-
-        float maxdec_acc{3.0}; //飞机减速最大瞬时加速度
-
-        float max_arispd_sp{25.0}; //飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动
-
-        float min_arispd_sp{8.0}; //飞机空速最小设定值
     };
 
     struct _s_rel_states //领机从机相对状态
@@ -226,16 +258,6 @@ public:
 
         float climbout_pitch_min_rad{0.2};
 
-        float throttle_min{0.1};
-
-        float throttle_max{1};
-
-        float throttle_cruise{0.1};
-
-        float pitch_min_rad{-0.5};
-
-        float pitch_max_rad{0.5};
-
         float speed_weight{1};
 
         float time_const_throt{8.0};
@@ -245,7 +267,6 @@ public:
 
     struct _s_lateral_controller_params //横侧向控制器参数
     {
-        float roll_max{PI / 2};
     };
 
     struct _s_4cmd //四通道控制量
@@ -271,6 +292,9 @@ public:
 
     //重置控制器，防止不同阶段控制器的状态混乱
     void reset_formation_controller();
+
+    //设定飞机模型参数
+    void set_fw_model_params(struct _s_fw_model_params &input_params);
 
     //设定编队控制器参数（主管产生期望空速）
     void set_formation_params(struct _s_formation_params &input_params);
@@ -322,6 +346,7 @@ private:
     float _dtMax{0.1};                  //控制时间间隔max
     float _dtMin{0.01};                 //控制时间间隔min
 
+    _s_fw_model_params fw_params;            //飞机模型参数
     _s_leader_states leader_states;          //领机状态
     _s_leader_states leader_states_filtered; //滤波后的领机信息
     _s_fw_states fw_states;                  //从机状态
@@ -341,21 +366,25 @@ private:
     bool led_in_fly{false};         //领机正在飞行标志位
     bool fol_in_fly{false};         //从机正在飞行标志位
 
-    bool use_the_filter{true};    //是否使用滤波器对原始数据滤波
-    void filter_led_fol_states(); //完成对于领机从机的滤波函数
-    FILTER led_gol_vel_x_filter;  //领机gol速度x滤波器
-    FILTER led_gol_vel_y_filter;  //领机gol速度y滤波器
+    void filter_led_fol_states();       //完成对于领机从机的滤波函数
+    bool use_the_filter{true};          //是否使用滤波器对原始数据滤波
+    FILTER led_gol_vel_x_filter;        //领机gol速度x滤波器
+    FILTER led_gol_vel_y_filter;        //领机gol速度y滤波器
+    bool fw_airspd_states_valid{true};  //检验计算本机的空速（状态）以及实际读取的空速的合法性
+    bool led_airspd_states_valid{true}; //检验计算领机的空速（状态）以及实际读取的空速的合法性
 
     double led_cos_yaw{0}; //领机yaw_cos
     double led_sin_yaw{0}; //领机yaw_sin
     double fw_cos_yaw{0};  //本机yaw_cos
     double fw_sin_yaw{0};  //本机yaw_sin
 
-    float del_fol_gspeed{0}; //从机期望地速增量，最终实现的是领机与从机地速一致
-    float airspd_sp_prev{0}; //飞机期望空速（前一时刻）
-    float airspd_sp{0};      //飞机期望空速
-    bool use_speed_sp_cal(); //按照距离误差分配，是否启用空速产生的模块
-    FILTER airspd_sp_filter; //本机空速期望值滤波器
+    bool use_speed_sp_cal();    //按照距离误差分配，是否启用空速产生的模块
+    PID_CONTROLLER gspeed_pid;  //产生期望地速的pid
+    bool rest_speed_pid{false}; //重置内部控器标志量
+    float del_fol_gspeed{0};    //从机期望地速增量，最终实现的是领机与从机地速一致
+    float airspd_sp_prev{0};    //飞机期望空速（前一时刻）
+    float airspd_sp{0};         //飞机期望空速
+    FILTER airspd_sp_filter;    //本机空速期望值滤波器
 
     /**
     * TECS函数，变量（组）
@@ -371,9 +400,10 @@ private:
     */
 
     LATERAL_CONTROLLER _lateral_controller;                 //横侧向控制器
-    PID_CONTROLLER gspeed_pid;                              //产生期望地速的pid
-    bool rest_speed_pid{false};                             //重置内部控器标志量
     _s_lateral_controller_params lateral_controller_params; //横侧向控制器参数
+    float roll_cmd{0.0};                                    //最终roll通道控制量
+    float roll_cmd_prev{0.0};                               //最终roll通道控制量
+    FILTER roll_cmd_filter;                                 //期望滚转角滤波器
 
     _s_4cmd _cmd; //最后的控制量
 
