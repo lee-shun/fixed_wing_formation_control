@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-17 16:35:49
+ * @LastEditTime: 2020-02-18 19:45:48
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -31,7 +31,7 @@ using namespace std;
 class TASK_MAIN
 {
 private:
-    int planeID{2}; //飞机编号
+    int planeID{2};                                                   //飞机编号
     void print_data(const struct FORMATION_CONTROL::_s_fw_states *p); //打印数据
 
     ros::NodeHandle nh; //ros句柄
@@ -82,6 +82,10 @@ private:
     void formation_states_pub();                                    //发布编队控制器控制状态
 
     bool need_landing{false}; //需要降落标志位
+
+    enum _e_TASK_STAGE //飞机任务状态阶段
+    {
+    };
 
 public:
     void run();
