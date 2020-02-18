@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-17 16:18:28
+ * @LastEditTime: 2020-02-18 15:19:10
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -385,7 +385,10 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     * 7.根据飞机机体侧向混合误差，进入横侧向控制器，产生原始期望滚转角。
     */
 
-    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
+    //_lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
+    
+    _lateral_controller.mix_pos_vel_ctrl(fw_gspeed_2d,fw_body_unit,vector_plane_sp,led_fol_vel_error);
+
     roll_cmd = _lateral_controller.nav_roll(); //获取期望控制滚转
 
     /**

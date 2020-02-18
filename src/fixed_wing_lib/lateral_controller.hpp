@@ -11,7 +11,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-17 22:10:59
+ * @LastEditTime: 2020-02-18 15:45:12
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: TODO:更改此部分的函数设置，当飞机的距离远以及距离近的时候分别考虑 
  * @------------------------------------------3: 3------------------------------------------@
@@ -30,68 +30,38 @@ using namespace std;
 class LATERAL_CONTROLLER
 {
 private:
-    /***********************************魔改L1控制器函数***************************************/
-    /***********************************魔改L1控制器函数***************************************/
-    float acc_lateral{0};
+    /**
+    * L1以及改进的L1算法参数定义
+    */
+
+    //原始的L1算法
 
     float _nav_bearing;
-
     float _lateral_accel{0};
-
     float _K_L1{2};
-
-    float _roll_lim_rad{deg_2_rad(60)};
-
-    float roll_sp{0};
-
     float _L1_period{25};
-
     float _L1_ratio{5.0};
-
     float _L1_damping{0.75};
-
     float _L1_distance{20.0};
+    float _roll_lim_rad{PI / 3};
 
-    struct _s_control_lateral_params
-    {
-        float kp{0.1};
+    //改进的L1算法
 
-        float kd{0.1};
-    } control_lateral_params;
+    float _K_L1_pos{2.0};
+    float _K_L1_vel{2.0};
+    float lateral_acc_vel{0.0};
+    float lateral_acc_pos{0.0};
+
+    /**
+    * 速度追踪法算法参数定义
+    */
 
     float track_vel_k{1};
-    /***********************************魔改L1控制器函数***************************************/
-    /***********************************魔改L1控制器函数***************************************/
-
-    ///////////速度追踪法/////////////
-
-    ///////////速度追踪法/////////////
 
 public:
-    ///////////视线与速度夹角控制/////////////
-    void lateral_yaw();
-
-    ///////////视线与速度夹角速率控制/////////////
-    void lateral_yaw_rate();
-
-    ///////////滑膜控制/////////////
-    void lateral_sliding_mode();
-
-    /***********************************魔改L1控制器函数***************************************/
-    /***********************************魔改L1控制器函数***************************************/
-    void lateral_L1_modified(Point curr_pos, Point sp_pos, Point ground_speed_2d, float airspeed);
-
-    Point get_local_planar_vector(Point origin, Point target);
-
-    float get_lateral_roll_sp()
-    {
-        return roll_sp;
-    }
-
-    float get_lateral_acc_lateral()
-    {
-        return acc_lateral;
-    }
+    /**
+    * L1以及改进的L1算法参数定义函数区
+    */
 
     void set_l1_period(float period)
     {
@@ -130,14 +100,21 @@ public:
     {
         return _nav_bearing;
     }
-    /***********************************魔改L1控制器函数***************************************/
-    /***********************************魔改L1控制器函数***************************************/
 
-    ///////////速度追踪法/////////////
+    Point get_local_planar_vector(Point origin, Point target);
+
+    //原始L1控制器
+    void lateral_L1_modified(Point curr_pos, Point sp_pos, Point ground_speed_2d, float airspeed);
+
+    //改进的L1控制器
+    float mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
+                           Vec &pos_err_vector, Vec &vel_err_vector);
+
+    /**
+    *速度追踪法
+    */
+
     void track_velocity(Point curr_pos, Point sp_pos, Point ground_speed_2d, Point sp_speed_2d);
-    ///////////速度追踪法/////////////
-
-    float mix_pos_vel_ctrl(float pos_err_yb, float vel_err_yb, Point ground_speed_2d);
 };
 
 #endif
