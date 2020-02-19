@@ -64,6 +64,8 @@ add_message_files(
    Formation_control_states.msg
    Leaderstates.msg
    Fwmonitor.msg
+   Fw_cmd_mode.msg
+   Fw_current_mode.msg
 )
 
 ## Generate services in the 'srv' folder
