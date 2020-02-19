@@ -3,13 +3,7 @@
 
 uint8 planeID#飞机编号
 
-uint8 FW_IN_TAKEOFF = 0 #将来对应枚举类型，表示飞机现在正在处在的状态
-
-uint8 FW_IN_LANDING = 1
-
-uint8 FW_IN_FORMATION = 2
-
-uint8 FW_IN_PROTECT = 3
+bool fw_is_idel#飞机已经空闲
 
 bool fw_is_connected #飞机链接地面站标志位
 
