@@ -8,9 +8,9 @@
  # @------------------------------------------2: 2------------------------------------------@
  # @LastEditors: lee-shun
  # @LastEditors_Email: 2015097272@qq.com
- # @LastEditTime: 2020-02-19 18:07:13
+ # @LastEditTime: 2020-02-19 20:13:37
  # @LastEditors_Organization: BIT-CGNC, fixed_wing_group
- # @LastEditors_Description:  zsh
+ # @LastEditors_Description:  zsh下的bash文件
  # @------------------------------------------3: 3------------------------------------------@
  ###
 
