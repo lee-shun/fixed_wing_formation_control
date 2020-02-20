@@ -213,6 +213,12 @@ target_link_libraries(control_monitor
 ${catkin_LIBRARIES}
 )
 
+###########飞机模式状态机commander##############
+add_executable(commander src/commander/commander.cpp)
+target_link_libraries(commander
+${catkin_LIBRARIES}
+)
+
 
 ######################################################
 ###################TEST文件节点########################
