@@ -3,15 +3,15 @@
 
 uint8 planeID#飞机编号
 
-bool fw_is_idel#飞机已经空闲
+bool fw_complete_idel#飞机已经空闲
 
 bool fw_is_connected #飞机链接地面站标志位
 
 bool fw_is_wellctrlled #飞机控制状态标志位
 
-bool fw_is_takeoff #飞机已经起飞标志位
+bool fw_complete_takeoff #飞机已经起飞标志位
 
-bool fw_is_landed #飞机已经降落标志位
+bool fw_complete_landed #飞机已经降落标志位
 
 bool formation_distance_complete #飞机编队距离已经满足
 
