@@ -8,14 +8,14 @@
  # @------------------------------------------2: 2------------------------------------------@
  # @LastEditors: lee-shun
  # @LastEditors_Email: 2015097272@qq.com
- # @LastEditTime: 2020-02-19 20:13:37
+ # @LastEditTime: 2020-02-21 10:46:28
  # @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  # @LastEditors_Description:  zsh下的bash文件
  # @------------------------------------------3: 3------------------------------------------@
  ###
 
 gnome-terminal --window -e 'zsh -c "cd ~/catkin_ws; catkin_make; exec zsh"' \
---tab -e 'zsh -c "sleep 2; cd ~/src/Firmware; make px4_sitl gazebo_plane;  exec zsh"' \
+--tab -e 'zsh -c "sleep 2; cd ~/src/Firmware; PX4_SIM_SPEED_FACTOR=2 make px4_sitl gazebo_plane;  exec zsh"' \
 --tab -e 'zsh -c "sleep 4; roslaunch mavros px4.launch  fcu_url:="udp://:14540@127.0.0.1:14557"; exec zsh"' \
 --tab -e 'zsh -c "sleep 6; rosrun fixed_wing_formation_control pack_fw_states;  exec zsh"' \
 --tab -e 'zsh -c "sleep 10; rosrun fixed_wing_formation_control task_main;exec zsh"' \
