@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-18 15:19:10
+ * @LastEditTime: 2020-02-21 11:21:47
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -18,8 +18,8 @@
 
 #include "formation_controller.hpp"
 
-void FORMATION_CONTROL::update_led_fol_states(struct _s_leader_states *leaderstates,
-                                              struct _s_fw_states *thisfw_states)
+void FORMATION_CONTROL::update_led_fol_states(const struct _s_leader_states *leaderstates,
+                                              const struct _s_fw_states *thisfw_states)
 { //使用指针，避免内存浪费
     leader_states = *leaderstates;
     fw_states = *thisfw_states;
@@ -386,8 +386,8 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     */
 
     //_lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_filtered.air_speed);
-    
-    _lateral_controller.mix_pos_vel_ctrl(fw_gspeed_2d,fw_body_unit,vector_plane_sp,led_fol_vel_error);
+
+    _lateral_controller.mix_pos_vel_ctrl(fw_gspeed_2d, fw_body_unit, vector_plane_sp, led_fol_vel_error);
 
     roll_cmd = _lateral_controller.nav_roll(); //获取期望控制滚转
 
