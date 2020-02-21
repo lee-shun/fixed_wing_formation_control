@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-17 16:07:31
+ * @LastEditTime: 2020-02-21 11:24:05
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * 
@@ -90,9 +90,9 @@ public:
     {
         float kv_p{0.2}; //主从机速度差比例项
 
-        float kp_p{0.3}; //从机期望与实际位置误差比例
+        float kp_p{0.5}; //从机期望与实际位置误差比例
 
-        float mix_kp{0.5}; //总混合产生期望空速pid参数
+        float mix_kp{0.4}; //总混合产生期望空速pid参数
 
         float mix_kd{0.0}; //总混合产生期望空速pid参数
 
@@ -286,7 +286,8 @@ public:
     */
 
     //更新领从机状态//使用指针，避免内存浪费
-    void update_led_fol_states(struct _s_leader_states *leaderstates, struct _s_fw_states *thisfw_states);
+    void update_led_fol_states(const struct _s_leader_states *leaderstates,
+                               const struct _s_fw_states *thisfw_states);
 
     //设定是否使用滤波器
     void set_if_use_filter(bool use);
