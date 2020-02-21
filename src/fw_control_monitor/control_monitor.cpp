@@ -6,9 +6,9 @@
  * @Organization: BIT-CGNC, fixed_wing_group
  * @Description:  control_monitor主要完成的功能是对于飞机飞行状态，连接状态，飞机编队任务执行状态的监控 
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:14:32
+ * @LastEditTime: 2020-02-20 16:56:06
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -68,17 +68,15 @@ void CONTROL_MONITOR::run()
     ros::Rate rate(50.0);
     begin_time = ros::Time::now(); // 记录启控时间
     ros_sub_pub();
-    cout << "current_time::" << current_time << "\t"
-         << "in_the_monitor_run" << endl;
+
     while (ros::ok())
     {
         current_time = get_ros_time(begin_time);
+        cout << "current_time::" << current_time << "\t"
+             << "in_the_monitor_run" << endl;
 
-        if ((abs_num(formation_control_states.err_PXb) < monitor_params.STAND_POS_XB) &&
-            (abs_num(formation_control_states.err_PYb) < monitor_params.STAND_POS_YB) &&
-            (abs_num(formation_control_states.err_PZb) < monitor_params.STAND_POS_ZB))
-        {
-        }
+        /*monitor_code*/
+
         ros::spinOnce();
         rate.sleep();
     }

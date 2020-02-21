@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-18 15:47:56
+ * @LastEditTime: 2020-02-21 10:56:19
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: 
  *  TODO:
@@ -47,7 +47,6 @@
  * @------------------------------------------3: 3------------------------------------------@
  */
 #include "lateral_controller.hpp"
-
 
 //速度追踪法（看导弹飞行力学）
 void LATERAL_CONTROLLER::track_velocity(Point curr_pos, Point sp_pos, Point ground_speed_2d, Point target_speed_2d)
@@ -166,6 +165,8 @@ float LATERAL_CONTROLLER::mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
 
     //所谓“测速反馈增大阻尼”
     float lateral_acc_vel = _K_L1_vel * gspd_Xb * vel_err_Yb / _L1_distance * sin_eta;
+
+    lateral_acc_vel = 0.0; //调试作用，如果是0，那么效果就会和l1无异
 
     _lateral_accel = lateral_acc_pos + lateral_acc_vel;
 }
