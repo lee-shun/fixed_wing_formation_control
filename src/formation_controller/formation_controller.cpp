@@ -33,7 +33,7 @@ void FORMATION_CONTROL::update_led_fol_states(const struct _s_leader_states *lea
 /**
  * @Input: void
  * @Output: void
- * @Description: 重置控制器中有“记忆”的量
+ * @Description:以便重置控制器中有“记忆”的量
  */
 void FORMATION_CONTROL::reset_formation_controller()
 {

@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-21 15:28:36
+ * @LastEditTime: 2020-02-22 23:46:56
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -339,38 +339,90 @@ void TASK_MAIN::run()
 
     while (ros::ok())
     {
-        /*执行比赛大逻辑，并非执行一次，飞机如果进入了失控保护又进入正常，可以再次进行编队控制*/
+        /**
+        * 比赛任务大循环，根据来自commander的控制指令来进行响应的控制动作
+       */
+        current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
+        TASK_MAIN_TIME(current_time);
 
-        // while (ros::ok())
-        // {
-        //     /*起飞代码*/
-        // }
-
-        while (ros::ok()) //控制编队控制跟随
+        if (!fw_cmd_mode.need_take_off &&
+            !fw_cmd_mode.need_formation &&
+            !fw_cmd_mode.need_land &&
+            !fw_cmd_mode.need_idel &&
+            fw_cmd_mode.need_protected)
         {
-            /*编队控制代码*/
-            current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
-            //input_params();TODO:虽然完成了节点参数的输入函数以及各个通路，但是节点的参数并没有加载进来
-            if (true) //监控节点的并没有发现飞机完成时间，距离任务
-            {
-                cout << "编队启控时间：[" << current_time << "]秒" << endl;
-                control_formation();
-            }
+            TASK_MAIN_INFO("保护子程序");
+            /**
+                 * TODO:保护子程序
+                */
+            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_PROTECT;
+        }
+        else if (!fw_cmd_mode.need_take_off &&
+                 !fw_cmd_mode.need_formation &&
+                 !fw_cmd_mode.need_land &&
+                 fw_cmd_mode.need_idel &&
+                 !fw_cmd_mode.need_protected)
+        {
+            TASK_MAIN_INFO("空闲子程序");
+            /**
+                 * TODO:空闲子程序
+                */
+            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_IDEL;
+        }
+        else if (!fw_cmd_mode.need_take_off &&
+                 !fw_cmd_mode.need_formation &&
+                 fw_cmd_mode.need_land &&
+                 !fw_cmd_mode.need_idel &&
+                 !fw_cmd_mode.need_protected)
+        {
+            TASK_MAIN_INFO("降落子程序");
+            /**
+                 * TODO:降落子程序
+                */
+            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_LANDING;
+        }
+        else if (!fw_cmd_mode.need_take_off &&
+                 fw_cmd_mode.need_formation &&
+                 !fw_cmd_mode.need_land &&
+                 !fw_cmd_mode.need_idel &&
+                 !fw_cmd_mode.need_protected)
+        {
+            TASK_MAIN_INFO("编队子程序");
+            /**
+                 * TODO:编队子程序
+                 * TODO:虽然完成了节点参数的输入函数以及各个通路，但是节点的参数并没有加载进来
+                */
+            control_formation();
 
-            ros::spinOnce();
-            rate.sleep();
+            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_FORMATION;
+        }
+        else if (fw_cmd_mode.need_take_off &&
+                 !fw_cmd_mode.need_formation &&
+                 !fw_cmd_mode.need_land &&
+                 !fw_cmd_mode.need_idel &&
+                 !fw_cmd_mode.need_protected)
+        {
+            TASK_MAIN_INFO("起飞子程序");
+            /**
+                 * TODO:起飞子程序
+                */
+            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_TAKEOFF;
+        }
+        else
+        {
+            TASK_MAIN_INFO("错误，飞机当前状态有误");
         }
 
-        // while (ros::ok())
-        // {
-        //     /*降落代码*/
-        // }
+        /**
+         * 发布飞机当前状态
+        */
+        fw_current_mode_pub.publish(fw_current_mode);
 
-        // while (ros::ok() && (!fw_is_ok))
-        // {
-        //     /*失控保护代码*/
-        // }
+        ros::spinOnce();
+        rate.sleep();
     }
+
+    return;
 }
 
 int main(int argc, char **argv)

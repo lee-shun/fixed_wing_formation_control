@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-21 12:01:49
+ * @LastEditTime: 2020-02-22 23:46:17
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -30,6 +30,10 @@
 #include "../formation_controller/formation_controller.hpp"
 
 using namespace std;
+
+#define TASK_MAIN_INFO(a) cout << "[TASK_MAIN_INFO]:" << (a) << endl
+#define TASK_MAIN_TIME(a) cout << "[TASK_MAIN_TIME]: [" << (a) << "]s" << endl;
+
 class TASK_MAIN
 {
 private:
