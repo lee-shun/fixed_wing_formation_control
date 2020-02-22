@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-21 11:21:47
+ * @LastEditTime: 2020-02-21 15:42:24
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -18,6 +18,11 @@
 
 #include "formation_controller.hpp"
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 更新飞机，领机飞行状态
+ */
 void FORMATION_CONTROL::update_led_fol_states(const struct _s_leader_states *leaderstates,
                                               const struct _s_fw_states *thisfw_states)
 { //使用指针，避免内存浪费
@@ -25,12 +30,22 @@ void FORMATION_CONTROL::update_led_fol_states(const struct _s_leader_states *lea
     fw_states = *thisfw_states;
 }
 
-void FORMATION_CONTROL::reset_formation_controller() //重置控制器中有“记忆”的量。
+/**
+ * @Input: void
+ * @Output: void
+ * @Description:以便重置控制器中有“记忆”的量
+ */
+void FORMATION_CONTROL::reset_formation_controller()
 {
     rest_speed_pid = true;
     rest_tecs = true;
 };
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 设定编队期望队形
+ */
 void FORMATION_CONTROL::set_formation_type(int formation_type)
 {
     switch (formation_type)
@@ -51,6 +66,11 @@ void FORMATION_CONTROL::set_formation_type(int formation_type)
     }
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 设定编队控制器内部飞机模型函数，例如最大滚转角速度等
+ */
 void FORMATION_CONTROL::set_fw_model_params(struct _s_fw_model_params &input_params)
 {
     fw_params = input_params;
@@ -71,6 +91,11 @@ void FORMATION_CONTROL::set_lateral_ctrller_params(struct _s_lateral_controller_
     lateral_controller_params = input_params;
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 是否使用计算获得期望地速，还是直接给满最大速度
+ */
 bool FORMATION_CONTROL::use_speed_sp_cal()
 {
     if (abs_num(fw_error.PXb) <= 50.0) //当飞机超过领机50米以内，或者落后从机50m以内的时候，也得启用tecs速度高度控制
@@ -83,6 +108,11 @@ bool FORMATION_CONTROL::use_speed_sp_cal()
     }
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 调用滤波器对输入的飞机原始状态进行滤波
+ */
 void FORMATION_CONTROL::filter_led_fol_states()
 {
     fw_states_filtered = fw_states;
@@ -98,11 +128,13 @@ void FORMATION_CONTROL::filter_led_fol_states()
     }
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 领机绝对位置以及绝对速度GPS控制器，以机体坐标系为准，误差直接投影到从机机体坐标系之中，并在机体系之中产生控制量
+ */
 void FORMATION_CONTROL::abs_pos_vel_controller()
 {
-    /*    
-    *领机绝对位置以及绝对速度GPS控制器，以机体坐标系为准，误差直接投影到从机机体坐标系之中，并在机体系之中产生控制量
-    * */
 
     long now = get_sys_time();
     _dt = constrain((now - abs_pos_vel_ctrl_timestamp) * 1.0e-3f, _dtMin, _dtMax);
@@ -419,6 +451,11 @@ void FORMATION_CONTROL::abs_pos_vel_controller()
     abs_pos_vel_ctrl_timestamp = now;
 }
 
+/**
+ * @Input: void
+ * @Output: bool
+ * @Description: 判断飞机传入的状态值是否有问题，是否在飞行之中
+ */
 bool FORMATION_CONTROL::identify_led_fol_states()
 {
     if ((leader_states_filtered.global_vel_x > 3.0) ||
@@ -455,6 +492,11 @@ bool FORMATION_CONTROL::identify_led_fol_states()
     }
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 计算从飞机当前位置到期望的位置的向量
+ */
 Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
 {
     Point out(deg_2_rad((target.x - origin.x)), deg_2_rad((target.y - origin.y) * cosf(deg_2_rad(origin.x))));
@@ -462,21 +504,42 @@ Point FORMATION_CONTROL::get_plane_to_sp_vector(Point origin, Point target)
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
 
+
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得飞机期望的四通道控制量
+ */
 void FORMATION_CONTROL::get_formation_4cmd(struct _s_4cmd &fw_cmd)
 {
     fw_cmd = _cmd;
 }
 
-void FORMATION_CONTROL::get_formation_sp(struct _s_fw_sp &formation_sp) //得到编队中本机的运动学期望值
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 得到编队中本机的运动学期望值
+ */
+void FORMATION_CONTROL::get_formation_sp(struct _s_fw_sp &formation_sp)
 {
     formation_sp = fw_sp;
 }
 
-void FORMATION_CONTROL::get_formation_error(struct _s_fw_error &formation_error) //得到编队控制误差
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 得到编队控制误差
+ */
+void FORMATION_CONTROL::get_formation_error(struct _s_fw_error &formation_error)
 {
     formation_error = fw_error;
 }
 
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得编队控制器参数
+ */
 void FORMATION_CONTROL::get_formation_params(struct _s_formation_params &format_params)
 {
     format_params = formation_params;
