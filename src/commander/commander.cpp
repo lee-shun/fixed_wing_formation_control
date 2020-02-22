@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-21 15:30:12
+ * @LastEditTime: 2020-02-22 19:22:11
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * 本程序是一个状态机，管理飞机比赛任务切换问题，订阅来自监
@@ -76,7 +76,21 @@ void COMMANDER::run()
         cout << "current_time::" << current_time << "\t"
              << "in_the_commander" << endl;
 
-        if (fw_monitor_flags.fw_is_wellctrlled && fw_monitor_flags.fw_is_connected)
+        if ((!fw_monitor_flags.fw_is_wellctrlled) || (!fw_monitor_flags.fw_is_connected)) //需要进入保护模式
+        {
+            fw_cmd_mode.need_protected = true;
+
+            cout << "in commander, need protect" << endl;
+            if (!fw_monitor_flags.fw_is_wellctrlled)
+            {
+                cout << "in commander, fw_is_badctrlled" << endl;
+            }
+            else if (!fw_monitor_flags.fw_is_connected)
+            {
+                cout << "in commander, fw_is_unconnected" << endl;
+            }
+        }
+        else
         {
             switch (fw_current_mode.mode)
             {
@@ -111,20 +125,6 @@ void COMMANDER::run()
             default:
                 cout << "in_commander, the current_mode is not declared. Check the \"task_main current_mode\". " << endl;
                 break;
-            }
-        }
-        else //需要进入保护模式
-        {
-            fw_cmd_mode.need_protected = true;
-
-            cout << "in commander, need protect" << endl;
-            if (!fw_monitor_flags.fw_is_wellctrlled)
-            {
-                cout << "in commander, fw_is_badctrlled" << endl;
-            }
-            else if (!fw_monitor_flags.fw_is_connected)
-            {
-                cout << "in commander, fw_is_unconnected" << endl;
             }
         }
 
