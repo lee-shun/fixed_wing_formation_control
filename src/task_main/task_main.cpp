@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-22 23:46:56
+ * @LastEditTime: 2020-02-23 11:55:19
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -342,8 +342,8 @@ void TASK_MAIN::run()
         /**
         * 比赛任务大循环，根据来自commander的控制指令来进行响应的控制动作
        */
-        current_time = get_ros_time(begin_time); //此时的时间，只作为纪录，不用于控制
-        TASK_MAIN_TIME(current_time);
+        current_time = get_ros_time(begin_time); /*此时刻，只作为纪录，不用于控制*/
+        TASK_MAIN_INFO("Time:" << current_time);
 
         if (!fw_cmd_mode.need_take_off &&
             !fw_cmd_mode.need_formation &&
