@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-22 23:29:18
+ * @LastEditTime: 2020-02-23 10:52:58
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -30,6 +30,7 @@
 #define ERR_TIME_OUT 10   /* Communication time out */
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -37,7 +38,7 @@ class ERR_REMINDER
 {
 public:
     /* 声明出错信息 */
-    char *errmsg[] = {
+    char *errmsg[11] = {
         /* 0 */ "No error",
         /* 1 */ "Open file error",
         /* 2 */ "Failed in sending/receiving a message",
