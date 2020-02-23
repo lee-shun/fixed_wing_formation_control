@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-22 19:22:11
+ * @LastEditTime: 2020-02-23 11:17:30
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * 本程序是一个状态机，管理飞机比赛任务切换问题，订阅来自监
@@ -73,21 +73,21 @@ void COMMANDER::run()
     while (ros::ok())
     {
         current_time = get_ros_time(begin_time);
-        cout << "current_time::" << current_time << "\t"
-             << "in_the_commander" << endl;
+        COMMANDER_INFO("current_time::" << current_time);
 
         if ((!fw_monitor_flags.fw_is_wellctrlled) || (!fw_monitor_flags.fw_is_connected)) //需要进入保护模式
         {
             fw_cmd_mode.need_protected = true;
 
-            cout << "in commander, need protect" << endl;
+            COMMANDER_INFO("in commander, need protect");
+
             if (!fw_monitor_flags.fw_is_wellctrlled)
             {
-                cout << "in commander, fw_is_badctrlled" << endl;
+                COMMANDER_INFO("in commander, fw_is_badctrlled");
             }
             else if (!fw_monitor_flags.fw_is_connected)
             {
-                cout << "in commander, fw_is_unconnected" << endl;
+                COMMANDER_INFO("in commander, fw_is_unconnected");
             }
         }
         else
@@ -95,35 +95,49 @@ void COMMANDER::run()
             switch (fw_current_mode.mode)
             {
             case (fixed_wing_formation_control::Fw_current_mode::FW_IN_IDEL):
-                cout << "FW_IN_IDEL" << endl;
+
+                COMMANDER_INFO("FW_IN_IDEL");
+
                 if (true) //TODO:外部起飞指令激活
                 {
                     fw_cmd_mode.need_take_off = true;
                 }
+
                 break;
             case (fixed_wing_formation_control::Fw_current_mode::FW_IN_TAKEOFF):
-                cout << "FW_IN_TAKEOFF" << endl;
+
+                COMMANDER_INFO("FW_IN_TAKEOFF");
+
                 if (fw_monitor_flags.fw_complete_takeoff)
                 {
                     fw_cmd_mode.need_formation = true;
                 }
+
                 break;
             case (fixed_wing_formation_control::Fw_current_mode::FW_IN_FORMATION):
-                cout << "FW_IN_FORMATION" << endl;
+
+                COMMANDER_INFO("FW_IN_FORMATION");
+
                 if (fw_monitor_flags.formation_time_complete && fw_monitor_flags.formation_distance_complete)
                 {
                     fw_cmd_mode.need_land = true;
                 }
+
                 break;
             case (fixed_wing_formation_control::Fw_current_mode::FW_IN_LANDING):
-                cout << "FW_IN_LANDING" << endl;
+
+                COMMANDER_INFO("FW_IN_LANDING");
+
                 if (fw_monitor_flags.fw_complete_landed)
                 {
                     fw_cmd_mode.need_idel = true;
                 }
+
                 break;
             default:
-                cout << "in_commander, the current_mode is not declared. Check the \"task_main current_mode\". " << endl;
+
+                COMMANDER_INFO("in_commander, the current_mode is not declared. Check the \"task_main current_mode\". ");
+
                 break;
             }
         }
