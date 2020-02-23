@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-23 11:55:19
+ * @LastEditTime: 2020-02-23 14:46:59
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -55,25 +55,25 @@ void TASK_MAIN::fw_cmd_mode_cb(const fixed_wing_formation_control::Fw_cmd_mode::
 void TASK_MAIN::ros_sub_pub()
 {
 
-    fw_states_sub = nh.subscribe //【订阅】固定翼全部状态量
+    fw_states_sub = nh.subscribe /* 【订阅】固定翼全部状态量 */
                     <fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
 
-    leader_states_sub = nh.subscribe //【订阅】领机信息
+    leader_states_sub = nh.subscribe /* 【订阅】领机信息 */
                         <fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
 
-    fwmonitor_sub = nh.subscribe //【订阅】监控节点飞机以及任务状态
+    fwmonitor_sub = nh.subscribe /* 【订阅】监控节点飞机以及任务状态 */
                     <fixed_wing_formation_control::Fwmonitor>("fixed_wing_formation_control/fwmonitor_flags", 10, &TASK_MAIN::fw_fwmonitor_cb, this);
 
-    fw_cmd_mode_sub = nh.subscribe //【订阅】commander指定比赛模式
+    fw_cmd_mode_sub = nh.subscribe /* 【订阅】commander指定比赛模式 */
                       <fixed_wing_formation_control::Fw_cmd_mode>("fixed_wing_formation_control/fw_cmd_mode", 10, &TASK_MAIN::fw_cmd_mode_cb, this);
 
-    fw_cmd_pub = nh.advertise //【发布】固定翼四通道控制量
+    fw_cmd_pub = nh.advertise /* 【发布】固定翼四通道控制量 */
                  <fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
 
-    formation_control_states_pub = nh.advertise //【发布】编队控制器状态
+    formation_control_states_pub = nh.advertise /* 【发布】编队控制器状态 */
                                    <fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
 
-    fw_current_mode_pub = nh.advertise //【发布】比赛任务进所处阶段
+    fw_current_mode_pub = nh.advertise /* 【发布】比赛任务进所处阶段 */
                           <fixed_wing_formation_control::Fw_current_mode>("fixed_wing_formation_control/fw_current_mode", 10);
 }
 
@@ -85,7 +85,7 @@ void TASK_MAIN::ros_sub_pub()
 void TASK_MAIN::formation_states_pub()
 {
     formation_control_states.planeID = planeID;
-    //本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值
+    /* 本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值 */
     formation_control_states.err_P_N = formation_error.P_N;
     formation_control_states.err_P_E = formation_error.P_E;
     formation_control_states.err_P_D = formation_error.P_D;
@@ -99,7 +99,7 @@ void TASK_MAIN::formation_states_pub()
     formation_control_states.led_fol_vxb = formation_error.led_fol_vxb;
     formation_control_states.led_fol_vyb = formation_error.led_fol_vyb;
     formation_control_states.led_fol_vzb = formation_error.led_fol_vzb;
-    //本部分关于从机的期望值的赋值
+    /* 本部分关于从机的期望值的赋值 */
     formation_control_states.sp_air_speed = formation_sp.air_speed;
     formation_control_states.sp_altitude = formation_sp.altitude;
     formation_control_states.sp_ground_speed = formation_sp.ground_speed;
@@ -109,7 +109,7 @@ void TASK_MAIN::formation_states_pub()
     formation_control_states.sp_ned_vel_y = formation_sp.ned_vel_y;
     formation_control_states.sp_ned_vel_z = formation_sp.ned_vel_z;
     formation_control_states.sp_relative_alt = formation_sp.relative_alt;
-    //发布编队控制器控制状态
+    /* 发布编队控制器控制状态 */
     formation_control_states_pub.publish(formation_control_states);
 }
 
@@ -121,7 +121,7 @@ void TASK_MAIN::formation_states_pub()
 void TASK_MAIN::control_formation()
 {
     fw_col_mode_current = fwstates.control_mode;
-    //领机状态赋值
+    /* 领机状态赋值 */
     leader_states.air_speed = leaderstates.airspeed;
 
     leader_states.altitude = leaderstates.altitude;
@@ -140,17 +140,17 @@ void TASK_MAIN::control_formation()
     leader_states.pitch_angle = leaderstates.pitch_angle;
     leader_states.roll_angle = leaderstates.roll_angle;
     leader_states.yaw_angle = leaderstates.yaw_angle;
-    leader_states.yaw_valid = false; //目前来讲，领机的yaw不能直接获得
+    leader_states.yaw_valid = false; /* 目前来讲，领机的yaw不能直接获得 */
 
-    //从机状态赋值
+    /* 从机状态赋值 */
     thisfw_states.flight_mode = fwstates.control_mode;
 
     thisfw_states.air_speed = fwstates.air_speed;
     thisfw_states.in_air = fwstates.in_air;
 
     thisfw_states.altitude = fwstates.altitude;
-    thisfw_states.altitude_lock = true; //保证TECS
-    thisfw_states.in_air = true;        //保证tecs
+    thisfw_states.altitude_lock = true; /* 保证TECS */
+    thisfw_states.in_air = true;        /* 保证tecs */
     thisfw_states.latitude = fwstates.latitude;
     thisfw_states.longitude = fwstates.longitude;
 
@@ -182,35 +182,35 @@ void TASK_MAIN::control_formation()
     thisfw_states.wind_estimate_y = fwstates.wind_estimate_y;
     thisfw_states.wind_estimate_z = fwstates.wind_estimate_z;
 
-    //设定编队形状
+    /* 设定编队形状 */
     formation_controller.set_formation_type(2);
-    //模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！
+    /* 模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！ */
     if (fw_col_mode_current != fw_col_mode_last)
     {
         formation_controller.reset_formation_controller();
     }
-    //更新飞机状态，领机状态
+    /* 更新飞机状态，领机状态 */
     formation_controller.update_led_fol_states(&leader_states, &thisfw_states);
-    //选定控制器类型，并进行控制
+    /* 选定控制器类型，并进行控制 */
     formation_controller.abs_pos_vel_controller();
 
-    //获得最终控制量
+    /* 获得最终控制量 */
     formation_controller.get_formation_4cmd(formation_cmd);
-    //获得编队控制期望值
+    /* 获得编队控制期望值 */
     formation_controller.get_formation_sp(formation_sp);
-    //获得编队误差信息
+    /* 获得编队误差信息 */
     formation_controller.get_formation_error(formation_error);
 
-    //控制量赋值
+    /* 控制量赋值 */
     fw_4cmd.throttle_sp = formation_cmd.thrust;
     fw_4cmd.roll_angle_sp = formation_cmd.roll;
     fw_4cmd.pitch_angle_sp = formation_cmd.pitch;
     fw_4cmd.yaw_angle_sp = formation_cmd.yaw;
 
-    fw_cmd_pub.publish(fw_4cmd); //发布四通道控制量
-    formation_states_pub();      //发布编队控制器状态
+    fw_cmd_pub.publish(fw_4cmd); /* 发布四通道控制量 */
+    formation_states_pub();      /* 发布编队控制器状态 */
 
-    fw_col_mode_last = fw_col_mode_current; //上一次模式的纪录
+    fw_col_mode_last = fw_col_mode_current; /* 上一次模式的纪录 */
 }
 
 /**
@@ -334,7 +334,7 @@ void TASK_MAIN::print_data(const struct FORMATION_CONTROL::_s_fw_states *p)
 void TASK_MAIN::run()
 {
     ros::Rate rate(50.0);
-    begin_time = ros::Time::now(); // 记录启控时间
+    begin_time = ros::Time::now(); /* 记录启控时间 */
     ros_sub_pub();
 
     while (ros::ok())
