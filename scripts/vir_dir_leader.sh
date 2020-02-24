@@ -8,7 +8,7 @@
  # @------------------------------------------2: 2------------------------------------------@
  # @LastEditors: lee-shun
  # @LastEditors_Email: 2015097272@qq.com
- # @LastEditTime: 2020-02-23 15:09:34
+ # @LastEditTime: 2020-02-24 10:26:09
  # @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  # @LastEditors_Description:  
  #  此脚本启动的将是飞机的仿真算法验证的程序

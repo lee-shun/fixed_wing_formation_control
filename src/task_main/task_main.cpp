@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-23 14:46:59
+ * @LastEditTime: 2020-02-24 10:56:36
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -266,11 +266,11 @@ void TASK_MAIN::input_params()
 }
 
 /**
- * @Input: struct FORMATION_CONTROL::_s_fw_states *p
+ * @Input: struct FORMATION_CONTROLLER::_s_fw_states *p
  * @Output: void
  * @Description: TODO:飞机状态打印函数，应该写作模板函数
  */
-void TASK_MAIN::print_data(const struct FORMATION_CONTROL::_s_fw_states *p)
+void TASK_MAIN::print_data(const struct FORMATION_CONTROLLER::_s_fw_states *p)
 {
     cout << "***************以下是本飞机状态******************" << endl;
     cout << "***************以下是本飞机状态******************" << endl;
