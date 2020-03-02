@@ -10,7 +10,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-24 11:20:52
+ * @LastEditTime: 2020-02-24 18:32:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -24,7 +24,7 @@
  * @Description: 更新飞机，领机飞行状态
  */
 void FORMATION_CONTROLLER::update_led_fol_states(const struct _s_leader_states *leaderstates,
-                                              const struct _s_fw_states *thisfw_states)
+                                                 const struct _s_fw_states *thisfw_states)
 { /* 使用指针，避免内存浪费 */
     leader_states = *leaderstates;
     fw_states = *thisfw_states;
@@ -272,7 +272,7 @@ void FORMATION_CONTROLLER::abs_pos_vel_controller()
     {
         fw_cos_yaw = 0;
         fw_sin_yaw = 0;
-        cout << "警告：无法计算从机机头朝向，请检查输入信息是否有误" << endl;
+        FORMATION_CONTROLLER_INFO("警告：无法计算从机机头朝向，请检查输入信息是否有误");
         return;
     }
 
@@ -467,7 +467,8 @@ bool FORMATION_CONTROLLER::identify_led_fol_states()
     else
     {
         led_in_fly = false;
-        cout << "警告：领机未在飞行之中" << endl;
+
+        FORMATION_CONTROLLER_INFO("警告：领机未在飞行之中");
     }
 
     if ((fw_states_filtered.global_vel_x > 3.0) ||
@@ -479,7 +480,8 @@ bool FORMATION_CONTROLLER::identify_led_fol_states()
     else
     {
         fol_in_fly = false;
-        cout << "警告：本机未在飞行之中" << endl;
+
+        FORMATION_CONTROLLER_INFO("警告：本机未在飞行之中");
     }
 
     if (led_in_fly && fol_in_fly)
@@ -503,7 +505,6 @@ Point FORMATION_CONTROLLER::get_plane_to_sp_vector(Point origin, Point target)
 
     return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
-
 
 /**
  * @Input: void

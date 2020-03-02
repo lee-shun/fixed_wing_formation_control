@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-21 10:56:19
+ * @LastEditTime: 2020-03-02 11:58:45
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: 
  *  TODO:
@@ -48,7 +48,11 @@
  */
 #include "lateral_controller.hpp"
 
-//速度追踪法（看导弹飞行力学）
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 速度追踪法（看导弹飞行力学）
+ */
 void LATERAL_CONTROLLER::track_velocity(Point curr_pos, Point sp_pos, Point ground_speed_2d, Point target_speed_2d)
 {
     Point vector_curr_position = curr_pos;
@@ -58,13 +62,13 @@ void LATERAL_CONTROLLER::track_velocity(Point curr_pos, Point sp_pos, Point grou
     float ground_speed = max(ground_speed_2d.len(), 0.1f);
 
     /* 计算目标点到飞机的向量，ned */
-    Point vector_A_to_airplane = get_local_planar_vector(vector_A, vector_curr_position); //A-->P
+    Point vector_A_to_airplane = get_local_planar_vector(vector_A, vector_curr_position); /*A-->P*/
     cout << "vector_A_to_airplane.x == " << vector_A_to_airplane.x << endl;
     cout << "vector_A_to_airplane.y == " << vector_A_to_airplane.y << endl;
 
-    float r = vector_A_to_airplane.len(); //A-->P的长度，r
-    float v = ground_speed_2d.len();      //自己的速度（标量）
-    float vt = target_speed_2d.len();     //目标的速度（标量）（领机的，也是目标位置的速度，因为要编队）
+    float r = vector_A_to_airplane.len(); /*A-->P的长度，r*/
+    float v = ground_speed_2d.len();      /*自己的速度（标量）*/
+    float vt = target_speed_2d.len();     /*目标的速度（标量）（领机的，也是目标位置的速度，因为要编队）*/
 
     cout << "r == " << r << endl;
     cout << "v == " << v << endl;
@@ -79,7 +83,7 @@ void LATERAL_CONTROLLER::track_velocity(Point curr_pos, Point sp_pos, Point grou
     cout << "sp_speed_unit.x " << sp_speed_unit.x << endl;
     cout << "sp_speed_unit.y " << sp_speed_unit.y << endl;
 
-    float sin_q = grou_speed_unit ^ sp_speed_unit; //计算出两个速度的夹角的sin_q
+    float sin_q = grou_speed_unit ^ sp_speed_unit; /*计算出两个速度的夹角的sin_q*/
     cout << "sin_q" << sin_q << endl;
 
     _lateral_accel = track_vel_k * (v * vt * sin_q) / r;
@@ -97,13 +101,15 @@ Point LATERAL_CONTROLLER::get_local_planar_vector(Point origin, Point target)
 }
 
 /**
- * 纯L1控制器，飞往航点的算法，收敛效果不错
-*/
+ * @Input: void
+ * @Output: void
+ * @Description: 使用的是魔改的l1控制器，此中的l1_distance就是飞机与期望点的连线
+    创建三个变量，分别代表当前速度与L1方向的夹角；与期望航航点连线方向的位置差；在期望航向上的位置差 
+ *  纯L1控制器，飞往航点的算法，收敛效果不错
+ */
 void LATERAL_CONTROLLER::lateral_L1_modified(Point curr_pos, Point sp_pos,
                                              Point ground_speed_2d, float airspeed)
 {
-    //使用的是魔改的l1控制器，此中的l1_distance就是飞机与期望点的连线
-    /* 创建三个变量，分别代表当前速度与L1方向的夹角；与期望航航点连线方向的位置差；在期望航向上的位置差 */
 
     float eta;
     float xtrack_vel;
@@ -143,10 +149,12 @@ void LATERAL_CONTROLLER::lateral_L1_modified(Point curr_pos, Point sp_pos,
 }
 
 /**
- * 本函数完成的是L1控制器未包含速度信息的缺点，并且将L1默认的地速与机体重合改进了一下
-*/
-float LATERAL_CONTROLLER::mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
-                                           Vec &pos_err_vector, Vec &vel_err_vector)
+ * @Input: void
+ * @Output: void
+ * @Description: 本函数完成的是L1控制器未包含速度信息的缺点，并且将L1默认的地速与机体重合改进了一下
+ */
+void LATERAL_CONTROLLER::mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
+                                          Vec &pos_err_vector, Vec &vel_err_vector)
 {
 
     float ground_speed = max(ground_speed_2d.len(), 0.1f);
@@ -169,4 +177,14 @@ float LATERAL_CONTROLLER::mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
     lateral_acc_vel = 0.0; //调试作用，如果是0，那么效果就会和l1无异
 
     _lateral_accel = lateral_acc_pos + lateral_acc_vel;
+}
+
+/**
+ * @Input: vel_dir_sp就是期望的速度方向，是否为单位向量均可
+ * @Output: 期望法相加速度
+ * @Description: 本函数控制的是速度的方向，只控制速度方向
+ */
+void LATERAL_CONTROLLER::ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
+                                            Vec &vel_dir_sp)
+{
 }
