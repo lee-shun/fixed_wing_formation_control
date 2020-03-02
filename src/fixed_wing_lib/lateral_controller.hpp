@@ -11,7 +11,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-18 15:45:12
+ * @LastEditTime: 2020-03-02 11:59:30
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: TODO:更改此部分的函数设置，当飞机的距离远以及距离近的时候分别考虑 
  * @------------------------------------------3: 3------------------------------------------@
@@ -34,7 +34,7 @@ private:
     * L1以及改进的L1算法参数定义
     */
 
-    //原始的L1算法
+    /*原始的L1算法*/
 
     float _nav_bearing;
     float _lateral_accel{0};
@@ -45,7 +45,7 @@ private:
     float _L1_distance{20.0};
     float _roll_lim_rad{PI / 3};
 
-    //改进的L1算法
+    /*改进的L1算法*/
 
     float _K_L1_pos{2.0};
     float _K_L1_vel{2.0};
@@ -103,12 +103,17 @@ public:
 
     Point get_local_planar_vector(Point origin, Point target);
 
-    //原始L1控制器
+    /*原始L1控制器*/
     void lateral_L1_modified(Point curr_pos, Point sp_pos, Point ground_speed_2d, float airspeed);
 
-    //改进的L1控制器
-    float mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
+    /*改进的L1控制器*/
+    void mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
                            Vec &pos_err_vector, Vec &vel_err_vector);
+
+    /*速度方向控制器*/
+    void ctrl_vel_direction(Vec &ground_speed_2d,Vec &fw_unit,
+                            Vec &vel_dir_sp);
+
 
     /**
     *速度追踪法
