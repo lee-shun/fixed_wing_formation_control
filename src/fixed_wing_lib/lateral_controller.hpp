@@ -11,7 +11,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-03-02 11:59:30
+ * @LastEditTime: 2020-03-02 18:11:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: TODO:更改此部分的函数设置，当飞机的距离远以及距离近的时候分别考虑 
  * @------------------------------------------3: 3------------------------------------------@
@@ -27,43 +27,30 @@
 
 using namespace std;
 
+#define LATERAL_CONTROLLER_INFO(a) cout << "[LATERAL_CONTROLLER_INFO]:" << a << endl;
+
 class LATERAL_CONTROLLER
 {
-private:
-    /**
-    * L1以及改进的L1算法参数定义
-    */
-
-    /*原始的L1算法*/
-
-    float _nav_bearing;
-    float _lateral_accel{0};
-    float _K_L1{2};
-    float _L1_period{25};
-    float _L1_ratio{5.0};
-    float _L1_damping{0.75};
-    float _L1_distance{20.0};
-    float _roll_lim_rad{PI / 3};
-
-    /*改进的L1算法*/
-
-    float _K_L1_pos{2.0};
-    float _K_L1_vel{2.0};
-    float lateral_acc_vel{0.0};
-    float lateral_acc_pos{0.0};
-
-    /**
-    * 速度追踪法算法参数定义
-    */
-
-    float track_vel_k{1};
-
 public:
+    /*速度方向控制器：期望速度方向位置标志*/
+    enum Whereis_vel_dir_sp
+    {
+        FRONT = 0,
+        FRONT_RIGHT,
+        RIGHT,
+        BACK_RIGHT,
+        BACK,
+        BACK_LEFT,
+        LEFT,
+        FRONT_LEFT
+    };
+
     /**
     * L1以及改进的L1算法参数定义函数区
     */
 
-    void set_l1_period(float period)
+    void
+    set_l1_period(float period)
     {
         _L1_period = period;
         /* calculate the ratio introduced in [2] */
@@ -108,18 +95,56 @@ public:
 
     /*改进的L1控制器*/
     void mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
-                           Vec &pos_err_vector, Vec &vel_err_vector);
+                          Vec &pos_err_vector, Vec &vel_err_vector);
 
     /*速度方向控制器*/
-    void ctrl_vel_direction(Vec &ground_speed_2d,Vec &fw_unit,
+    void ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
                             Vec &vel_dir_sp);
-
 
     /**
     *速度追踪法
     */
 
     void track_velocity(Point curr_pos, Point sp_pos, Point ground_speed_2d, Point sp_speed_2d);
+
+private:
+    /**
+    * L1以及改进的L1算法参数定义
+    */
+
+    /*原始的L1算法*/
+
+    float _nav_bearing;
+    float _lateral_accel{0};
+    float _K_L1{2};
+    float _L1_period{25};
+    float _L1_ratio{5.0};
+    float _L1_damping{0.75};
+    float _L1_distance{20.0};
+    float _roll_lim_rad{PI / 3};
+
+    /*改进的L1算法*/
+
+    float _K_L1_pos{2.0};
+    float _K_L1_vel{2.0};
+    float lateral_acc_vel{0.0};
+    float lateral_acc_pos{0.0};
+
+    /**
+    * 速度追踪法算法参数定义
+    */
+
+    float track_vel_k{1};
+
+    /**
+     * 速度方向控制器
+    */
+    Whereis_vel_dir_sp vel_direction{FRONT};
+
+    /**
+     * 判断期望速度方向函数
+     */
+    void figure_out_vel_dir(float X, float Y);
 };
 
 #endif
