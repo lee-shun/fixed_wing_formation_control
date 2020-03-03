@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-03-02 11:58:45
+ * @LastEditTime: 2020-03-02 18:27:48
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: 
  *  TODO:
@@ -187,4 +187,108 @@ void LATERAL_CONTROLLER::mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
 void LATERAL_CONTROLLER::ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
                                             Vec &vel_dir_sp)
 {
+    /**
+     * 1.计算领机的地速向量在本机的机体坐标系之中的投影
+    */
+
+    static Vec gdSpd2d_unit = ground_speed_2d.normalized();
+
+    static float vel_dir_Xb = gdSpd2d_unit * vel_dir_sp; /*期望速度方向沿着本机速度方向的分量*/
+    static float vel_dir_Yb = gdSpd2d_unit ^ vel_dir_sp; /*期望速度方向垂直于本机速度方向的分量*/
+
+    /**
+    * 2. 判断期望速度是在哪一个方位（象限）
+    */
+    figure_out_vel_dir(vel_dir_Xb, vel_dir_Yb);
+
+    /**
+     * 3. 计算航迹偏角与期望速度方向角误差
+    */
+
+    static float eta_err = 0;
+
+    switch (vel_direction)
+    {
+
+    case Whereis_vel_dir_sp::FRONT:
+        eta_err = deg_2_rad(0.0);
+        break;
+    case Whereis_vel_dir_sp::BACK:
+        eta_err = deg_2_rad(180.0);
+        break;
+    case Whereis_vel_dir_sp::LEFT:
+        eta_err = deg_2_rad(-90.0);
+        break;
+    case Whereis_vel_dir_sp::RIGHT:
+        eta_err = deg_2_rad(90.0);
+        break;
+    case Whereis_vel_dir_sp::FRONT_RIGHT:
+        
+        break;
+    case Whereis_vel_dir_sp::BACK_RIGHT:
+
+        break;
+    case Whereis_vel_dir_sp::BACK_LEFT:
+
+        break;
+    case Whereis_vel_dir_sp::FRONT_LEFT:
+
+        break;
+    default:
+        LATERAL_CONTROLLER_INFO("期望速度判断方向有误");
+        break;
+    }
+}
+
+void LATERAL_CONTROLLER::figure_out_vel_dir(float X, float Y)
+{
+
+    if (X == 0 && Y == 0)
+    {
+        LATERAL_CONTROLLER_INFO("期望速度有误，均为0");
+    }
+    else if (X > 0) /*期望速度方向在飞机之前*/
+    {
+        if (Y > 0) /*右前方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::FRONT_RIGHT;
+        }
+        else if (Y < 0) /*左前方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::FRONT_LEFT;
+        }
+    }
+    else if (X < 0) /*期望速度方向在飞机之后*/
+    {
+        if (Y > 0) /*右后方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::BACK_RIGHT;
+        }
+        else if (Y < 0) /*左后方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::BACK_LEFT;
+        }
+    }
+    else if (X == 0 && Y != 0) /*在Y轴*/
+    {
+        if (Y > 0) /*正右方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::RIGHT;
+        }
+        else if (Y < 0) /*正左方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::LEFT;
+        }
+    }
+    else if (X != 0 && Y == 0) /*在X轴*/
+    {
+        if (X > 0) /*正前方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::FRONT;
+        }
+        else if (X < 0) /*正后方*/
+        {
+            vel_direction = Whereis_vel_dir_sp::BACK;
+        }
+    }
 }
