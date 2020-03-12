@@ -5,6 +5,12 @@
 %% last update: Mar 25th, 2018
 %%==================================================
 
+%部分宏包使用
+\usepackage{color}%字体颜色
+\usepackage{enumerate}%编号的宏包
+\usepackage{graphicx}%插图宏包
+\usepackage{float}%浮动宏包
+
 %% math packages -- conflict with xunicode
 \RequirePackage{amsmath,amsthm,amsfonts,amssymb,bm,mathrsfs}
 % 直立希腊字母字体
