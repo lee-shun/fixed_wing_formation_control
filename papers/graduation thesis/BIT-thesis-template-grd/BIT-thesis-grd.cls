@@ -11,6 +11,7 @@
 \usepackage{graphicx}%插图宏包
 \usepackage{float}%浮动宏包
 
+
 %% math packages -- conflict with xunicode
 \RequirePackage{amsmath,amsthm,amsfonts,amssymb,bm,mathrsfs}
 % 直立希腊字母字体
