@@ -10,7 +10,8 @@
 \usepackage{enumerate}%编号的宏包
 \usepackage{graphicx}%插图宏包
 \usepackage{float}%浮动宏包
-
+\usepackage{amsmath} %数学公式
+\usepackage{amssymb} %数学公式
 
 %% math packages -- conflict with xunicode
 \RequirePackage{amsmath,amsthm,amsfonts,amssymb,bm,mathrsfs}
