@@ -6,6 +6,7 @@
     \item 无人机为具有6自由度的三维空间运动刚体。
     \item 忽略地球自转，将地球作为惯性系。
     \item 忽略地球曲率,即所谓的“平板地球假设”。%TODO:考虑是否要加入大气的假设，以及引用文献
+    \item 由于内环控制率以无人机协调（倾斜）转弯（STT）为基础（详见第\ref{chap:hardware}章），飞机满足无侧滑条件，侧滑角为0；即空速方向与机体系$O_bx_b$在同一铅垂平面内。
 \end{itemize}
 本章中涉及的坐标系有：
 \begin{enumerate}
@@ -37,10 +38,38 @@ $(x_{g}^l,y_{g}^l),(x_{g}^f,y_{g}^f),(x_{g}^{des},y_{g}^{des})$分别为领机�
 $\Psi^l,\Psi^f$分别为领机与从机的偏航角（yaw angle）；
 $\chi^l,\chi^f$分别为领机与从机的航迹偏角（航迹方位角）；
 $V_a,V_{wind},V_g$分别为领机和从机的空速、风速以及地速向量；
-$a_{b}^{des}$是从机产生的，在体轴系下的期望的法向加速度。
+$a_{b}^{des}$是从机产生的、在体轴系下的期望的法向加速度。
 
 在图\ref{fig:c02-2d_vert_motion}中：
 $z_{g}^l,,z_{g}^f,z_{g}^{des}$分别为领机、从机以及从机期望编队位置在地面坐标系$O_gz_g$轴上的分量；
 $\theta^l,\theta^f$分别为领机与从机的俯仰角（pitch angle）；
 $\gamma^l,\gamma^f$分别为领机与从机的航迹倾角（航迹倾斜角）；
 $V_a,V_{wind},V_g$分别为领机和从机的空速、风速以及地速向量；
+
+在图\ref{fig:c02-2d_level_motion}和图\ref{fig:c02-2d_vert_motion}中,由飞机飞行动力学可知，从机与领机三维运动学方程均为：
+\begin{equation}
+    \left\{
+    \begin{array}{l}
+        \frac{dx_g}{dt}=V_g\cos\gamma\cos\chi\\
+        \frac{dy_g}{dt}=V_g\cos\gamma\sin\chi\\
+        \frac{dz_g}{dt}=-V_g\sin\gamma
+    \end{array}
+    \right .
+    \label{fol_motion_eauation}
+\end{equation}
+现考虑无风情况下，则由图\ref{fig:c02-2d_level_motion}可知，无人机航迹偏角等于航向角，即$\Psi=\chi$；无人机在平衡状态下，迎角很小（本无人机约在2.3°左右），由图\ref{fig:c02-2d_vert_motion}可得$\theta\approx\gamma$。
+于是方程组\ref{fol_motion_eauation}可改写为：
+\begin{equation}
+    \left\{
+    \begin{array}{l}
+        \frac{dx_g}{dt}=V_g\cos\theta\cos\Psi\\
+        \frac{dy_g}{dt}=V_g\cos\theta\sin\Psi\\
+        \frac{dz_g}{dt}=-V_g\sin\theta
+    \end{array}
+    \right .
+    \label{fol_motion_eauation1}
+\end{equation}
+方程组\ref{fol_motion_eauation1}的第1、2两式表示无人机在水平平面内的运动轨迹；第3式表示无人机在竖直平面内的运动轨迹。方程组中，控制的直接输入量为从机的$V_{g}^f,\theta^f,\Psi^f$，再确定飞机的初始运动量之后，可唯一确定领机与从机的
+运动规律。
+
+值得注意的是：上述控制量并不能直接由编队控制器产生，但经过理想内环控制器以及无人机动力学模型之后，将产生相应的上述的直接控制量，完整流程将在第\ref{chap:controller_design}章中介绍。
