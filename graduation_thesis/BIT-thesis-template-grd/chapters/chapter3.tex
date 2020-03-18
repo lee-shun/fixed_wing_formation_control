@@ -219,19 +219,106 @@ $PID$控制器参数。
 \end{figure}
 图中，风速的大小以及方向已经不能忽略不计，可以得出。原始产生在航迹坐标系$O_kx_ky_kz_k$中的期望速度以及期望与执行机构（油门以及副翼）所在的机体系已有大小为$\sigma$的夹角。
 \subsubsection*{风速较大时的改进}
+如图\ref{fig:heavy_wind}所示，原始在航迹坐标系之中产生的控制量的期望值若要在机体系之中产生正确的相应，需要进行相应的坐标变换。
+\begin{equation}
+    \left[
+    \begin{matrix}
+        control\_input\_x_b(k)\\
+        control\_input\_x_y(k)
+    \end{matrix}
+    \right]
+    =  
+    \left[  
+    \begin{matrix}
+        cos\sigma& -sin\sigma\\
+        sin\sigma& cos\sigma
+    \end{matrix}
+    \right]
+    \left[
+        \begin{matrix}
+            |V|_{x_k}^{des}(k)\\
+            a_{y_k}^{des}(k)
+        \end{matrix}
+        \right]
+\end{equation}
+但是由于机体系两个通道所能够接受的的控制量并不是一致的，需要进行工程化处理：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &control\_input\_x_b(k)=cos\sigma|V|_{x_k}^{des}(k)+\sum_{n=1}^k\{-sin[\sigma(n)]a_{y_k}^{des}(n)T\}\\
+            &control\_input\_x_y(k)=\frac{1}{T}\{sin[\sigma(k)|V|_{x_k}^{des}(k)]-sin[\sigma(k-1)|V|_{x_k}^{des}(k-1)]\}+cos\sigma a_{y_k}^{des}(k)
+        \end{aligned}
+    \right .
+\end{equation}
+上式中，$T$是控制时间间隔。实际应用时上式中的微分项要考虑低通滤波以及时间间隔问题，积分项应考虑积分饱和问题。
 \subsection{无人机飞行性能限幅设计}
-按照无人机气动外形尺寸以及基本飞机空气动力学，计算得出的无人机飞行性能如表\ref{tab:flight_performance}所示：
+考虑到实际系统各个环节的有界性问题，需要按照无人机气动外形尺寸以及基本飞机空气动力学，计算得出的无人机飞行性能参数，作为实际控制时的各个环节物理量的限幅依据。表\ref{tab:takeoff_performance}-\ref{tab:sink_performance}展示了飞机部分飞行性能：
 \begin{table}[H]
     \centering
-    \caption{无人机飞行性能计算表} \label{tab:flight_performance}
+    \caption{无人机起飞、爬升性能} \label{tab:takeoff_performance}
+    \begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}c|ccccccc}
+    \toprule
+        飞行性能&抬轮速度&起飞速度&滑跑距离&起飞时间
+        &爬升率&爬升角
+        \\
+    \midrule
+        值&$4.82m/s$&$5.52m/s$&$16.45m$&$7.36s$
+        &$5.99m/s$&$31.21°$\\
+    \bottomrule
+\end{tabular*}
+\end{table}
+\begin{table}[H]
+    \centering
+    \caption{无人机平飞性能} \label{tab:task_performance}
     \begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}c|cccc}
     \toprule
-        飞行性能 & $\theta_{max}$ & $\Phi_{max}$ &$V_g^{max}$ & $V_g^{min}$\\
+        飞行性能&平定常飞空速&最大空速&最小空速&失速迎角%TODO:需要有最大前项加速度
+        \\
     \midrule
-        值 & $\frac{\Pi}{4}$ & $\pm\frac{\Pi}{3}$ & $31.4m/s$ & $8.2m/s$\\
+        值&$11.52m/s$&$43.76m/s$&$4.60m/s$&$9.94°$\\
+    \bottomrule
+\end{tabular*}
+\end{table}
+\begin{table}[H]
+    \centering
+    \caption{无人机机动性能} \label{tab:motive_performance}
+    \begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}c|ccccc}
+    \toprule
+        飞行性能&转弯速率&转弯半径&转弯时间&法向过载系数&最大滚转角%TODO:需要有最大滚转角速度
+        \\
+    \midrule
+        值&$11.56m/s$&$14.31m/s$&$7.80s$&$1.38$&$43.56°$\\
+    \bottomrule
+\end{tabular*}
+\end{table}
+\begin{table}[H]
+    \centering
+    \caption{无人机下降、爬降落性能} \label{tab:sink_performance}
+    \begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}c|cccc}
+    \toprule
+        飞行性能&下降率&下降角&降落速度&滑跑距离
+        \\
+    \midrule
+        值&$10.19m/s$&$60.15m/s$&$5.89m/s$&$14.81m$
+        \\
     \bottomrule
 \end{tabular*}
 \end{table}
 \subsection{编队控制器内外环带宽设计}
 
 \subsection{原始数据滤波器设计}
+此处所涉及的原始数据，主要是来自领机以及从机的空速计测量的空速信息。此处使用一阶低通滤波器来实现对于空速信息的滤波。下面简单介绍一阶低通滤波器：
+一阶低通滤波器又称作一阶惯性滤波器，传递函数形式为标准一阶惯性环节：
+\begin{equation}
+    V_0=\frac{1}{1+\tau j\omega}
+\end{equation}
+其中$\tau$是时间常数。转换成时域形式：
+\begin{equation}
+    V_0=V_i -\tau\frac{dV_0}{dt}
+\end{equation}
+离散化之后：
+\begin{equation}
+    V_0(k)=\frac{V_i(k)+\frac{\tau}{T}V_0(k-1)}{1+\frac{\tau}{T}}
+\end{equation}
+其中，$T$为控制器时间间隔，$T=\frac{1}{f}$。
+此种滤波器在使用时需要注意时间常数的选择，时间常数过大，虽然数据波形会相对平滑，但是滞后较为严重。
