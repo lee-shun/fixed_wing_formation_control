@@ -13,7 +13,7 @@ GROUP_LENGTH=3000;
 GRAVITY_CONSTANT=9.81;
 
 time_stamp = 0; %时间戳，整数增加，用来数组索引
-TIMT = zeros(1, GROUP_LENGTH); %时间队列
+TIME = zeros(1, GROUP_LENGTH); %时间队列
 now = 0.0; %当前时间
 d_t = 0.1; %时间间隔
 end_time = 100.0; %终止时间
@@ -29,8 +29,8 @@ led_pos_yg(1)=100;
 %速度
 led_vel_xg=zeros(1, GROUP_LENGTH);
 led_vel_yg=zeros(1, GROUP_LENGTH);
-led_vel_xg(1)=0.0;
-led_vel_yg(1)=20.0;
+led_vel_xg(1)=15.0;
+led_vel_yg(1)=0.0;
 
 %===
 %===从机定义初始化
@@ -43,6 +43,7 @@ fol_pos_xg(1)=0;
 fol_pos_yg(1)=0;
 
 %速度
+fol_vel=zeros(1,GROUP_LENGTH);
 fol_vel_xg=zeros(1, GROUP_LENGTH);
 fol_vel_yg=zeros(1, GROUP_LENGTH);
 fol_vel_xg(1)=15.0;
@@ -74,6 +75,7 @@ k_mix_vel=0.8;%机体前向误差-速度混合系数
 
 v_sp_inc=zeros(1, GROUP_LENGTH);
 v_sp=zeros(1, GROUP_LENGTH);
+dot_fol_Psi=zeros(1, GROUP_LENGTH);
 
 %===
 %===仿真主循环
@@ -82,14 +84,15 @@ v_sp=zeros(1, GROUP_LENGTH);
 for now=0.0:d_t:end_time
     
 time_stamp=time_stamp+1;
-TIMT(time_stamp)=now;
+TIME(time_stamp)=now;
 
 %===
-%===STEP: 得到位置误差、速度大小误差以及速度方向误差
+
 %===
 %位置误差
 fol_vel_2d=[fol_vel_xg(time_stamp),fol_vel_yg(time_stamp)];
 fol_vel_unit=fol_vel_2d/(norm(fol_vel_2d));
+fol_vel(time_stamp)=norm(fol_vel_2d);
 
 %fol_Psi(time_stamp)=atan()%计算此项需要分情况
 led_pos_2d=[led_pos_xg(time_stamp),led_pos_yg(time_stamp)];
@@ -146,6 +149,7 @@ end
 %===
 %===STEP: 获得机体侧向向加速度速度期望值
 %===
+dot_fol_Psi(time_stamp)=0;%TODO:这里先将此处置位零，先测试速度控制器的能力
 
 %===
 %===STEP: 更新从机状态
@@ -155,28 +159,39 @@ end
 %===SUB_STEP: 根据航迹侧向加速度计算地面之中的分量
 %===
 
+fol_Psi(time_stamp+1)=fol_Psi(time_stamp)+d_t*dot_fol_Psi;
+
+
 %===
 %===SUB_STEP: 更新从机速度
 %===
 
+fol_vel(time_stamp+1)=v_sp;%TODO:注意，这里直接将本时刻的期望速度当做了下一时刻真是速度
+fol_vel_xg(time_stamp+1)=fol_vel(time_stamp+1)*cos(fol_Psi(time_stamp+1));
+fol_vel_yg(time_stamp+1)=fol_vel(time_stamp+1)*sin(fol_Psi(time_stamp+1));
 
 
 %===
 %===SUB_STEP: 更新从机位置
 %===
 
-%===
-%===STEP: 更新领机状态
-%===
+
+fol_pos_xg(time_stamp+1)=fol_pos_xg(time_stamp)+1/2*(fol_vel_xg(time_stamp)+fol_vel_xg(time_stamp+1))*d_t;
+fol_pos_yg(time_stamp+1)=fol_pos_yg(time_stamp)+1/2*(fol_vel_yg(time_stamp)+fol_vel_yg(time_stamp+1))*d_t;
 
 %===
-%===SUB_STEP: 根据航迹侧向加速度计算地面之中的分量
+%===STEP: 更新领机状态
 %===
 
 %===
 %===SUB_STEP: 更新领机速度
 %===
 
+led_vel_xg(time_stamp+1)=led_vel_xg(time_stamp);
+led_vel_yg(time_stamp+1)=led_vel_yg(time_stamp);
+
+led_pos_xg(time_stamp+1)=led_pos_xg(time_stamp)+1/2*(led_vel_xg(time_stamp)+led_vel_xg(time_stamp+1))*d_t;
+led_pos_yg(time_stamp+1)=led_pos_yg(time_stamp)+1/2*(led_vel_yg(time_stamp)+led_vel_yg(time_stamp+1))*d_t;
 %===
 %===SUB_STEP: 更新领机位置
 %===
