@@ -9,14 +9,14 @@ clc;
 %===
 
 %类宏定义
-GROUP_LENGTH=2000;
+GROUP_LENGTH=200;
 GRAVITY_CONSTANT=9.81;
 
 time_stamp = 0; %时间戳，整数增加，用来数组索引
 TIME = zeros(1, GROUP_LENGTH); %时间队列
 now = 0.0; %当前时间
 d_t = 0.1; %时间间隔
-end_time = 100.0; %终止时间
+end_time = 5.0; %终止时间
 
 %===
 %===领机定义初始化
@@ -106,6 +106,8 @@ err_pos_yk(time_stamp)=vec2cross(fol_vel_unit,err_pos_2d);
 led_vel_2d=[led_vel_xg(time_stamp),led_vel_yg(time_stamp)];
 err_vel_2d=led_vel_2d-fol_vel_2d;
 
+TIME(time_stamp)
+err_vel_2d
 err_vel_xk(time_stamp)=dot(fol_vel_unit,err_vel_2d);
 err_vel_yk(time_stamp)=vec2cross(fol_vel_unit,err_vel_2d);
 
@@ -140,14 +142,14 @@ err_mix_xg(time_stamp)=k_mix_pos*err_pos_xk(time_stamp)+k_mix_vel*err_vel_k(time
 [err_prev,err_2prev]=find_err(time_stamp,err_mix_xg);
 %按照情况选定误差，调用增量
     
-v_sp_inc(time_stamp) = Incremental_PID(0.1, 0.001, 0.0, err_2prev, err_prev, err_mix_xg(time_stamp));
+v_sp_inc(time_stamp) = Incremental_PID(0.08, 0.001, 0.0, err_2prev, err_prev, err_mix_xg(time_stamp));
 
 if(time_stamp==1)
 v_sp(time_stamp)=v_sp_inc(time_stamp);
 elseif(time_stamp>=2)
 v_sp(time_stamp)=v_sp_inc(time_stamp)+v_sp(time_stamp-1);
 end
-%v_sp(time_stamp)=10;%测试用
+%v_sp(time_stamp)=constrain(v_sp(time_stamp),8.0,26.0);%限幅设计
 %===
 %===STEP: 获得机体侧向向加速度速度期望值
 %===
@@ -168,7 +170,8 @@ fol_Psi(time_stamp+1)=fol_Psi(time_stamp)+d_t*dot_fol_Psi(time_stamp);
 %===SUB_STEP: 更新从机速度
 %===
 
-fol_vel(time_stamp+1)=v_sp(time_stamp);%TODO:注意，这里直接将本时刻的期望速度当做了下一时刻真是速度
+
+fol_vel(time_stamp+1)=one_order_low_pass(v_sp(time_stamp),fol_vel(time_stamp),0.1);%TODO:注意，这里直接将本时刻的期望速度当做了下一时刻真是速度
 fol_vel_xg(time_stamp+1)=fol_vel(time_stamp+1)*cos(fol_Psi(time_stamp+1));
 fol_vel_yg(time_stamp+1)=fol_vel(time_stamp+1)*sin(fol_Psi(time_stamp+1));
 
@@ -198,3 +201,19 @@ led_pos_yg(time_stamp+1)=led_pos_yg(time_stamp)+1/2*(led_vel_yg(time_stamp)+led_
 %===SUB_STEP: 更新领机位置
 %===
 end
+%==
+%==绘图
+%==
+
+figure(1)
+grid on;
+
+plot(TIME,fol_vel_xg,'b:',TIME,led_vel_xg,'y',TIME,err_vel_xk,'r:');
+title('速度关系图');
+xlabel('t s');
+ylabel('V m/s');
+figure(2)
+grid on;
+
+plot(TIME,fol_pos_xg,'b:',TIME,led_pos_xg,'y',TIME,err_pos_xk,'r:');
+title('位置关系图');
