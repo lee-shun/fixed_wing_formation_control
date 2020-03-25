@@ -9,14 +9,14 @@ clc;
 %===
 
 %类宏定义
-GROUP_LENGTH=200;
+GROUP_LENGTH=10;
 GRAVITY_CONSTANT=9.81;
 
 time_stamp = 0; %时间戳，整数增加，用来数组索引
 TIME = zeros(1, GROUP_LENGTH); %时间队列
 now = 0.0; %当前时间
-d_t = 0.1; %时间间隔
-end_time = 5.0; %终止时间
+d_t = 0.05; %时间间隔
+end_time = 100; %终止时间
 
 %===
 %===领机定义初始化
@@ -24,7 +24,7 @@ end_time = 5.0; %终止时间
 %位置
 led_pos_xg=zeros(1, GROUP_LENGTH);
 led_pos_yg=zeros(1, GROUP_LENGTH);
-led_pos_xg(1)=200;
+led_pos_xg(1)=50;
 led_pos_yg(1)=100;
 %速度
 led_vel_xg=zeros(1, GROUP_LENGTH);
@@ -90,6 +90,7 @@ TIME(time_stamp)=now;
 
 %===
 %位置误差
+
 fol_vel_2d=[fol_vel_xg(time_stamp),fol_vel_yg(time_stamp)];
 fol_vel_unit=fol_vel_2d/(norm(fol_vel_2d));
 fol_vel(time_stamp)=norm(fol_vel_2d);
@@ -99,16 +100,15 @@ led_pos_2d=[led_pos_xg(time_stamp),led_pos_yg(time_stamp)];
 fol_pos_2d=[fol_pos_xg(time_stamp),fol_pos_yg(time_stamp)];
 err_pos_2d=led_pos_2d-fol_pos_2d;
 
-err_pos_xk(time_stamp)=dot(fol_vel_unit,err_pos_2d);
+err_pos_xk(time_stamp)=vec2dot(fol_vel_unit,err_pos_2d);
 err_pos_yk(time_stamp)=vec2cross(fol_vel_unit,err_pos_2d);
 
 %速度误差
 led_vel_2d=[led_vel_xg(time_stamp),led_vel_yg(time_stamp)];
 err_vel_2d=led_vel_2d-fol_vel_2d;
 
-TIME(time_stamp)
-err_vel_2d
-err_vel_xk(time_stamp)=dot(fol_vel_unit,err_vel_2d);
+
+err_vel_xk(time_stamp)=vec2dot(fol_vel_unit,err_vel_2d);
 err_vel_yk(time_stamp)=vec2cross(fol_vel_unit,err_vel_2d);
 
 err_vel_k(time_stamp)=sqrt(err_vel_xk(time_stamp)^2+err_vel_yk(time_stamp)^2);
@@ -142,14 +142,22 @@ err_mix_xg(time_stamp)=k_mix_pos*err_pos_xk(time_stamp)+k_mix_vel*err_vel_k(time
 [err_prev,err_2prev]=find_err(time_stamp,err_mix_xg);
 %按照情况选定误差，调用增量
     
-v_sp_inc(time_stamp) = Incremental_PID(0.08, 0.001, 0.0, err_2prev, err_prev, err_mix_xg(time_stamp));
+v_sp_inc(time_stamp) = Incremental_PID(0.5, 0.002, 0.0, err_2prev, err_prev, err_mix_xg(time_stamp));
 
 if(time_stamp==1)
 v_sp(time_stamp)=v_sp_inc(time_stamp);
 elseif(time_stamp>=2)
 v_sp(time_stamp)=v_sp_inc(time_stamp)+v_sp(time_stamp-1);
 end
-%v_sp(time_stamp)=constrain(v_sp(time_stamp),8.0,26.0);%限幅设计
+
+%%限幅设计
+if v_sp(time_stamp)>=34.0
+     v_sp(time_stamp)=34.0;
+% elseif v_sp(time_stamp)<=8.0
+%     v_sp(time_stamp)=8.0;
+ end
+%v_sp(time_stamp)=constrain(v_sp(time_stamp),8.0,34.0);
+
 %===
 %===STEP: 获得机体侧向向加速度速度期望值
 %===
@@ -172,8 +180,8 @@ fol_Psi(time_stamp+1)=fol_Psi(time_stamp)+d_t*dot_fol_Psi(time_stamp);
 
 
 fol_vel(time_stamp+1)=one_order_low_pass(v_sp(time_stamp),fol_vel(time_stamp),0.1);%TODO:注意，这里直接将本时刻的期望速度当做了下一时刻真是速度
-fol_vel_xg(time_stamp+1)=fol_vel(time_stamp+1)*cos(fol_Psi(time_stamp+1));
-fol_vel_yg(time_stamp+1)=fol_vel(time_stamp+1)*sin(fol_Psi(time_stamp+1));
+fol_vel_xg(time_stamp+1)=fol_vel(time_stamp+1)*cos(0);
+fol_vel_yg(time_stamp+1)=fol_vel(time_stamp+1)*sin(0);
 
 
 %===
@@ -202,18 +210,43 @@ led_pos_yg(time_stamp+1)=led_pos_yg(time_stamp)+1/2*(led_vel_yg(time_stamp)+led_
 %===
 end
 %==
+%==仿真结束之后，对仿真中的数据进长度处理
+%==
+TIME(time_stamp+1)=TIME(time_stamp)+d_t;
+
+v_sp(time_stamp+1)=v_sp(time_stamp);
+v_sp_inc(time_stamp+1)=v_sp_inc(time_stamp);
+
+err_mix_xg(time_stamp+1)=err_mix_xg(time_stamp);
+err_pos_xk(time_stamp+1)=err_pos_xk(time_stamp);
+err_pos_yk(time_stamp+1)=err_pos_yk(time_stamp);
+
+err_vel_k(time_stamp+1)=err_vel_k(time_stamp);
+err_vel_xk(time_stamp+1)=err_vel_xk(time_stamp);
+err_vel_yk(time_stamp+1)=err_vel_yk(time_stamp);
+
+dot_fol_Psi(time_stamp+1)=dot_fol_Psi(time_stamp);
+
+
+
+%==
 %==绘图
 %==
 
-figure(1)
-grid on;
-
-plot(TIME,fol_vel_xg,'b:',TIME,led_vel_xg,'y',TIME,err_vel_xk,'r:');
+figure(1);
+plot(TIME,fol_vel_xg,'y',TIME,led_vel_xg,'b--',TIME,err_vel_xk,'r-.','LineWidth',2);
+set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
 title('速度关系图');
-xlabel('t s');
-ylabel('V m/s');
-figure(2)
+xlabel('time s');
+ylabel('velocity m/s');
+legend('follower-velocity','leader-velocity','error-velocity');
 grid on;
 
-plot(TIME,fol_pos_xg,'b:',TIME,led_pos_xg,'y',TIME,err_pos_xk,'r:');
+figure(2);
+plot(TIME,fol_pos_xg,'y',TIME,led_pos_xg,'b--',TIME,err_pos_xk,'r-.','LineWidth',2);
+set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
 title('位置关系图');
+xlabel('time s');
+ylabel('position m/s');
+legend('follower-position','leader-position','error-position');
+grid on;
