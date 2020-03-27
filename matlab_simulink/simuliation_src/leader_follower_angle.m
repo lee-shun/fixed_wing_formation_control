@@ -17,48 +17,50 @@ time_stamp = 0; %时间戳，整数增加，用来数组索引
 TIME = zeros(1, GROUP_LENGTH); %时间队列
 now = 0.0; %当前时间
 d_t = 0.05; %时间间隔
-end_time = 100; %终止时间
+end_time = 30; %终止时间
 
 %===
 %===领机定义初始化
 %===
-%位置
+%领机位置
 led_pos_xg=zeros(1, GROUP_LENGTH);
 led_pos_yg=zeros(1, GROUP_LENGTH);
-led_pos_xg(1)=50;
+led_pos_xg(1)=40;
 led_pos_yg(1)=100;
-%速度
+%领机速度
 led_vel_xg=zeros(1, GROUP_LENGTH);
 led_vel_yg=zeros(1, GROUP_LENGTH);
-led_vel_xg(1)=20.0;
+led_vel_xk=zeros(1, GROUP_LENGTH);
+led_vel_yk=zeros(1, GROUP_LENGTH);
+led_vel_xg(1)=15.0;
 led_vel_yg(1)=0.0;
 
 %===
 %===从机定义初始化
 %===
 
-%位置
+%从机位置
 fol_pos_xg=zeros(1, GROUP_LENGTH);
 fol_pos_yg=zeros(1, GROUP_LENGTH);
 fol_pos_xg(1)=0;
 fol_pos_yg(1)=100;
 
-%速度
+%从机速度
 fol_vel=zeros(1,GROUP_LENGTH);
 fol_vel_xg=zeros(1, GROUP_LENGTH);
 fol_vel_yg=zeros(1, GROUP_LENGTH);
 fol_vel_xg(1)=10.0;
 fol_vel_yg(1)=10.0;
 
-%角度（偏航角）
+%从机角度（偏航角）
 fol_Psi=zeros(1, GROUP_LENGTH);
 %TODO:计算偏航角初始PSi
 fol_Psi(1)=pi/4;
 
-%角速度（偏航角速度）
+%从机角速度（偏航角速度）
 dot_fol_Psi=zeros(1, GROUP_LENGTH);
 
-%误差
+%从机误差
 err_pos_xk=zeros(1, GROUP_LENGTH);
 err_pos_yk=zeros(1, GROUP_LENGTH);
 
@@ -73,17 +75,21 @@ fol_eta=zeros(1, GROUP_LENGTH);
 err_mix_yg=zeros(1, GROUP_LENGTH);%航迹系的y轴方向的混合误差
 
 %===
-%===控制器参数
+%===从机控制器参数
 %===
 
 k_velmix_pos=0.8;%机体前向误差-位置混合系数
 k_velmix_vel=0.8;%机体前向误差-速度混合系数
 
-k_anglemix_pos=0.8;%机体侧向误差-位置混合系数
-k_anglemix_eta=0.8;%机体侧向误差-角度混合系数
+k_anglemix_pos=0.01;%机体侧向误差-位置混合系数
+k_anglemix_eta=3;%机体侧向误差-角度混合系数
+
+Psi_kp=0.5;
+Psi_ki=0.0;
+Psi_kd=0.1;
 
 %==
-%==控制器期望值
+%==从机控制器期望值
 %==
 
 v_sp_inc=zeros(1, GROUP_LENGTH);
@@ -128,24 +134,28 @@ err_vel_yk(time_stamp)=vec2cross(fol_vel_unit,err_vel_2d);
 
 err_vel_k(time_stamp)=sqrt(err_vel_xk(time_stamp)^2+err_vel_yk(time_stamp)^2);
 
+%领机速度在从机航迹系中的投影，计算误差角
+led_vel_xk(time_stamp)=vec2dot(fol_vel_unit,led_vel_2d);
+led_vel_yk(time_stamp)=vec2cross(fol_vel_unit,led_vel_2d);
+
 %速度角度误差
-if (err_vel_xk(time_stamp)==0)&&(err_vel_yk(time_stamp)>0)%正右方
+if (led_vel_xk(time_stamp)==0)&&(led_vel_yk(time_stamp)>0)%正右方
     fol_eta(time_stamp)=pi/2;
-elseif (err_vel_xk(time_stamp)==0&&err_vel_yk(time_stamp)<0)%正左方
+elseif (led_vel_xk(time_stamp)==0&&led_vel_yk(time_stamp)<0)%正左方
     fol_eta(time_stamp)=-pi/2;
-elseif (err_vel_xk(time_stamp)>=0&&err_vel_yk(time_stamp)==0)%正前方或者重合，为了避免奇怪的控制量
+elseif (led_vel_xk(time_stamp)>=0&&led_vel_yk(time_stamp)==0)%正前方或者重合，为了避免奇怪的控制量
     fol_eta(time_stamp)=0;
-elseif(err_vel_xk(time_stamp)<0&&err_vel_yk(time_stamp)==0)%正后方
+elseif(led_vel_xk(time_stamp)<0&&led_vel_yk(time_stamp)==0)%正后方
     fol_eta(time_stamp)=pi;
 
-elseif(err_vel_xk(time_stamp)>0&&err_vel_yk(time_stamp)>0)%右前方
-    fol_eta(time_stamp)=atan(err_vel_yk(time_stamp)/err_vel_xk(time_stamp));
-elseif(err_vel_xk(time_stamp)>0&&err_vel_yk(time_stamp)>0)%左前方
-    fol_eta(time_stamp)=atan(err_vel_yk(time_stamp)/err_vel_xk(time_stamp));
-elseif(err_vel_xk(time_stamp)>0&&err_vel_yk(time_stamp)>0)%右后方
-    fol_eta(time_stamp)= atan(err_vel_yk(time_stamp)/err_vel_xk(time_stamp))+pi;
-elseif(err_vel_xk(time_stamp)>0&&err_vel_yk(time_stamp)>0)%左后方
-    fol_eta(time_stamp)= atan(err_vel_yk(time_stamp)/err_vel_xk(time_stamp))-pi;
+elseif(led_vel_xk(time_stamp)>0&&led_vel_yk(time_stamp)>0)%右前方
+    fol_eta(time_stamp)=atan(led_vel_yk(time_stamp)/led_vel_xk(time_stamp));
+elseif(led_vel_xk(time_stamp)>0&&led_vel_yk(time_stamp)<0)%左前方
+    fol_eta(time_stamp)=atan(led_vel_yk(time_stamp)/led_vel_xk(time_stamp));
+elseif(led_vel_xk(time_stamp)<0&&led_vel_yk(time_stamp)>0)%右后方
+    fol_eta(time_stamp)= atan(led_vel_yk(time_stamp)/led_vel_xk(time_stamp))+pi;
+elseif(led_vel_xk(time_stamp)<0&&led_vel_yk(time_stamp)<0)%左后方
+    fol_eta(time_stamp)= atan(led_vel_yk(time_stamp)/led_vel_xk(time_stamp))-pi;
 else
      fol_eta(time_stamp)=0;
 end
@@ -169,13 +179,9 @@ v_sp(time_stamp)=v_sp_inc(time_stamp)+v_sp(time_stamp-1);
 end
 
 %%限幅设计
-if v_sp(time_stamp)>=34.0
-     v_sp(time_stamp)=34.0;
- elseif v_sp(time_stamp)<=8.0
-     v_sp(time_stamp)=8.0;
- end
-%v_sp(time_stamp)=constrain(v_sp(time_stamp),8.0,34.0);
 
+v_sp(time_stamp)=constrain(v_sp(time_stamp),8.0,34.0);
+%v_sp(time_stamp)=0;%现将速度置为0，不飞了，只是转动
 %===
 %===STEP: 获得机体侧向向加速度速度期望值
 %===
@@ -184,7 +190,8 @@ err_mix_yg(time_stamp)=k_anglemix_eta*fol_eta(time_stamp)+k_anglemix_pos*err_pos
 %按照情况选定误差，调用增量
 [err_prev_yg,err_2prev_yg]=find_err(time_stamp,err_mix_yg);
 
-dot_fol_Psi_sp_inc(time_stamp) = Incremental_PID(0.01, 0.00, 0.0, err_2prev_yg, err_prev_yg, err_mix_yg(time_stamp));
+dot_fol_Psi_sp_inc(time_stamp) = Incremental_PID(Psi_kp,Psi_ki,Psi_kd, err_2prev_yg, err_prev_yg, err_mix_yg(time_stamp));
+
 
 
 
@@ -272,7 +279,7 @@ fol_eta(time_stamp+1)=fol_eta(time_stamp);
 figure(1);
 plot(TIME,fol_vel_xg,'y',TIME,led_vel_xg,'b--',TIME,err_vel_xk,'r-.','LineWidth',2);
 set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
-title('速度关系图');
+title('Velocity');
 xlabel('time s');
 ylabel('velocity m/s');
 legend('follower-velocity','leader-velocity','error-velocity');
@@ -281,9 +288,9 @@ grid on;
 figure(2);
 plot(TIME,fol_pos_xg,'y',TIME,led_pos_xg,'b--',TIME,err_pos_xk,'r-.','LineWidth',2);
 set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
-title('位置关系图');
+title('前向位置关系图');
 xlabel('time s');
-ylabel('position m/s');
+ylabel('position m');
 legend('follower-position','leader-position','error-position');
 grid on;
 
@@ -291,17 +298,27 @@ grid on;
 figure(3);
 plot(TIME,fol_eta*180/pi,'y','LineWidth',2);
 set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
-title('角度关系图');
+title('Angle(degree)');
 xlabel('time s');
-ylabel('velocity m/s');
-legend('follower-velocity','leader-velocity','error-velocity');
+ylabel('angle degree');
+legend('follower-eta');
 grid on;
 
 figure(4);
-plot(TIME,fol_pos_xg,'y',TIME,led_pos_xg,'b--',TIME,err_pos_xk,'r-.','LineWidth',2);
+plot(TIME,err_pos_yk,'r-.','LineWidth',2);
 set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
-title('位置关系图');
+title('侧向位置关系图');
 xlabel('time s');
-ylabel('position m/s');
-legend('follower-position','leader-position','error-position');
+ylabel('position m');
+legend('err-pos-yk');
+grid on;
+
+figure(5);
+plot(fol_pos_yg,fol_pos_xg,'y',led_pos_yg,led_pos_xg,'b--','LineWidth',2);
+axis equal;
+set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
+title('Position');
+xlabel('E-m');
+ylabel('N-m');
+legend('follower','leader');
 grid on;
