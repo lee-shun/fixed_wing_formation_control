@@ -13,6 +13,8 @@
 \usepackage{amsmath} %数学公式
 \usepackage{amssymb} %数学公式
 
+%宋体无法加粗的修改AutoFakeBold
+
 %% math packages -- conflict with xunicode
 \RequirePackage{amsmath,amsthm,amsfonts,amssymb,bm,mathrsfs}
 % 直立希腊字母字体
@@ -160,15 +162,16 @@
 \newcommand{\version}{\BIT@value@templateversion}
 
 %%==============引用geometry 宏包设置纸张和页面========================
-%设置版面:上3.5cm，下2.5cm，左2.7cm，右2.7cm，页眉2.5cm，页脚1.8cm，装订线0cm
+%设置版面:        上3.5cm，下2.5cm，左2.7cm，右2.7cm，页眉2.5cm，页脚1.8cm，装订线0cm
+%设置版面（本科生）:上3.5cm、下2.6cm、左3cm、右2.6cm，页眉：2.4 cm、页脚：2cm、装订线：0cm；
 \usepackage[%
 paper=a4paper,%
 top=3.5cm,% 上 3.5cm %
-bottom=2.5cm,% 下 2.5cm %
-left=2.7cm,% 左 2.7cm %
-right=2.7cm,% 右 2.7cm %
-headheight=1.0cm,% 页眉 2.5cm %
-footskip=0.7cm% 页脚 1.8cm %
+bottom=2.6cm,% 下 2.5cm %
+left=3.0cm,% 左 2.7cm %
+right=2.6cm,% 右 2.7cm %
+headheight=2.4cm,% 页眉 2.5cm %
+footskip=2cm% 页脚 1.8cm %
 ]{geometry} % 页面设置 %
 %% =========================================================
 
@@ -185,7 +188,7 @@ footskip=0.7cm% 页脚 1.8cm %
 \ctexset{chapter={
       name = {第,章},
       number = {\arabic{chapter}},
-      format = {\bfseries \sffamily \centering \zihao{3}},
+      format = {\bfseries \songti \centering \zihao{3}},
       pagestyle = {BIT@headings},
       beforeskip = 16 bp,
       afterskip = 32 bp,
@@ -196,7 +199,7 @@ footskip=0.7cm% 页脚 1.8cm %
 % 黑体四号加粗顶左，行距22磅，与上一节的间距为1行，与下面正文或节标题的段间间距为0.5行。序号与题目间空一格。
 
 \ctexset{section={
-  format={\raggedright \bfseries \sffamily \zihao{4}},
+  format={\raggedright \bfseries \songti \zihao{4}},
   beforeskip = 28bp plus 1ex minus .2ex,
   afterskip = 24bp plus .2ex,
   fixskip = true,
@@ -208,7 +211,7 @@ footskip=0.7cm% 页脚 1.8cm %
 % 黑体小四加粗顶左，行距22磅，与上一节的间距为1行，与下面正文或节标题的段间间距为0.5行。序号与题目间空一格。 
 
 \ctexset{subsection={
-   format = {\bfseries \sffamily \raggedright \zihao{-4}},
+   format = {\bfseries \songti \raggedright \zihao{-4}},
    beforeskip =28bp plus 1ex minus .2ex,
    afterskip = 24bp plus .2ex,
    fixskip = true,
@@ -219,7 +222,7 @@ footskip=0.7cm% 页脚 1.8cm %
 % 设置三节标题格式
 
 \ctexset{subsubsection={
-      format={\heiti \raggedright \zihao{-4}},
+      format={\bfseries \songti \raggedright \zihao{-4}},
       beforeskip=28bp plus 1ex minus .2ex,
       afterskip=24bp plus .2ex,
       fixskip=true,
@@ -235,10 +238,10 @@ footskip=0.7cm% 页脚 1.8cm %
 \titlecontents{chapter}[0pt]{\songti \zihao{4}}
     {\bf\thecontentslabel\hspace{\ccwd}}{\bf}
     {\hspace{.5em}\titlerule*{.}\contentspage}
-\titlecontents{section}[2\ccwd]{\songti \zihao{-4}}
+\titlecontents{section}[1\ccwd]{\songti \zihao{-4}}
     {\thecontentslabel\hspace{\ccwd}}{}
     {\hspace{.5em}\titlerule*{.}\contentspage}
-\titlecontents{subsection}[4\ccwd]{\songti \zihao{-4}}
+\titlecontents{subsection}[2\ccwd]{\songti \zihao{-4}}
     {\thecontentslabel\hspace{\ccwd}}{}
     {\hspace{.5em}\titlerule*{.}\contentspage}
 
@@ -267,7 +270,7 @@ footskip=0.7cm% 页脚 1.8cm %
 \fancypagestyle{BIT@headings}{%
   \fancyhf{}
   \fancyfoot[C]{\songti\zihao{5} \thepage}
-  \fancyhead[C]{\ifBIT@master\zihao{5}{\songti 北京理工大学学士学位论文}
+  \fancyhead[C]{\ifBIT@master\zihao{4}{\songti 北京理工大学本科生毕业设计（论文）}
                 \else\zihao{5}{\songti 北京理工大学博士学位论文}\fi}
   }
 
