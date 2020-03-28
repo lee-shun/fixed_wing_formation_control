@@ -25,7 +25,7 @@ end_time = 30; %终止时间
 %领机位置
 led_pos_xg=zeros(1, GROUP_LENGTH);
 led_pos_yg=zeros(1, GROUP_LENGTH);
-led_pos_xg(1)=40;
+led_pos_xg(1)=0;
 led_pos_yg(1)=100;
 %领机速度
 led_vel_xg=zeros(1, GROUP_LENGTH);
@@ -42,7 +42,7 @@ led_vel_yg(1)=0.0;
 %从机位置
 fol_pos_xg=zeros(1, GROUP_LENGTH);
 fol_pos_yg=zeros(1, GROUP_LENGTH);
-fol_pos_xg(1)=0;
+fol_pos_xg(1)=50;
 fol_pos_yg(1)=100;
 
 %从机速度
@@ -277,7 +277,7 @@ fol_eta(time_stamp+1)=fol_eta(time_stamp);
 %==
 %前向
 figure(1);
-plot(TIME,fol_vel_xg,'y',TIME,led_vel_xg,'b--',TIME,err_vel_xk,'r-.','LineWidth',2);
+plot(TIME,fol_vel,'y',TIME,led_vel_xg,'b--',TIME,led_vel_xg-fol_vel,'r-.','LineWidth',2);
 set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
 title('Velocity');
 xlabel('time s');
