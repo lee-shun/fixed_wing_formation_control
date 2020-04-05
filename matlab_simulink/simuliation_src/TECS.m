@@ -28,7 +28,7 @@ SKE_setpoint = 0.5 * vel_sp(time_stamp) * vel_sp(time_stamp);       % kinetic en
 
 % Calculate specific energy rate demands in units of (m**2/sec**3)
 SPE_rate_setpoint = hgt_rate_setpoint * GRAVITY_CONSTANT;           % potential energy rate of change
-SKE_rate_setpoint = vel_sp(time_stamp) * vel_rate_setpoint;         % kinetic energy rate of change
+SKE_rate_setpoint = vel_sp(time_stamp) * vel_rate_setpoint;         % kinetic energy rate of change%TODO：此处有错误
 
 % Calculate specific energies in units of (m**2/sec**2)
 SPE_estimate = height(time_stamp) * GRAVITY_CONSTANT; % potential energy
