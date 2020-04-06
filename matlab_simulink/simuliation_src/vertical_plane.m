@@ -85,7 +85,7 @@ pitch_integ_state=zeros(1, GROUP_LENGTH);
 %==
 m=2.0;%质量kg
 T_max=2.0*GRAVITY_CONSTANT;%最大推力N（即4.0kg拉力）
-C_d=0.046;%阻力系数
+C_d=0.035;%阻力系数
 rou=1.225;%空气密度
 
 %==
@@ -143,7 +143,7 @@ for now=0.0:d_t:end_time
     throttle_setpoint_max=0.74;
     throttle_setpoint_min=0.05;
     throttle_cruise=0.25;
-    throttle_time_constant=8.0;
+    throttle_time_constant=20.0;
     throttle_damping_gain=0.01;
     integrator_gain_height=0.08;
     
@@ -172,7 +172,7 @@ for now=0.0:d_t:end_time
     
     
     %4.计算俯仰角
-    pitch_time_constant=10.0;
+    pitch_time_constant=12.0;
     pitch_damping_gain=0.01;
     pitch_setpoint_min=-pi/6;
     pitch_setpoint_max=pi/4;
@@ -258,6 +258,7 @@ title('Velocity');
 xlabel('time s');
 ylabel('velocity m/s');
 legend('follower-velocity','setpoint-velocity');
+
 grid on;
 
 %高度关系图
@@ -287,5 +288,5 @@ set(gca,'linewidth',1,'fontsize',18,'fontname','Times');
 title('Control');
 xlabel('time s');
 ylabel('1');
-legend('throttle_setpoint','theta_sp');
+legend('throttle-setpoint','theta-setpoint');
 grid on;
