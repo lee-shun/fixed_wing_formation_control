@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-23 14:41:18
+ * @LastEditTime: 2020-04-08 22:34:29
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -72,7 +72,6 @@ private:
     string fw_col_mode_last{"MANUAL"};      /*上一时刻模式*/
 
     struct FORMATION_CONTROLLER::_s_fw_model_params fw_params;                   /*飞机模型参数*/
-    struct FORMATION_CONTROLLER::_s_formation_params form_ctrller_params;        /*编队控制器参数*/
     struct FORMATION_CONTROLLER::_s_tecs_params tecs_params;                     /*编队控制器内部TECS控制器参数*/
     struct FORMATION_CONTROLLER::_s_lateral_controller_params later_ctrl_params; /*编队控制器内部横侧向控制器参数*/
     void input_params();                                                      /*将外部的文件之中的参数加载到相应的函数当中去*/
@@ -81,7 +80,7 @@ private:
     struct FORMATION_CONTROLLER::_s_fw_states thisfw_states;           /*本机信息*/
     struct FORMATION_CONTROLLER::_s_4cmd formation_cmd;                /*四通道控制量*/
     struct FORMATION_CONTROLLER::_s_fw_error formation_error;          /*编队误差以及偏差*/
-    struct FORMATION_CONTROLLER::_s_formation_params formation_params; /*编队控制器混合误差产生参数,编队控制器参数*/
+    struct FORMATION_CONTROLLER::_s_mix_error_params mix_error_params; /*编队控制器混合误差产生参数,编队控制器参数*/
     struct FORMATION_CONTROLLER::_s_fw_sp formation_sp;                /*编队控制运动学期望值*/
     void formation_states_pub();                                    /*发布编队控制器控制状态*/
 

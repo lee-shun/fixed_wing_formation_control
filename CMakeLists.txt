@@ -153,6 +153,9 @@ src/fixed_wing_lib/tecs.cpp
 add_library(formation_controller
 src/formation_controller/formation_controller.cpp
 )
+add_library(abs_formation_controller
+src/formation_controller/abs_formation_controller.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -189,8 +192,15 @@ target_link_libraries(task_main
  target_link_libraries(formation_controller
  lateral_controller
  )
+ target_link_libraries(abs_formation_controller
+ formation_controller 
+ )
+
  target_link_libraries(task_main
  formation_controller
+ )
+ target_link_libraries(task_main
+ abs_formation_controller
  )
 
 
