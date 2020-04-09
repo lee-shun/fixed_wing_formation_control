@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-08 22:28:18
+ * @LastEditTime: 2020-04-10 01:04:44
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -25,6 +25,7 @@
 #include "../fixed_wing_lib/pid_controller.hpp"
 #include "../fixed_wing_lib/vector.hpp"
 #include "../fixed_wing_lib/filter.hpp"
+#include "../fixed_wing_lib/increment_pid_controller.hpp"
 
 using namespace std;
 
@@ -302,7 +303,7 @@ public:
     * 控制器初始化、设置函数（组）
     */
 
-    /* 更新领从机状态使用指针，避免内存浪费 */
+    /* 更新领从机状态*/
     void update_led_fol_states(const struct _s_leader_states *leaderstates,
                                const struct _s_fw_states *thisfw_states);
 
@@ -316,23 +317,28 @@ public:
     bool identify_led_fol_states();
 
     /**
-    * 控制输出获取函数（组）
-    * 全部使用的引用，避免内存浪费
+    * 各个编队控制器主函数
     */
-    void get_formation_4cmd(struct _s_4cmd &fw_cmd);                      /* 得到编队控制后的四通道控制量 */
-    void get_formation_sp(struct _s_fw_sp &formation_sp);                 /* 得到编队中本机的运动学期望值 */
-    void get_formation_error(struct _s_fw_error &formation_error);        /* 得到编队控制误差 */
+
+    virtual void control_formation();
+
+    /**
+    * 控制输出获取函数（组）
+    */
+    void get_formation_4cmd(struct _s_4cmd &fw_cmd);               /* 得到编队控制后的四通道控制量 */
+    void get_formation_sp(struct _s_fw_sp &formation_sp);          /* 得到编队中本机的运动学期望值 */
+    void get_formation_error(struct _s_fw_error &formation_error); /* 得到编队控制误差 */
 
 protected:
     float _dt{0.02};    /* 控制时间间隔 */
     float _dtMax{0.1};  /* 控制时间间隔max */
     float _dtMin{0.01}; /* 控制时间间隔min */
 
+    _s_formation_offset formation_offset; /* 编队队形偏移量 */
+    _s_fw_model_params fw_params;         /* 飞机模型参数 */
+
     _s_leader_states leader_states; /* 领机状态 */
     _s_fw_states fw_states;         /* 从机状态 */
-
-    _s_formation_offset formation_offset; /* 编队偏移量 */
-    _s_fw_model_params fw_params;         /* 飞机模型参数 */
 
     bool led_in_fly{false}; /* 领机正在飞行标志位 */
     bool fol_in_fly{false}; /* 从机正在飞行标志位 */
