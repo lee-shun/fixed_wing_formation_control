@@ -4,11 +4,11 @@
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description:  
+ * @Description:  普通位置式pid
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:19:08
+ * @LastEditTime: 2020-04-10 01:02:04
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
