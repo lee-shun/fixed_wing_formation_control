@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-08 22:26:43
+ * @LastEditTime: 2020-04-08 23:16:38
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -51,6 +51,15 @@ void FORMATION_CONTROLLER::set_formation_type(int formation_type)
 
         break;
     }
+}
+
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 主函数，虚函数
+ */
+void FORMATION_CONTROLLER::control_formation()
+{
 }
 
 /**
@@ -135,4 +144,3 @@ void FORMATION_CONTROLLER::get_formation_error(struct _s_fw_error &formation_err
 {
     formation_error = fw_error;
 }
-
