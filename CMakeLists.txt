@@ -251,6 +251,11 @@ add_executable(test_filter src/test/test_filter.cpp)
 target_link_libraries(test_filter
 ${catkin_LIBRARIES}
 )
+###########pid_controller##############
+add_executable(test_pid src/test/test_pid.cpp)
+target_link_libraries(test_pid
+${catkin_LIBRARIES}
+)
 
 
 #############
