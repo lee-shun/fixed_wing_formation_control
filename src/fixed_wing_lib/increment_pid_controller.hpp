@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-10 01:03:26
+ * @LastEditTime: 2020-04-11 23:00:55
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:
  * @------------------------------------------3: 3------------------------------------------@
@@ -22,16 +22,14 @@
 
 using namespace std;
 
-class INCREMENT_PID_CONTROLLER {
+class INCREMENT_PID_CONTROLLER
+{
 public:
   float increment_pid(float in, float Kp, float Ki, float Kd);
   float get_full_output();
   void reset_incre_pid();
 
 private:
-  float _dt{0.0};
-  int stamp{0};
-
   float input{0.0};
   float prev_input{0.0};
   float prev2_input{0.0};
@@ -41,41 +39,49 @@ private:
   void update_input();
 };
 
-float INCREMENT_PID_CONTROLLER::get_full_output() {
+float INCREMENT_PID_CONTROLLER::get_full_output()
+{
 
   output = output + increment;
 
   return output;
 }
 
-void INCREMENT_PID_CONTROLLER::reset_incre_pid() {
+void INCREMENT_PID_CONTROLLER::reset_incre_pid()
+{
 
-  stamp = 0;
   prev_input = 0.0;
   prev2_input = 0.0;
   output = 0.0;
 }
 
-void INCREMENT_PID_CONTROLLER::update_input() {
+void INCREMENT_PID_CONTROLLER::update_input()
+{
 
-    prev2_input = prev_input;
+  prev2_input = prev_input;
 
-    prev_input = input;
+  prev_input = input;
 }
 
 float INCREMENT_PID_CONTROLLER::increment_pid(float in, float Kp, float Ki,
-                                              float Kd) {
+                                              float Kd)
+{
+
   input = in;
 
-  static float param_p = Kp * (input - prev_input);
-  static float param_i = Ki * input;
-  static float param_d = Kd * (input - 2 * prev_input + prev2_input);
+  cout << "before calculate" << endl;
+  cout << "input" << input << endl;
+  cout << "prev2_input" << prev2_input << endl;
+  cout << "prev_input" << prev_input << endl;
+
+  float param_p = Kp * (input - prev_input);
+  float param_i = Ki * input;
+  float param_d = Kd * (input - 2 * prev_input + prev2_input);
 
   increment = param_p + param_i + param_d;
 
-  return increment;
-
   update_input();
 
+  return increment;
 }
 #endif

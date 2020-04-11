@@ -130,7 +130,7 @@ void PID_CONTROLLER::cal_time_interval()
 
 float PID_CONTROLLER::pid_anti_saturated(float input_val, bool use_integ, bool use_diff)
 {
-    current_time = get_sys_time() / 1000; //获取系统时间，单位为毫秒，需要转化成秒
+    current_time = get_sys_time() / 1000; /*获取系统时间，单位为毫秒，需要转化成秒*/
     input = input_val;
 
     cal_time_interval();
