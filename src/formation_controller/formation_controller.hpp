@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-10 01:04:44
+ * @LastEditTime: 2020-04-12 00:42:07
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -44,74 +44,99 @@ public:
     * 十分重要的数据桥梁，写成public为了外部访问结构体的声明
     */
 
-    struct _s_fw_model_params /* 一系列的飞机动力学模型参数 */
+    /* 一系列的飞机动力学模型参数 */
+    struct _s_fw_model_params
     {
         /*for tecs use*/
 
-        float throttle_min{0.1}; /* 最小油门 */
+        /* 最小油门 */
+        float throttle_min{0.1};
 
-        float throttle_max{1}; /* 最大油门 */
+        /* 最大油门 */
+        float throttle_max{1};
 
-        float throttle_cruise{0.3}; /* 巡航油门 */
+        /* 巡航油门 */
+        float throttle_cruise{0.3};
 
-        float pitch_min_rad{-PI / 4}; /* 最小俯仰角rad */
+        /* 最小俯仰角rad */
+        float pitch_min_rad{-PI / 4};
 
-        float pitch_max_rad{PI / 4}; /* 最大俯仰角rad */
+        /* 最大俯仰角rad */
+        float pitch_max_rad{PI / 4};
 
-        float pitch_rate_max{PI / 3}; /* 最大俯仰角速度 */
+        /* 最大俯仰角速度 */
+        float pitch_rate_max{PI / 3};
 
         /* for later_controller use*/
 
-        float roll_max{PI / 2}; /* 最大滚转角rad */
+        /* 最大滚转角rad */
+        float roll_max{PI / 2}; 
 
-        float roll_rate_max{PI / 3}; /* 最大滚转角速度rad/s */
+        /* 最大滚转角速度rad/s */
+        float roll_rate_max{PI / 3}; 
 
         /*for generate the airspeed setpoint use*/
 
-        float maxinc_acc{10.0}; /* 飞机前向最大瞬时加速度 */
+        /* 飞机前向最大瞬时加速度 */
+        float maxinc_acc{10.0};
 
-        float maxdec_acc{10.0}; /* 飞机减速最大瞬时加速度 */
+        /* 飞机减速最大瞬时加速度 */
+        float maxdec_acc{10.0};
 
-        float max_arispd_sp{25.0}; /* 飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动 */
+        /* 飞机空速最大设定值,此处的最大速度，一定要和飞机的最快速度贴合，否则容易造成油门抖动 */
+        float max_arispd_sp{25.0};
 
-        float min_arispd_sp{8.0}; /* 飞机空速最小设定值 */
+        /* 飞机空速最小设定值 */
+        float min_arispd_sp{8.0};
     };
 
-    struct _s_mix_error_params /* 编队控制器混合误差产生参数,编队控制器参数 */
+    /* 编队控制器混合误差产生参数,编队控制器参数 */
+    struct _s_mix_error_params
     {
-        float kv_p{0.2}; /* 主从机速度差比例项 */
+        /* 主从机速度差比例项 */
+        float kv_p{0.2};
 
-        float kp_p{0.5}; /* 从机期望与实际位置误差比例 */
+        /* 从机期望与实际位置误差比例 */
+        float kp_p{0.5};
 
-        float mix_kp{0.4}; /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望空速pid参数 */
+        float mix_kp{0.4};
 
-        float mix_kd{0.0}; /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望空速pid参数 */
+        float mix_kd{0.0};
 
-        float mix_ki{0.0}; /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望空速pid参数 */
+        float mix_ki{0.0};
     };
 
-    struct _s_rel_states /* 领机从机相对状态 */
+    /* 领机从机相对状态 */
+    struct _s_rel_states
     {
         /* data */
     };
 
-    struct _s_leader_states /* 领机状态信息 */
+    /* 领机状态信息 */
+    struct _s_leader_states
     {
-        float pitch_angle{0}; /* 姿态只有姿态那个控制器才可能用到 */
+        /* 姿态只有姿态那个控制器才可能用到 */
+        float pitch_angle{0};
 
         float yaw_angle{0};
 
         float roll_angle{0};
 
-        bool yaw_valid{false}; /* 有时候不能直接得到领机的航向信息 */
+        /* 有时候不能直接得到领机的航向信息 */
+        bool yaw_valid{false};
 
-        float ned_vel_x{0}; /* NED速度与GPS速度是不一致的 */
+        /* NED速度与GPS速度是不一致的 */
+        float ned_vel_x{0};
 
         float ned_vel_y{0};
 
         float ned_vel_z{0};
 
-        float global_vel_x{0}; /* GPS速度 */
+        /* GPS速度 */
+        float global_vel_x{0};
 
         float global_vel_y{0};
 
@@ -134,7 +159,8 @@ public:
         float wind_estimate_z{0};
     };
 
-    struct _s_fw_states /* 本机状态信息 */
+    /* 本机状态信息 */
+    struct _s_fw_states
     {
         string flight_mode;
 
@@ -146,13 +172,15 @@ public:
 
         float att_quat[4];
 
-        float ned_vel_x{0}; /* NED速度 */
+        /* NED速度 */
+        float ned_vel_x{0};
 
         float ned_vel_y{0};
 
         float ned_vel_z{0};
 
-        float global_vel_x{0}; /* GPS速度 */
+        /* GPS速度 */
+        float global_vel_x{0};
 
         float global_vel_y{0};
 
@@ -160,7 +188,8 @@ public:
 
         float body_acc[3];
 
-        float ned_acc[3]; /* 内部计算后填充，或者外部填充均可 */
+        /* 内部计算后填充，或者外部填充均可 */
+        float ned_acc[3];
 
         float rotmat[3][3];
 
@@ -184,10 +213,12 @@ public:
 
         bool altitude_lock{false};
 
-        bool yaw_valid{true}; /* TODO:添加yaw_valid的判断，因为此是一个十分重要的计算量，将来的控制量基本与之有关 */
+        /* TODO:添加yaw_valid的判断，因为此是一个十分重要的计算量，将来的控制量基本与之有关 */
+        bool yaw_valid{true};
     };
 
-    struct _s_formation_offset /* 编队队形几何偏移 */
+    /* 编队队形几何偏移 */
+    struct _s_formation_offset
     {
         /* 机体系 */
         float xb{0};
@@ -205,7 +236,8 @@ public:
         float ned_d{0};
     };
 
-    struct _s_fw_sp /* 这个结构体为了区分，角度以及油门的期望值就是单独要发布的，是由运动学位置以及速度的期望值以及当前飞机的状态，是计算出来的。 */
+    /* 这个结构体为了区分，角度以及油门的期望值就是单独要发布的，是由运动学位置以及速度的期望值以及当前飞机的状态，是计算出来的。 */
+    struct _s_fw_sp
     {
         float ned_vel_x{0};
 
@@ -226,7 +258,8 @@ public:
         float ground_speed{0};
     };
 
-    struct _s_fw_error /* 本机误差，包括与领机的偏差 */
+    /* 本机误差，包括与领机的偏差 */
+    struct _s_fw_error
     {
         /* ned坐标系之下的位置误差 */
         float P_N{0};
@@ -272,7 +305,8 @@ public:
         float led_fol_eta{0};
     };
 
-    struct _s_tecs_params /* TECS控制器参数 */
+    /* TECS控制器参数 */
+    struct _s_tecs_params
     {
         int EAS2TAS{1};
 
@@ -287,11 +321,13 @@ public:
         float time_const{5.0};
     };
 
-    struct _s_lateral_controller_params /*  横侧向控制器参数 */
+    /*  横侧向控制器参数 */
+    struct _s_lateral_controller_params
     {
     };
 
-    struct _s_4cmd /* 四通道控制量 */
+    /* 四通道控制量 */
+    struct _s_4cmd
     {
         float roll{0};
         float pitch{0};
@@ -325,27 +361,43 @@ public:
     /**
     * 控制输出获取函数（组）
     */
-    void get_formation_4cmd(struct _s_4cmd &fw_cmd);               /* 得到编队控制后的四通道控制量 */
-    void get_formation_sp(struct _s_fw_sp &formation_sp);          /* 得到编队中本机的运动学期望值 */
-    void get_formation_error(struct _s_fw_error &formation_error); /* 得到编队控制误差 */
 
-protected:
-    float _dt{0.02};    /* 控制时间间隔 */
-    float _dtMax{0.1};  /* 控制时间间隔max */
-    float _dtMin{0.01}; /* 控制时间间隔min */
+    /* 得到编队控制后的四通道控制量 */
+    void get_formation_4cmd(struct _s_4cmd &fw_cmd);
+    /* 得到编队中本机的运动学期望值 */
+    void get_formation_sp(struct _s_fw_sp &formation_sp);
+    /* 得到编队控制误差 */
+    void get_formation_error(struct _s_fw_error &formation_error);
 
-    _s_formation_offset formation_offset; /* 编队队形偏移量 */
-    _s_fw_model_params fw_params;         /* 飞机模型参数 */
+  protected:
+    /* 控制时间间隔 */
+    float _dt{0.02};
+    /* 控制时间间隔max */
+    float _dtMax{0.1};
+    /* 控制时间间隔min */
+    float _dtMin{0.01};
 
-    _s_leader_states leader_states; /* 领机状态 */
-    _s_fw_states fw_states;         /* 从机状态 */
+    /* 编队队形偏移量 */
+    _s_formation_offset formation_offset;
+    /* 飞机模型参数 */
+    _s_fw_model_params fw_params;
 
-    bool led_in_fly{false}; /* 领机正在飞行标志位 */
-    bool fol_in_fly{false}; /* 从机正在飞行标志位 */
+    /* 领机状态 */
+    _s_leader_states leader_states;
+    /* 从机状态 */
+    _s_fw_states fw_states;
 
-    _s_4cmd _cmd;         /* 最后的控制量 */
-    _s_fw_sp fw_sp;       /* 本机的期望 */
-    _s_fw_error fw_error; /* 本机误差，包括与期望的差和领机的偏差 */
+    /* 领机正在飞行标志位 */
+    bool led_in_fly{false};
+    /* 从机正在飞行标志位 */
+    bool fol_in_fly{false};
+
+    /* 最后的控制量 */
+    _s_4cmd _cmd;
+    /* 本机的期望 */
+    _s_fw_sp fw_sp;
+    /* 本机误差，包括与期望的差和领机的偏差 */
+    _s_fw_error fw_error;
 
 private:
 };
