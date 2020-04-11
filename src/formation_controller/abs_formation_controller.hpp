@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-12 00:30:52
+ * @LastEditTime: 2020-04-12 01:08:57
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -54,70 +54,123 @@ private:
    *编队控制器外函数，变量（组）
    */
 
-    long abs_pos_vel_ctrl_timestamp{0}; /* 绝对速度位置控制器时间戳 */
+    /* 绝对速度位置控制器时间戳 */
+    long abs_pos_vel_ctrl_timestamp{0};
 
-    _s_leader_states leader_states_f; /* 滤波后的领机信息 */
-    _s_fw_states fw_states_f;         /* 滤波后的从机信息 */
+    /* 滤波后的领机信息 */
+    _s_leader_states leader_states_f;
 
-    void filter_led_fol_states(); /* 完成对于领机从机的滤波函数 */
-    bool use_the_filter{true};    /* 是否使用滤波器对原始数据滤波 */
-    FILTER led_gol_vel_x_filter;  /* 领机gol速度x滤波器 */
-    FILTER led_gol_vel_y_filter;  /* 领机gol速度y滤波器 */
-    bool fw_airspd_states_valid{
-        true}; /* 检验计算本机的空速（状态）以及实际读取的空速的合法性 */
-    bool led_airspd_states_valid{
-        true}; /* 检验计算领机的空速（状态）以及实际读取的空速的合法性 */
+    /* 滤波后的从机信息 */
+    _s_fw_states fw_states_f;
 
-    Vec led_arispd;     /* 领机空速向量 */
-    Vec led_gspeed_2d;  /* 领机地速向量 */
-    Vec fw_arispd;      /* 本机空速向量 */
-    Vec fw_gspeed_2d;   /* 本机地速向量 */
-    Vec fw_wind_vector; /* 本机风估计向量 */
+    /* 完成对于领机从机的滤波函数 */
+    void filter_led_fol_states();
 
-    double led_cos_dir{
-        0.0}; /* 领机dir_cos，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
-    double led_sin_dir{
-        0.0}; /* 领机dir_sin，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
-    double fw_cos_dir{
-        0.0}; /* 本机dir_cos，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
-    double fw_sin_dir{
-        0.0}; /* 本机dir_sin，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
+    /* 是否使用滤波器对原始数据滤波 */
+    bool use_the_filter{true};
+    
+    /* 领机gol速度x滤波器 */
+    FILTER led_gol_vel_x_filter;
+
+    /* 领机gol速度y滤波器 */
+    FILTER led_gol_vel_y_filter;
+
+    /* 检验计算本机的空速（状态）以及实际读取的空速的合法性 */
+    bool fw_airspd_states_valid{true};
+
+    /* 检验计算领机的空速（状态）以及实际读取的空速的合法性 */
+    bool led_airspd_states_valid{true};
+
+    /* 领机空速向量 */
+    Vec led_arispd;
+
+    /* 领机地速向量 */
+    Vec led_gspeed_2d;
+
+    /* 本机空速向量 */
+    Vec fw_arispd;
+
+    /* 本机地速向量 */
+    Vec fw_gspeed_2d;
+
+    /* 本机风估计向量 */
+    Vec fw_wind_vector;
+
+    /* 领机dir_cos，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
+    double led_cos_dir{0.0};
+
+    /* 领机dir_sin，这其中的dir这个角度，可能是yaw，也可能是速度偏角*/
+    double led_sin_dir{0.0};
+
+    /* 本机dir_cos，这其中的dir这个角度，可能是yaw，也可能是速度偏角 */
+    double fw_cos_dir{0.0};
+
+    /* 本机dir_sin，这其中的dir这个角度，可能是yaw，也可能是速度偏角*/
+    double fw_sin_dir{0.0};
 
     _e_format_method format_method;
-    _s_mix_error_params
-        mix_error_params; /* 编队控制器混合误差产生参数,编队控制器参数 */
 
-    INCREMENT_PID_CONTROLLER gspeed_sp_pid; /*产生期望地速的pid*/
-    bool rest_speed_pid{false};             /* 重置内部控器标志量 */
-    float del_fol_gspeed{
-        0.0};                  /* 从机期望地速增量，最终实现的是领机与从机地速一致 */
-    float airspd_sp_prev{0.0}; /* 飞机期望空速（前一时刻） */
-    float airspd_sp{0.0};      /* 飞机期望空速 */
-    FILTER airspd_sp_filter;   /* 本机空速期望值滤波器 */
+    /* 编队控制器混合误差产生参数,编队控制器参数 */
+    _s_mix_error_params mix_error_params;
+
+    /*产生期望地速的pid*/
+    INCREMENT_PID_CONTROLLER gspeed_sp_pid;
+
+    /* 重置内部控器标志量 */
+    bool rest_speed_pid{false};
+
+    /* 从机期望地速增量，最终实现的是领机与从机地速一致 */
+    float del_fol_gspeed{0.0};
+
+    /* 飞机期望空速（前一时刻） */
+    float airspd_sp_prev{0.0};
+
+    /* 飞机期望空速 */
+    float airspd_sp{0.0};
+
+    /* 本机空速期望值滤波器 */
+    FILTER airspd_sp_filter;
 
     /**
    * TECS函数，变量（组）
    */
 
-    TECS _tecs;                 /* TECS控制器 */
-    bool rest_tecs{false};      /* 重置TECS */
-    bool vz_valid{false};       /* 纵向速度有效标志位 */
-    _s_tecs_params tecs_params; /* TECS参数 */
+    /* TECS控制器 */
+    TECS _tecs;
+
+    /* 重置TECS */
+    bool rest_tecs{false};
+
+    /* 纵向速度有效标志位 */
+    bool vz_valid{false};
+
+    /* TECS参数 */
+    _s_tecs_params tecs_params;
 
     /**
    * 横侧性控制器函数，变量（组）
    */
 
-    LATERAL_CONTROLLER _lateral_controller;                 /* 横侧向控制器 */
-    _s_lateral_controller_params lateral_controller_params; /* 横侧向控制器参数 */
-    float roll_cmd{0.0};                                    /* 最终roll通道控制量 */
-    float roll_cmd_prev{0.0};                               /* 最终roll通道控制量 */
-    FILTER roll_cmd_filter;                                 /* 期望滚转角滤波器 */
+    /* 横侧向控制器 */
+    LATERAL_CONTROLLER _lateral_controller;
+
+    /* 横侧向控制器参数 */
+    _s_lateral_controller_params lateral_controller_params;
+
+    /* 最终roll通道控制量 */
+    float roll_cmd{0.0};
+
+    /* 最终roll通道控制量 */
+    float roll_cmd_prev{0.0};
+    
+    /* 期望滚转角滤波器 */
+    FILTER roll_cmd_filter;
 
     /**
    * 其他计算函数，变量（组）
    */
-    Point get_plane_to_sp_vector(Point origin, Point target); /* 原始信息预处理 */
+    /* 原始信息预处理 */
+    Point get_plane_to_sp_vector(Point origin, Point target);
 };
 
 #endif
