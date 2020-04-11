@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-10 00:58:17
+ * @LastEditTime: 2020-04-11 23:03:22
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -100,7 +100,7 @@ void ABS_FORMATION_CONTROLLER::get_formation_params(struct _s_mix_error_params &
  */
 void ABS_FORMATION_CONTROLLER::control_formation()
 {
-    static long now = get_sys_time();
+    long now = get_sys_time();
     _dt = constrain((now - abs_pos_vel_ctrl_timestamp) * 1.0e-3f, _dtMin, _dtMax);
 
     /**
@@ -122,8 +122,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     *   b. 计算从机期望位置的gps位置
     */
 
-    static float led_airspd_x = leader_states_f.wind_estimate_x + leader_states_f.global_vel_x;
-    static float led_airspd_y = leader_states_f.wind_estimate_y + leader_states_f.global_vel_y;
+    float led_airspd_x = leader_states_f.wind_estimate_x + leader_states_f.global_vel_x;
+    float led_airspd_y = leader_states_f.wind_estimate_y + leader_states_f.global_vel_y;
 
     led_arispd.set_vec_ele(led_airspd_x, led_airspd_y);                                    /* 领机空速向量 */
     led_gspeed_2d.set_vec_ele(leader_states_f.global_vel_x, leader_states_f.global_vel_y); /* 领机地速向量 */
@@ -172,7 +172,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     formation_offset.ned_e = led_sin_dir * formation_offset.xb + led_cos_dir * formation_offset.yb;
     formation_offset.ned_d = formation_offset.zb;
 
-    static double ref[3], result[3];
+    double ref[3], result[3];
     ref[0] = leader_states_f.latitude;
     ref[1] = leader_states_f.longitude;
     ref[2] = leader_states_f.altitude;
@@ -184,7 +184,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     fw_sp.altitude = result[2];
 
     /* 保证归一化的结果，此向量代表了领机的速度方向*/
-    static Vec led_dir_unit(led_cos_dir, fw_sin_dir);
+    Vec led_dir_unit(led_cos_dir, fw_sin_dir);
     led_dir_unit = led_dir_unit.normalized();
 
     /**
@@ -194,8 +194,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      *      3. 有误
     */
 
-    static float fw_airspd_x = fw_states_f.wind_estimate_x + fw_states_f.global_vel_x;
-    static float fw_airspd_y = fw_states_f.wind_estimate_y + fw_states_f.global_vel_y;
+    float fw_airspd_x = fw_states_f.wind_estimate_x + fw_states_f.global_vel_x;
+    float fw_airspd_y = fw_states_f.wind_estimate_y + fw_states_f.global_vel_y;
 
     fw_arispd.set_vec_ele(fw_airspd_x, fw_airspd_y);                              /* 本机空速向量 */
     fw_gspeed_2d.set_vec_ele(fw_states_f.global_vel_x, fw_states_f.global_vel_y); /* 本机地速向量 */
@@ -239,22 +239,22 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     }
 
     /* 保证归一化的结果，此向量十分重要，代表了从机速度方向*/
-    static Vec fw_dir_unit(fw_cos_dir, fw_sin_dir);
+    Vec fw_dir_unit(fw_cos_dir, fw_sin_dir);
     fw_dir_unit = fw_dir_unit.normalized();
 
     /**
     * 3. 计算从机的期望位置与当前位置的误差在从机航迹坐标系下的投影
     */
 
-    static Point pos_sp(fw_sp.latitude, fw_sp.longitude);                     /* 期望位置 */
-    static Point current_pos(fw_states_f.latitude, fw_states_f.longitude);    /* 当前位置 */
-    static Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); /* 计算飞机到期望点向量(本质来说是误差向量) */
+    Point pos_sp(fw_sp.latitude, fw_sp.longitude);                     /* 期望位置 */
+    Point current_pos(fw_states_f.latitude, fw_states_f.longitude);    /* 当前位置 */
+    Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); /* 计算飞机到期望点向量(本质来说是误差向量) */
 
     fw_error.PXk = fw_dir_unit * vector_plane_sp;         /* 沿地速度方向距离误差（待检验） */
     fw_error.PYk = fw_dir_unit ^ vector_plane_sp;         /* 垂直于地速度方向距离误差 */
     fw_error.PZk = fw_sp.altitude - fw_states_f.altitude; /* 高度方向误差 */
 
-    static double a_pos[2], b_pos[2], m[2]; /* 计算ned坐标系下的位置误差 */
+    double a_pos[2], b_pos[2], m[2]; /* 计算ned坐标系下的位置误差 */
     a_pos[0] = fw_states_f.latitude;
     a_pos[1] = fw_states_f.longitude;
     b_pos[0] = fw_sp.latitude;
@@ -271,7 +271,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     * 4. 计算领机从机地速“差”在从机航迹坐标系之中的投影，控制量是地速，所以是地速之差
     */
 
-    static Vec led_fol_vel_error = led_gspeed_2d - fw_gspeed_2d;
+    Vec led_fol_vel_error = led_gspeed_2d - fw_gspeed_2d;
     fw_error.led_fol_vxk = fw_dir_unit * led_fol_vel_error;                         /* 沿地速方向 */
     fw_error.led_fol_vyk = fw_dir_unit ^ led_fol_vel_error;                         /* 垂直地直速方向*/
     fw_error.led_fol_vzk = leader_states_f.global_vel_z - fw_states_f.global_vel_z; /*竖直速度之差*/
@@ -284,8 +284,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      *5. 计算领机从机速度角度，机体前向右偏为正,范围（0～pi/2),左偏为负，范围（-pi/2～0）。
      */
 
-    static float led_gsp_Xk = fw_dir_unit * led_gspeed_2d;
-    static float led_gsp_Yk = fw_dir_unit ^ led_gspeed_2d;
+    float led_gsp_Xk = fw_dir_unit * led_gspeed_2d;
+    float led_gsp_Yk = fw_dir_unit ^ led_gspeed_2d;
 
     if (led_gsp_Xk > 0 && led_gsp_Yk > 0) /*右前方*/
     {
