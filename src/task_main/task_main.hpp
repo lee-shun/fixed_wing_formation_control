@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-08 22:34:29
+ * @LastEditTime: 2020-04-13 00:03:45
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -28,6 +28,7 @@
 #include "fixed_wing_formation_control/Fw_cmd_mode.h"
 #include "fixed_wing_formation_control/Fw_current_mode.h"
 #include "../formation_controller/formation_controller.hpp"
+#include "../formation_controller/abs_formation_controller.hpp"
 
 using namespace std;
 
@@ -80,7 +81,7 @@ private:
     struct FORMATION_CONTROLLER::_s_fw_states thisfw_states;           /*本机信息*/
     struct FORMATION_CONTROLLER::_s_4cmd formation_cmd;                /*四通道控制量*/
     struct FORMATION_CONTROLLER::_s_fw_error formation_error;          /*编队误差以及偏差*/
-    struct FORMATION_CONTROLLER::_s_mix_error_params mix_error_params; /*编队控制器混合误差产生参数,编队控制器参数*/
+    struct ABS_FORMATION_CONTROLLER::_s_mix_Xerr_params mix_Xerr_params; /*编队控制器混合误差产生参数,编队控制器参数*/
     struct FORMATION_CONTROLLER::_s_fw_sp formation_sp;                /*编队控制运动学期望值*/
     void formation_states_pub();                                    /*发布编队控制器控制状态*/
 
