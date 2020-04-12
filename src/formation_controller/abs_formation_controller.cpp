@@ -289,57 +289,146 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     if (led_gsp_Xk > 0 && led_gsp_Yk > 0) /*右前方*/
     {
-        fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
-    }
-    else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*右后方*/
+      fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
+    } else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*右后方*/
     {
-        fw_error.led_fol_eta = PI + atanf(led_gsp_Yk / led_gsp_Xk);
-    }
-    else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*左前方*/
+      fw_error.led_fol_eta = PI + atanf(led_gsp_Yk / led_gsp_Xk);
+    } else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*左前方*/
     {
-        fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
-    }
-    else if (led_gsp_Xk < 0 && led_gsp_Yk < 0) /*左后方*/
+      fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
+    } else if (led_gsp_Xk < 0 && led_gsp_Yk < 0) /*左后方*/
     {
-        fw_error.led_fol_eta = -PI + atanf(led_gsp_Yk / led_gsp_Xk);
-    }
-    else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*左方*/
+      fw_error.led_fol_eta = -PI + atanf(led_gsp_Yk / led_gsp_Xk);
+    } else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*左方*/
     {
-        fw_error.led_fol_eta = -PI / 2;
-    }
-    else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*右方*/
+      fw_error.led_fol_eta = -PI / 2;
+    } else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*右方*/
     {
-        fw_error.led_fol_eta = PI / 2;
-    }
-    else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*后方*/
+      fw_error.led_fol_eta = PI / 2;
+    } else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*后方*/
     {
-        fw_error.led_fol_eta = -PI;
-    }
-    else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*前方*/
+      fw_error.led_fol_eta = -PI;
+    } else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*前方*/
     {
-        fw_error.led_fol_eta = 0;
-    }
-    else /*有误*/
+      fw_error.led_fol_eta = 0;
+    } else /*有误*/
     {
-        fw_error.led_fol_eta = 0;
-        ABS_FORMATION_CONTROLLER_INFO("领机从机角度误差有误");
+      fw_error.led_fol_eta = 0;
+      ABS_FORMATION_CONTROLLER_INFO("领机从机角度误差有误");
     }
 
     /**
      * 6.判断控制分段
      */
 
-    /* TODO：用标志位表示控制状态，写到控制器状态量之中； */
+    if (vector_plane_sp.len() >= 30.0) {
+      format_method = _e_format_method::LONG_DIS;
+    } else {
+      format_method = _e_format_method::CLOSE_DIS;
+    }
 
     /**
      * 7. 利用前向位置、速度误差产生期望速度大小
      */
 
-    /**
-     * 8. 利用衡侧向位置、角度误差产生期望向心加速度大小。
-     */
+    if (format_method == _e_format_method::LONG_DIS) {
+      airspd_sp = fw_params.max_arispd_sp;
+    } else if (format_method == _e_format_method::CLOSE_DIS) {
+      /* 1.产生前向混合误差 */
+
+      float mix_err_Xk = mix_error_params.kp_p * fw_error.PXk +
+                         mix_error_params.kv_p * fw_error.led_fol_vk;
+
+      /* 2.混合误差产生期望地速 */
+      if (rest_speed_pid) {
+        gspeed_sp_pid.reset_incre_pid();
+      }
+      float gspeed_sp_inc = gspeed_sp_pid.increment_pid(
+          mix_err_Xk, mix_error_params.mix_kp, mix_error_params.mix_ki,
+          mix_error_params.mix_kd);
+
+      fw_sp.ground_speed = gspeed_sp_pid.get_full_output();
+
+      /* 3.期望地速产生期望空速 */
+
+      fw_wind_vector.set_vec_ele(fw_states_f.wind_estimate_x,
+                                 fw_states_f.wind_estimate_y);
+      /* 沿着飞机机体前向的风估计 */
+      float wind_Xk = fw_dir_unit * fw_wind_vector;
+
+      airspd_sp = fw_sp.ground_speed + wind_Xk; /* 此处的空速应该是加法 */
+
+      cout << "最原始的空速设定值为" << airspd_sp << endl;
+
+      /* 符合飞机本身的加速减速特性： */
+      /* TODO:慎用，加上之后,需要加大飞机的前向后相加速度，由于延时作用太强，可能导致不稳定。
+       */
+      if ((airspd_sp - airspd_sp_prev) > fw_params.maxinc_acc * _dt) {
+        airspd_sp = airspd_sp_prev + fw_params.maxinc_acc * _dt;
+      } else if ((airspd_sp - airspd_sp_prev) < -fw_params.maxdec_acc * _dt) {
+        airspd_sp = airspd_sp_prev - fw_params.maxdec_acc * _dt;
+      }
+
+      airspd_sp =
+          airspd_sp_filter.one_order_filter(airspd_sp); /* 进入一阶低通滤波器 */
+
+      airspd_sp_prev = airspd_sp;
+
+      fw_sp.air_speed = constrain(airspd_sp, fw_params.min_arispd_sp,
+                                  fw_params.max_arispd_sp);
+
+    } else {
+      ABS_FORMATION_CONTROLLER_INFO("分段有误，无法计算期望速度");
+    }
 
     /**
-     * 9. 利用前向位置、速度误差产生期望速度大小
+     * 8.调用TECS获得期望俯仰角以及期望油门
      */
+    if (rest_tecs)
+    {
+        _tecs.reset_state();
+        rest_tecs = false;
+    }
+    /* 设置参数,真实的飞机还需要另外调参 */
+
+    _tecs.set_speed_weight(tecs_params.speed_weight);
+    _tecs.set_time_const_throt(tecs_params.time_const_throt); /* 这个值影响到总能量-->油门的（相当于Kp，他越大，kp越小） */
+    _tecs.set_time_const(tecs_params.time_const);             /* 这个值影响到能量分配-->俯仰角他越大，kp越小 */
+    _tecs.enable_airspeed(true);
+
+    if (fw_sp.altitude - fw_states.altitude >= 10) /* 判断一下是否要进入爬升 */
+
+    {
+        tecs_params.climboutdem = true;
+    }
+    else
+    {
+        tecs_params.climboutdem = false;
+    }
+
+    _tecs.update_vehicle_state_estimates(fw_states_f.air_speed, fw_states_f.rotmat, fw_states_f.body_acc,
+                                         fw_states_f.altitude_lock, fw_states_f.in_air, fw_states_f.altitude,
+                                         vz_valid, fw_states_f.ned_vel_z, fw_states_f.body_acc[2]);
+
+    _tecs.update_pitch_throttle(fw_states_f.rotmat, fw_states_f.pitch_angle,
+                                fw_states_f.altitude, fw_sp.altitude, fw_sp.air_speed,
+                                fw_states_f.air_speed, tecs_params.EAS2TAS, tecs_params.climboutdem,
+                                tecs_params.climbout_pitch_min_rad, fw_params.throttle_min,
+                                fw_params.throttle_max, fw_params.throttle_cruise,
+                                fw_params.pitch_min_rad, fw_params.pitch_max_rad);
+
+    _cmd.pitch = _tecs.get_pitch_setpoint();
+    _cmd.thrust = _tecs.get_throttle_setpoint();
+
+    /**
+     * 9. 利用横侧向位置、角度误差产生期望滚转角
+     */
+
+    if (format_method == _e_format_method::LONG_DIS) {
+      /* L1控制方法 */
+    } else if (format_method == _e_format_method::CLOSE_DIS) {
+      /* 位置与角度误差控制方法 */
+    } else {
+      ABS_FORMATION_CONTROLLER_INFO("分段有误，无法计算期望滚转");
+    }
 }

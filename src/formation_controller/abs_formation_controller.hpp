@@ -23,6 +23,25 @@
 class ABS_FORMATION_CONTROLLER : protected FORMATION_CONTROLLER
 {
 public:
+    /* 编队控制器混合误差产生参数,编队控制器参数 */
+    struct _s_mix_error_params
+    {
+        /* 主从机速度差比例项 */
+        float kv_p{0.2};
+
+        /* 从机期望与实际位置误差比例 */
+        float kp_p{0.5};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_kp{0.4};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_kd{0.0};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_ki{0.0};
+    };
+
     /*编队控制器分段方法*/
     enum _e_format_method
     {
@@ -108,6 +127,7 @@ private:
     /* 本机dir_sin，这其中的dir这个角度，可能是yaw，也可能是速度偏角*/
     double fw_sin_dir{0.0};
 
+    /* 编队控制器分段 */
     _e_format_method format_method;
 
     /* 编队控制器混合误差产生参数,编队控制器参数 */
