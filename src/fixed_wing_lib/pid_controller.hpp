@@ -4,11 +4,11 @@
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description:  
+ * @Description:  普通位置式pid
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:19:08
+ * @LastEditTime: 2020-04-10 01:02:04
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -130,7 +130,7 @@ void PID_CONTROLLER::cal_time_interval()
 
 float PID_CONTROLLER::pid_anti_saturated(float input_val, bool use_integ, bool use_diff)
 {
-    current_time = get_sys_time() / 1000; //获取系统时间，单位为毫秒，需要转化成秒
+    current_time = get_sys_time() / 1000; /*获取系统时间，单位为毫秒，需要转化成秒*/
     input = input_val;
 
     cal_time_interval();

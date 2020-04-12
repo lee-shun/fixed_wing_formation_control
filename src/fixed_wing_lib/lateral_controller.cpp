@@ -9,7 +9,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-03-17 19:54:40
+ * @LastEditTime: 2020-04-11 23:03:48
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description: 
  *  TODO:
@@ -191,10 +191,10 @@ void LATERAL_CONTROLLER::ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
      * 1.计算领机的地速向量在本机的机体坐标系之中的投影
     */
 
-    static Vec gdSpd2d_unit = ground_speed_2d.normalized();
+    Vec gdSpd2d_unit = ground_speed_2d.normalized();
 
-    static float vel_dir_Xb = gdSpd2d_unit * vel_dir_sp; /*期望速度方向沿着本机速度方向的分量*/
-    static float vel_dir_Yb = gdSpd2d_unit ^ vel_dir_sp; /*期望速度方向垂直于本机速度方向的分量*/
+    float vel_dir_Xb = gdSpd2d_unit * vel_dir_sp; /*期望速度方向沿着本机速度方向的分量*/
+    float vel_dir_Yb = gdSpd2d_unit ^ vel_dir_sp; /*期望速度方向垂直于本机速度方向的分量*/
 
     /**
     * 2. 判断期望速度是在哪一个方位（象限）
@@ -205,7 +205,7 @@ void LATERAL_CONTROLLER::ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
      * 3. 计算航迹偏角与期望速度方向角误差
     */
 
-    static float eta_err = 0;
+    float eta_err = 0;
 
     switch (vel_direction)
     {
@@ -223,7 +223,7 @@ void LATERAL_CONTROLLER::ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
         eta_err = deg_2_rad(90.0);
         break;
     case Whereis_vel_dir_sp::FRONT_RIGHT:
-        
+
         break;
     case Whereis_vel_dir_sp::BACK_RIGHT:
 
