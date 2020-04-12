@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-02-24 10:56:36
+ * @LastEditTime: 2020-04-08 22:35:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -187,12 +187,12 @@ void TASK_MAIN::control_formation()
     /* 模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！ */
     if (fw_col_mode_current != fw_col_mode_last)
     {
-        formation_controller.reset_formation_controller();
+       // formation_controller.reset_formation_controller();
     }
     /* 更新飞机状态，领机状态 */
     formation_controller.update_led_fol_states(&leader_states, &thisfw_states);
     /* 选定控制器类型，并进行控制 */
-    formation_controller.abs_pos_vel_controller();
+    //formation_controller.abs_pos_vel_controller();
 
     /* 获得最终控制量 */
     formation_controller.get_formation_4cmd(formation_cmd);
@@ -226,11 +226,11 @@ void TASK_MAIN::input_params()
     ##########################################################################################
     ##########################################################################################*/
 
-    nh.param<float>("kv_p", form_ctrller_params.kv_p, 0.5);
-    nh.param<float>("kp_p", form_ctrller_params.kp_p, 0.8);
-    nh.param<float>("mix_kp", form_ctrller_params.mix_kp, 0.6);
-    nh.param<float>("mix_kd", form_ctrller_params.mix_kd, 0.0);
-    nh.param<float>("mix_ki", form_ctrller_params.mix_ki, 0.01);
+    nh.param<float>("kv_p", mix_error_params.kv_p, 0.5);
+    nh.param<float>("kp_p", mix_error_params.kp_p, 0.8);
+    nh.param<float>("mix_kp", mix_error_params.mix_kp, 0.6);
+    nh.param<float>("mix_kd", mix_error_params.mix_kd, 0.0);
+    nh.param<float>("mix_ki", mix_error_params.mix_ki, 0.01);
     nh.param<float>("maxinc_acc", fw_params.maxinc_acc, 5.0);
     nh.param<float>("maxdec_acc", fw_params.maxdec_acc, 3.0);
     nh.param<float>("max_arispd_sp", fw_params.max_arispd_sp, 25.0);
