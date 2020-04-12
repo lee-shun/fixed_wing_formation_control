@@ -90,25 +90,6 @@ public:
         float min_arispd_sp{8.0};
     };
 
-    /* 编队控制器混合误差产生参数,编队控制器参数 */
-    struct _s_mix_error_params
-    {
-        /* 主从机速度差比例项 */
-        float kv_p{0.2};
-
-        /* 从机期望与实际位置误差比例 */
-        float kp_p{0.5};
-
-        /* 总混合产生期望空速pid参数 */
-        float mix_kp{0.4};
-
-        /* 总混合产生期望空速pid参数 */
-        float mix_kd{0.0};
-
-        /* 总混合产生期望空速pid参数 */
-        float mix_ki{0.0};
-    };
-
     /* 领机从机相对状态 */
     struct _s_rel_states
     {

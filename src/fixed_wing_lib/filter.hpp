@@ -32,8 +32,11 @@ private:
     /**
      * for one_order_filter
     */
-    float filter_param{0.1}; //直接输入前的系数,默认0.05
-    float last_output{0};     //一阶低通滤波器上次滤波后值
+
+  /* 直接输入前的系数,默认0.05 */
+  float filter_param{0.1};
+  /* 一阶低通滤波器上次滤波后值 */
+  float last_output{0};
 };
 
 #endif
