@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-12 01:08:57
+ * @LastEditTime: 2020-04-13 00:04:52
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -23,14 +23,33 @@
 class ABS_FORMATION_CONTROLLER : protected FORMATION_CONTROLLER
 {
 public:
-    /* 编队控制器混合误差产生参数,编队控制器参数 */
-    struct _s_mix_error_params
+    /* 编队控制器X方向混合误差产生参数,编队控制器参数 */
+    struct _s_mix_Xerr_params
     {
         /* 主从机速度差比例项 */
         float kv_p{0.2};
 
         /* 从机期望与实际位置误差比例 */
         float kp_p{0.5};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_kp{0.4};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_kd{0.0};
+
+        /* 总混合产生期望空速pid参数 */
+        float mix_ki{0.0};
+    };
+
+    /* 编队控制器Y方向混合误差产生参数,编队控制器参数 */
+    struct _s_mix_Yerr_params
+    {
+        /* 主从机位置差比例项 */
+        float kp_p{0.2};
+
+        /* 从机期望与实际位置误差比例 */
+        float keta_p{0.5};
 
         /* 总混合产生期望空速pid参数 */
         float mix_kp{0.4};
@@ -56,7 +75,7 @@ public:
     void reset_formation_controller();
 
     /* 设定编队控制器参数（主管产生期望空速） */
-    void set_formation_params(struct _s_mix_error_params &input_params);
+    void set_mix_Xerr_params(struct _s_mix_Xerr_params &input_params);
 
     /* 设定TECS控制器参数 */
     void set_tecs_params(struct _s_tecs_params &input_params);
@@ -66,7 +85,7 @@ public:
         struct _s_lateral_controller_params &mix_error_para);
 
     /* 得到编队控制器参数 */
-    void get_formation_params(struct _s_mix_error_params &format_params);
+    void get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_error_para);
 
 private:
     /**
@@ -131,7 +150,10 @@ private:
     _e_format_method format_method;
 
     /* 编队控制器混合误差产生参数,编队控制器参数 */
-    _s_mix_error_params mix_error_params;
+    _s_mix_Xerr_params mix_Xerr_params;
+
+    /*编队控制器Y方向混合误差产生参数*/
+    _s_mix_Yerr_params mix_Yerr_params;
 
     /*产生期望地速的pid*/
     INCREMENT_PID_CONTROLLER gspeed_sp_pid;
@@ -176,6 +198,12 @@ private:
 
     /* 横侧向控制器参数 */
     _s_lateral_controller_params lateral_controller_params;
+
+    /*产生期望滚转角的pid*/
+    INCREMENT_PID_CONTROLLER roll_sp_pid;
+
+    /* 重置横侧向控制器 */
+    bool reset_lateral_controller{false};
 
     /* 最终roll通道控制量 */
     float roll_cmd{0.0};
