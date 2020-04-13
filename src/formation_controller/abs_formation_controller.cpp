@@ -217,26 +217,26 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     fw_airspd_states_valid = true;
   }
 
-  if (fw_gspeed_2d.len() <= 3.0) /*从机地速太小的情况*/
+  if (fw_gspeed_2d.len() <= 3.0) /*本机地速太小的情况*/
   {
     if (fw_states_f.yaw_valid)
     {
       fw_cos_dir = cosf(fw_states_f.yaw_angle);
       fw_sin_dir = sinf(fw_states_f.yaw_angle);
-      ABS_FORMATION_CONTROLLER_INFO("从机地速太小，选用从机航向角");
+      ABS_FORMATION_CONTROLLER_INFO("本机地速太小，选用从机航向角");
     }
     else
     {
       fw_cos_dir = 0;
       fw_sin_dir = 0;
-      ABS_FORMATION_CONTROLLER_INFO("从机地速太小，且从机航向角未知");
+      ABS_FORMATION_CONTROLLER_INFO("本机地速太小，且从机航向角未知");
     }
   }
   else
   {
     fw_cos_dir = fw_gspeed_2d.x / fw_gspeed_2d.len();
     fw_sin_dir = fw_gspeed_2d.y / fw_gspeed_2d.len();
-    ABS_FORMATION_CONTROLLER_INFO("从机地速正常，选用从机地速方向");
+    ABS_FORMATION_CONTROLLER_INFO("本机地速正常，选用从机地速方向");
   }
 
   /* 保证归一化的结果，此向量十分重要，代表了从机速度方向*/
@@ -277,7 +277,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   fw_error.led_fol_vyk = fw_dir_unit ^ led_fol_vel_error;                         /* 垂直地直速方向*/
   fw_error.led_fol_vzk = leader_states_f.global_vel_z - fw_states_f.global_vel_z; /*竖直速度之差*/
 
-  fw_error.led_fol_vk = fw_error.led_fol_vxk * fw_error.led_fol_vxk +
+  fw_error.led_fol_vk = fw_error.led_fol_vxk * fw_error.led_fol_vxk + /*地速大小之差*/
                         fw_error.led_fol_vyk * fw_error.led_fol_vyk +
                         fw_error.led_fol_vzk * fw_error.led_fol_vzk;
 
@@ -285,7 +285,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      *5. 计算领机从机速度角度，机体前向右偏为正,范围（0～pi/2),左偏为负，范围（-pi/2～0）。
      */
 
-  float led_gsp_Xk = fw_dir_unit * led_gspeed_2d;
+  float led_gsp_Xk = fw_dir_unit * led_gspeed_2d; /*领机地速在本机航迹坐标系中的投影*/
   float led_gsp_Yk = fw_dir_unit ^ led_gspeed_2d;
 
   if (led_gsp_Xk > 0 && led_gsp_Yk > 0) /*右前方*/
@@ -359,9 +359,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     {
       gspeed_sp_pid.reset_incre_pid();
     }
-    float gspeed_sp_inc = gspeed_sp_pid.increment_pid(
-        mix_err_Xk, mix_Xerr_params.mix_kp, mix_Xerr_params.mix_ki,
-        mix_Xerr_params.mix_kd);
+
+    gspeed_sp_pid.increment_pid(mix_err_Xk, mix_Xerr_params.mix_kp,
+                                mix_Xerr_params.mix_ki, mix_Xerr_params.mix_kd);
 
     fw_sp.ground_speed = gspeed_sp_pid.get_full_output();
 
@@ -464,7 +464,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
       roll_sp_pid.reset_incre_pid();
     }
 
-    float roll_cmd_inc = roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
+    roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
     roll_cmd = roll_sp_pid.get_full_output();
   }
