@@ -147,6 +147,15 @@ include_directories(
 add_library(lateral_controller
 src/fixed_wing_lib/lateral_controller.cpp
 )
+add_library(L1_controller
+src/fixed_wing_lib/L1_controller.cpp
+)
+add_library(L1_vel_controller
+src/fixed_wing_lib/L1_vel_controller.cpp
+)
+add_library(track_vel
+src/fixed_wing_lib/track_vel.cpp
+)
 add_library(tecs
 src/fixed_wing_lib/tecs.cpp
 )

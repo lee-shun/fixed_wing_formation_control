@@ -26,7 +26,7 @@ int main()
   {
     /* 请注意static关键字的用发，若是初始化之后便不再初始化，但是后面可以更改其值，利用初始化的方式不能更改 */
     static float increment;
-    increment = pid.increment_pid(i, 1, 1, 1);
+    pid.increment_pid(i, 1, 1, 1);
     cout << "i" << i << endl;
     cout << "increment" << increment << endl;
   }
