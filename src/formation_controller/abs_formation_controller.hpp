@@ -15,7 +15,14 @@
  */
 #ifndef _ABS_FORMATION_CONTROLLER_HPP_
 #define _ABS_FORMATION_CONTROLLER_HPP_
+
 #include "formation_controller.hpp"
+#include "../fixed_wing_lib/vector.hpp"
+#include "../fixed_wing_lib/filter.hpp"
+#include "../fixed_wing_lib/increment_pid_controller.hpp"
+#include "../fixed_wing_lib/lateral_controller/L1_vel_controller.hpp"
+#include "../fixed_wing_lib/lateral_controller/mix_angle_pos_controller.hpp"
+#include "../fixed_wing_lib/vertical_controller/tecs.hpp"
 
 #define ABS_FORMATION_CONTROLLER_INFO(a) \
     cout << "[ABS_FORMATION_CONTROLLER_INFO]:" << a << endl
@@ -194,7 +201,7 @@ private:
    */
 
     /* 横侧向控制器 */
-    LATERAL_CONTROLLER _lateral_controller;
+    L1_CONTROLLER l1_controller;
 
     /* 横侧向控制器参数 */
     _s_lateral_controller_params lateral_controller_params;

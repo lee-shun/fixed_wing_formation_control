@@ -5,7 +5,7 @@
  * @Date: 2020-02-17 22:09:24
  * @Organization: BIT-CGNC, fixed_wing_group
  * @Description:  
- * 横侧向控制器
+ * 旧版横侧向控制器
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com

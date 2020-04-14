@@ -22,8 +22,8 @@
 
 #include <iostream>
 #include <math.h>
-#include "mathlib.hpp"
-#include "vector.hpp"
+#include "../mathlib.hpp"
+#include "../vector.hpp"
 
 using namespace std;
 
