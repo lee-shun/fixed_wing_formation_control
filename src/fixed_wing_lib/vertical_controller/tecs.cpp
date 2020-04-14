@@ -54,7 +54,7 @@
  */
 
 #include "tecs.hpp"
-#include "syslib.hpp"
+#include "../syslib.hpp"
 
 static constexpr float DT_MIN = 0.001f; ///< minimum allowed value of _dt (sec)
 static constexpr float DT_MAX = 1.0f;   ///< max value of _dt allowed before a filter state reset is performed (sec)

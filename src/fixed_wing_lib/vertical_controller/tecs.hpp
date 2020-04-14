@@ -56,7 +56,7 @@
 
 #pragma once
 
-#include "mathlib.hpp"
+#include "../mathlib.hpp"
 using namespace std;
 
 class TECS

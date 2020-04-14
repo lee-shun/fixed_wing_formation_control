@@ -447,9 +447,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     /* L1控制方法 */
 
-    _lateral_controller.lateral_L1_modified(current_pos, pos_sp, fw_gspeed_2d, fw_states_f.air_speed);
+    l1_controller.l1_controller(current_pos, pos_sp, fw_gspeed_2d, fw_states_f.air_speed);
 
-    roll_cmd = _lateral_controller.nav_roll(); /* 获取期望控制滚转 */
+    roll_cmd = l1_controller.nav_roll(); /* 获取期望控制滚转 */
   }
   else if (format_method == _e_format_method::CLOSE_DIS)
   {

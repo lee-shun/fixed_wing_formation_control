@@ -16,8 +16,8 @@
 #ifndef _L1_CONTROLLER_HPP
 #define _L1_CONTROLLER_HPP
 
-#include "mathlib.hpp"
-#include "vector.hpp"
+#include "../mathlib.hpp"
+#include "../vector.hpp"
 #include <iostream>
 #include <math.h>
 
