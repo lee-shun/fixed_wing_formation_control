@@ -13,9 +13,18 @@
  # @LastEditors_Description:  
  # @------------------------------------------3: 3------------------------------------------@
  ###
+##bash
+#gnome-terminal --window -e 'bash -c "rosrun rqt_graph rqt_graph; exec bash"' \
+#--tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/fw_states; exec bash"' \
+#--tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/leader_states; exec bash"' \
+#--tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/formation_control_states; exec bash"' \
+#--tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/fw_cmd; exec bash"' \
 
-gnome-terminal --window -e 'bash -c "rosrun rqt_graph rqt_graph; exec bash"' \
---tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/fw_states; exec bash"' \
---tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/leader_states; exec bash"' \
---tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/formation_control_states; exec bash"' \
---tab -e 'bash -c "rostopic echo /fixed_wing_formation_control/fw_cmd; exec bash"' \
+
+#zsh
+gnome-terminal --window -e 'zsh -c "rosrun rqt_graph rqt_graph; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/fw_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/leader_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/formation_control_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/fw_cmd; exec zsh"' \
+

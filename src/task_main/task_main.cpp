@@ -52,29 +52,40 @@ void TASK_MAIN::fw_cmd_mode_cb(const fixed_wing_formation_control::Fw_cmd_mode::
  * @Output: void
  * @Description: ros的订阅发布声明函数
  */
-void TASK_MAIN::ros_sub_pub()
-{
+void TASK_MAIN::ros_sub_pub() {
 
-    fw_states_sub = nh.subscribe /* 【订阅】固定翼全部状态量 */
-                    <fixed_wing_formation_control::FWstates>("fixed_wing_formation_control/fw_states", 10, &TASK_MAIN::fw_state_cb, this);
+  fw_states_sub = nh.subscribe /* 【订阅】固定翼全部状态量 */
+                  <fixed_wing_formation_control::FWstates>(
+                      "fixed_wing_formation_control/fw_states", 10,
+                      &TASK_MAIN::fw_state_cb, this);
 
-    leader_states_sub = nh.subscribe /* 【订阅】领机信息 */
-                        <fixed_wing_formation_control::Leaderstates>("fixed_wing_formation_control/leader_states", 10, &TASK_MAIN::leader_states_cb, this);
+  leader_states_sub = nh.subscribe /* 【订阅】领机信息 */
+                      <fixed_wing_formation_control::Leaderstates>(
+                          "fixed_wing_formation_control/leader_states", 10,
+                          &TASK_MAIN::leader_states_cb, this);
 
-    fwmonitor_sub = nh.subscribe /* 【订阅】监控节点飞机以及任务状态 */
-                    <fixed_wing_formation_control::Fwmonitor>("fixed_wing_formation_control/fwmonitor_flags", 10, &TASK_MAIN::fw_fwmonitor_cb, this);
+  fwmonitor_sub = nh.subscribe /* 【订阅】监控节点飞机以及任务状态 */
+                  <fixed_wing_formation_control::Fwmonitor>(
+                      "fixed_wing_formation_control/fwmonitor_flags", 10,
+                      &TASK_MAIN::fw_fwmonitor_cb, this);
 
-    fw_cmd_mode_sub = nh.subscribe /* 【订阅】commander指定比赛模式 */
-                      <fixed_wing_formation_control::Fw_cmd_mode>("fixed_wing_formation_control/fw_cmd_mode", 10, &TASK_MAIN::fw_cmd_mode_cb, this);
+  fw_cmd_mode_sub = nh.subscribe /* 【订阅】commander指定比赛模式 */
+                    <fixed_wing_formation_control::Fw_cmd_mode>(
+                        "fixed_wing_formation_control/fw_cmd_mode", 10,
+                        &TASK_MAIN::fw_cmd_mode_cb, this);
 
-    fw_cmd_pub = nh.advertise /* 【发布】固定翼四通道控制量 */
-                 <fixed_wing_formation_control::FWcmd>("/fixed_wing_formation_control/fw_cmd", 10);
+  fw_cmd_pub = nh.advertise /* 【发布】固定翼四通道控制量 */
+               <fixed_wing_formation_control::FWcmd>(
+                   "/fixed_wing_formation_control/fw_cmd", 10);
 
-    formation_control_states_pub = nh.advertise /* 【发布】编队控制器状态 */
-                                   <fixed_wing_formation_control::Formation_control_states>("/fixed_wing_formation_control/formation_control_states", 10);
+  formation_control_states_pub =
+      nh.advertise /* 【发布】编队控制器状态 */
+      <fixed_wing_formation_control::Formation_control_states>(
+          "/fixed_wing_formation_control/formation_control_states", 10);
 
-    fw_current_mode_pub = nh.advertise /* 【发布】比赛任务进所处阶段 */
-                          <fixed_wing_formation_control::Fw_current_mode>("fixed_wing_formation_control/fw_current_mode", 10);
+  fw_current_mode_pub = nh.advertise /* 【发布】比赛任务进所处阶段 */
+                        <fixed_wing_formation_control::Fw_current_mode>(
+                            "fixed_wing_formation_control/fw_current_mode", 10);
 }
 
 /**
@@ -82,35 +93,47 @@ void TASK_MAIN::ros_sub_pub()
  * @Output: void
  * @Description: 编队状态值发布，编队位置误差（机体系和ned），速度误差以及期望空速，gps，期望地速
  */
-void TASK_MAIN::formation_states_pub()
-{
-    formation_control_states.planeID = planeID;
-    /* 本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值 */
-    formation_control_states.err_P_N = formation_error.P_N;
-    formation_control_states.err_P_E = formation_error.P_E;
-    formation_control_states.err_P_D = formation_error.P_D;
-    formation_control_states.err_P_NE = formation_error.P_NE;
-    formation_control_states.err_PXb = formation_error.PXb;
-    formation_control_states.err_PYb = formation_error.PYb;
-    formation_control_states.err_PZb = formation_error.PZb;
-    formation_control_states.err_VXb = formation_error.VXb;
-    formation_control_states.err_VYb = formation_error.VYb;
-    formation_control_states.err_VZb = formation_error.VZb;
-    formation_control_states.led_fol_vxb = formation_error.led_fol_vxb;
-    formation_control_states.led_fol_vyb = formation_error.led_fol_vyb;
-    formation_control_states.led_fol_vzb = formation_error.led_fol_vzb;
-    /* 本部分关于从机的期望值的赋值 */
-    formation_control_states.sp_air_speed = formation_sp.air_speed;
-    formation_control_states.sp_altitude = formation_sp.altitude;
-    formation_control_states.sp_ground_speed = formation_sp.ground_speed;
-    formation_control_states.sp_latitude = formation_sp.latitude;
-    formation_control_states.sp_longitude = formation_sp.longitude;
-    formation_control_states.sp_ned_vel_x = formation_sp.ned_vel_x;
-    formation_control_states.sp_ned_vel_y = formation_sp.ned_vel_y;
-    formation_control_states.sp_ned_vel_z = formation_sp.ned_vel_z;
-    formation_control_states.sp_relative_alt = formation_sp.relative_alt;
-    /* 发布编队控制器控制状态 */
-    formation_control_states_pub.publish(formation_control_states);
+void TASK_MAIN::formation_states_pub() {
+  formation_control_states.planeID = planeID;
+
+  /* 本部分是关于编队的从机的自己与期望值的误差以及领从机偏差的赋值 */
+  formation_control_states.err_P_N = formation_error.P_N;
+  formation_control_states.err_P_E = formation_error.P_E;
+  formation_control_states.err_P_D = formation_error.P_D;
+  formation_control_states.err_P_NE = formation_error.P_NE;
+  formation_control_states.err_PXb = formation_error.PXb;
+  formation_control_states.err_PYb = formation_error.PYb;
+  formation_control_states.err_PZb = formation_error.PZb;
+  formation_control_states.err_VXb = formation_error.VXb;
+  formation_control_states.err_VYb = formation_error.VYb;
+  formation_control_states.err_VZb = formation_error.VZb;
+  formation_control_states.led_fol_vxb = formation_error.led_fol_vxb;
+  formation_control_states.led_fol_vyb = formation_error.led_fol_vyb;
+  formation_control_states.led_fol_vzb = formation_error.led_fol_vzb;
+
+  formation_control_states.err_PXk = formation_error.PXk;
+  formation_control_states.err_PYk = formation_error.PYk;
+  formation_control_states.err_PZk = formation_error.PZk;
+  formation_control_states.err_VXk = formation_error.VXk;
+  formation_control_states.err_VYk = formation_error.VYk;
+  formation_control_states.err_VZk = formation_error.VZk;
+  formation_control_states.led_fol_vxk = formation_error.led_fol_vxk;
+  formation_control_states.led_fol_vyk = formation_error.led_fol_vyk;
+  formation_control_states.led_fol_vzk = formation_error.led_fol_vzk;
+
+  /* 本部分关于从机的期望值的赋值 */
+  formation_control_states.sp_air_speed = formation_sp.air_speed;
+  formation_control_states.sp_altitude = formation_sp.altitude;
+  formation_control_states.sp_ground_speed = formation_sp.ground_speed;
+  formation_control_states.sp_latitude = formation_sp.latitude;
+  formation_control_states.sp_longitude = formation_sp.longitude;
+  formation_control_states.sp_ned_vel_x = formation_sp.ned_vel_x;
+  formation_control_states.sp_ned_vel_y = formation_sp.ned_vel_y;
+  formation_control_states.sp_ned_vel_z = formation_sp.ned_vel_z;
+  formation_control_states.sp_relative_alt = formation_sp.relative_alt;
+
+  /* 发布编队控制器控制状态 */
+  formation_control_states_pub.publish(formation_control_states);
 }
 
 /**
@@ -187,12 +210,12 @@ void TASK_MAIN::control_formation()
     /* 模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！ */
     if (fw_col_mode_current != fw_col_mode_last)
     {
-       // formation_controller.reset_formation_controller();
+       formation_controller.reset_formation_controller();
     }
     /* 更新飞机状态，领机状态 */
     formation_controller.update_led_fol_states(&leader_states, &thisfw_states);
-    /* 选定控制器类型，并进行控制 */
-    //formation_controller.abs_pos_vel_controller();
+    /* 编队控制 */
+    formation_controller.control_formation();
 
     /* 获得最终控制量 */
     formation_controller.get_formation_4cmd(formation_cmd);
@@ -353,9 +376,10 @@ void TASK_MAIN::run()
         {
             TASK_MAIN_INFO("保护子程序");
             /**
-                 * TODO:保护子程序
-                */
-            fw_current_mode.mode = fixed_wing_formation_control::Fw_current_mode::FW_IN_PROTECT;
+             * TODO:保护子程序
+             */
+            fw_current_mode.mode =
+                fixed_wing_formation_control::Fw_current_mode::FW_IN_PROTECT;
         }
         else if (!fw_cmd_mode.need_take_off &&
                  !fw_cmd_mode.need_formation &&
@@ -389,7 +413,6 @@ void TASK_MAIN::run()
         {
             TASK_MAIN_INFO("编队子程序");
             /**
-                 * TODO:编队子程序
                  * TODO:虽然完成了节点参数的输入函数以及各个通路，但是节点的参数并没有加载进来
                 */
             control_formation();

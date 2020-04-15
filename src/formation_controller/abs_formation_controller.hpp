@@ -27,7 +27,7 @@
 #define ABS_FORMATION_CONTROLLER_INFO(a) \
     cout << "[ABS_FORMATION_CONTROLLER_INFO]:" << a << endl
 
-class ABS_FORMATION_CONTROLLER : protected FORMATION_CONTROLLER
+class ABS_FORMATION_CONTROLLER : public FORMATION_CONTROLLER
 {
 public:
     /* 编队控制器X方向混合误差产生参数,编队控制器参数 */
@@ -197,7 +197,7 @@ private:
     _s_tecs_params tecs_params;
 
     /**
-   * 横侧性控制器函数，变量（组）
+   * 横侧向控制器函数，变量（组）
    */
 
     /* 横侧向控制器 */

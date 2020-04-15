@@ -18,7 +18,7 @@
 
 #include "L1_controller.hpp"
 
-class L1_VEL_CONTROLLERS : protected L1_CONTROLLER
+class L1_VEL_CONTROLLERS : public L1_CONTROLLER
 {
 public:
   /*改进的L1控制器:按照L1的思路，添加了速度的信息*/
