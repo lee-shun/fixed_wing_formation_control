@@ -19,13 +19,7 @@
 #define _FORMATION_CONTROLLER_HPP_
 
 #include <iostream>
-#include "../fixed_wing_lib/lateral_controller.hpp"
-#include "../fixed_wing_lib/tecs.hpp"
 #include "../fixed_wing_lib/mathlib.hpp"
-#include "../fixed_wing_lib/pid_controller.hpp"
-#include "../fixed_wing_lib/vector.hpp"
-#include "../fixed_wing_lib/filter.hpp"
-#include "../fixed_wing_lib/increment_pid_controller.hpp"
 
 using namespace std;
 

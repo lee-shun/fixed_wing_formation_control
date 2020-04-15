@@ -4,7 +4,7 @@
  * @Email: 2015097272@qq.com
  * @Date: 2020-02-12 23:23:34
  * @Organization: BIT-CGNC, fixed_wing_group
- * @Description:  
+ * @Description:
  *  本程序是基于L1控制器的改动版本，输入是飞机的当前的位置，当前的地速
  *  (向量），空速，目标位置点，输出的是期望的偏航角以及期望的滚转角
  *  估计应该会写几个种类的横向控制器，看最后用那个吧。。。。。。。。
@@ -13,7 +13,7 @@
  * @LastEditors_Email: 2015097272@qq.com
  * @LastEditTime: 2020-03-02 18:11:49
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
- * @LastEditors_Description: TODO:更改此部分的函数设置，当飞机的距离远以及距离近的时候分别考虑 
+ * @LastEditors_Description:
  * @------------------------------------------3: 3------------------------------------------@
  */
 
@@ -22,8 +22,8 @@
 
 #include <iostream>
 #include <math.h>
-#include "mathlib.hpp"
-#include "vector.hpp"
+#include "../mathlib.hpp"
+#include "../vector.hpp"
 
 using namespace std;
 
@@ -32,18 +32,6 @@ using namespace std;
 class LATERAL_CONTROLLER
 {
 public:
-    /*速度方向控制器：期望速度方向位置标志*/
-    enum Whereis_vel_dir_sp
-    {
-        FRONT = 0,
-        FRONT_RIGHT,
-        RIGHT,
-        BACK_RIGHT,
-        BACK,
-        BACK_LEFT,
-        LEFT,
-        FRONT_LEFT
-    };
 
     /**
     * L1以及改进的L1算法参数定义函数区
@@ -93,14 +81,9 @@ public:
     /*原始L1控制器*/
     void lateral_L1_modified(Point curr_pos, Point sp_pos, Point ground_speed_2d, float airspeed);
 
-    /*改进的L1控制器*/
+    /*改进的L1控制器:按照L1的思路，添加了速度的信息*/
     void mix_pos_vel_ctrl(Vec &ground_speed_2d, Vec &fw_unit,
                           Vec &pos_err_vector, Vec &vel_err_vector);
-
-    /*速度方向控制器*/
-    void ctrl_vel_direction(Vec &ground_speed_2d, Vec &fw_unit,
-                            Vec &vel_dir_sp);
-
     /**
     *速度追踪法
     */
@@ -136,15 +119,6 @@ private:
 
     float track_vel_k{1};
 
-    /**
-     * 速度方向控制器
-    */
-    Whereis_vel_dir_sp vel_direction{FRONT};
-
-    /**
-     * 判断期望速度方向函数
-     */
-    void figure_out_vel_dir(float X, float Y);
 };
 
 #endif

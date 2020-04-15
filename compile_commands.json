@@ -36,6 +36,11 @@
 },
 {
   "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3    -std=c++11 -o CMakeFiles/test_pid.dir/src/test/test_pid.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/test/test_pid.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/test/test_pid.cpp"
+},
+{
+  "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
   "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3    -std=c++11 -o CMakeFiles/test_filter.dir/src/test/test_filter.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/test/test_filter.cpp",
   "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/test/test_filter.cpp"
 },
@@ -71,8 +76,8 @@
 },
 {
   "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -Dtecs_EXPORTS -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/tecs.dir/src/fixed_wing_lib/tecs.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/tecs.cpp",
-  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/tecs.cpp"
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -Dtecs_EXPORTS -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/tecs.dir/src/fixed_wing_lib/vertical_controller/tecs.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/vertical_controller/tecs.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/vertical_controller/tecs.cpp"
 },
 {
   "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
@@ -86,12 +91,27 @@
 },
 {
   "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
+  "command": "/usr/bin/c++  -DL1_controller_EXPORTS -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/L1_controller.dir/src/fixed_wing_lib/lateral_controller/L1_controller.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/L1_controller.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/L1_controller.cpp"
+},
+{
+  "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
+  "command": "/usr/bin/c++  -DL1_vel_controller_EXPORTS -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/L1_vel_controller.dir/src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp"
+},
+{
+  "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
   "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3    -std=c++11 -o CMakeFiles/pack_fw_states.dir/src/pack_fw_states/pack_fw_states.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/pack_fw_states/pack_fw_states.cpp",
   "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/pack_fw_states/pack_fw_states.cpp"
 },
 {
   "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -Dlateral_controller_EXPORTS -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/lateral_controller.dir/src/fixed_wing_lib/lateral_controller.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller.cpp",
-  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller.cpp"
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -Dtrack_vel_EXPORTS -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/track_vel.dir/src/fixed_wing_lib/lateral_controller/track_vel.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/track_vel.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/track_vel.cpp"
+},
+{
+  "directory": "/home/ls/catkin_ws/build/fixed_wing_formation_control",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"fixed_wing_formation_control\\\" -Dlateral_controller_EXPORTS -I/home/ls/catkin_ws/devel/include -I/opt/ros/melodic/include -I/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/opt/ros/melodic/share/orocos_kdl/cmake/../../../include -I/usr/include/eigen3  -fPIC   -std=c++11 -o CMakeFiles/lateral_controller.dir/src/fixed_wing_lib/lateral_controller/lateral_controller.cpp.o -c /home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/lateral_controller.cpp",
+  "file": "/home/ls/catkin_ws/src/fixed_wing_formation_control/src/fixed_wing_lib/lateral_controller/lateral_controller.cpp"
 }
 ]
