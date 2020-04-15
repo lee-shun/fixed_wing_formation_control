@@ -226,11 +226,11 @@ void TASK_MAIN::input_params()
     ##########################################################################################
     ##########################################################################################*/
 
-    nh.param<float>("kv_p", mix_error_params.kv_p, 0.5);
-    nh.param<float>("kp_p", mix_error_params.kp_p, 0.8);
-    nh.param<float>("mix_kp", mix_error_params.mix_kp, 0.6);
-    nh.param<float>("mix_kd", mix_error_params.mix_kd, 0.0);
-    nh.param<float>("mix_ki", mix_error_params.mix_ki, 0.01);
+    nh.param<float>("kv_p", mix_Xerr_params.kv_p, 0.5);
+    nh.param<float>("kp_p", mix_Xerr_params.kp_p, 0.8);
+    nh.param<float>("mix_kp", mix_Xerr_params.mix_kp, 0.6);
+    nh.param<float>("mix_kd", mix_Xerr_params.mix_kd, 0.0);
+    nh.param<float>("mix_ki", mix_Xerr_params.mix_ki, 0.01);
     nh.param<float>("maxinc_acc", fw_params.maxinc_acc, 5.0);
     nh.param<float>("maxdec_acc", fw_params.maxdec_acc, 3.0);
     nh.param<float>("max_arispd_sp", fw_params.max_arispd_sp, 25.0);

@@ -25,8 +25,9 @@ using namespace std;
 class INCREMENT_PID_CONTROLLER
 {
 public:
-  float increment_pid(float in, float Kp, float Ki, float Kd);
+  void increment_pid(float in, float Kp, float Ki, float Kd);
   float get_full_output();
+  float get_inc_output();
   void reset_incre_pid();
 
 private:
@@ -38,6 +39,11 @@ private:
   float output{0.0};
   void update_input();
 };
+
+float INCREMENT_PID_CONTROLLER::get_inc_output()
+{
+    return increment;
+}
 
 float INCREMENT_PID_CONTROLLER::get_full_output()
 {
@@ -63,10 +69,9 @@ void INCREMENT_PID_CONTROLLER::update_input()
   prev_input = input;
 }
 
-float INCREMENT_PID_CONTROLLER::increment_pid(float in, float Kp, float Ki,
+void INCREMENT_PID_CONTROLLER::increment_pid(float in, float Kp, float Ki,
                                               float Kd)
 {
-
   input = in;
 
   cout << "before calculate" << endl;
@@ -81,7 +86,5 @@ float INCREMENT_PID_CONTROLLER::increment_pid(float in, float Kp, float Ki,
   increment = param_p + param_i + param_d;
 
   update_input();
-
-  return increment;
 }
 #endif

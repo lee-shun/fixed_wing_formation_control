@@ -144,11 +144,24 @@ include_directories(
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
 
-add_library(lateral_controller
-src/fixed_wing_lib/lateral_controller.cpp
+# add_library(lateral_controller
+# src/fixed_wing_lib/lateral_controller/lateral_controller.cpp
+# )
+add_library(L1_controller
+src/fixed_wing_lib/lateral_controller/L1_controller.cpp
 )
+add_library(L1_vel_controller
+src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp
+)
+add_library(track_vel
+src/fixed_wing_lib/lateral_controller/track_vel.cpp
+)
+add_library(mix_angle_pos_controller
+src/fixed_wing_lib/lateral_controller/mix_angle_pos_controller.cpp
+)
+
 add_library(tecs
-src/fixed_wing_lib/tecs.cpp
+src/fixed_wing_lib/vertical_controller/tecs.cpp
 )
 add_library(formation_controller
 src/formation_controller/formation_controller.cpp
@@ -186,19 +199,16 @@ add_executable(task_main src/task_main/task_main.cpp)
 target_link_libraries(task_main
    ${catkin_LIBRARIES}
  )
- target_link_libraries(formation_controller
+ target_link_libraries(abs_formation_controller
  tecs
  )
- target_link_libraries(formation_controller
- lateral_controller
+ target_link_libraries(abs_formation_controller
+ L1_controller
  )
  target_link_libraries(abs_formation_controller
- formation_controller 
- )
-
- target_link_libraries(task_main
  formation_controller
  )
+
  target_link_libraries(task_main
  abs_formation_controller
  )
