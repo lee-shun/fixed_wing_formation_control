@@ -189,9 +189,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   led_dir_unit = led_dir_unit.normalized();
 
   /**
-     * 2. 计算从机航迹系，默认顺序：
-     *      1. 从机地速方向
-     *      2. 从机航迹角
+     * 2. 计算本机航迹系，默认顺序：
+     *      1. 本机地速方向
+     *      2. 本机航迹角
      *      3. 有误
     */
 
@@ -355,8 +355,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
                        mix_Xerr_params.kv_p * fw_error.led_fol_vk;
 
     /* 2.混合误差产生期望地速 */
-    if (rest_speed_pid)
-    {
+    if (rest_speed_pid) {
+      rest_speed_pid = false;
       gspeed_sp_pid.reset_incre_pid();
     }
 
@@ -404,8 +404,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      */
   if (rest_tecs)
   {
-    _tecs.reset_state();
     rest_tecs = false;
+    _tecs.reset_state();
   }
   /* 设置参数,真实的飞机还需要另外调参 */
 
