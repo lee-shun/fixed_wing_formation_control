@@ -15,16 +15,21 @@
  # @------------------------------------------3: 3------------------------------------------@
  ###
 
-gnome-terminal --window -e 'bash -c "cd ~/catkin_ws; catkin_make; exec bash"' \
---tab -e 'bash -c "sleep 2; cd ~/src/Firmware; make px4_sitl gazebo_plane;  exec bash"' \
---tab -e 'bash -c "sleep 4; roslaunch mavros px4.launch  fcu_url:="udp://:14540@127.0.0.1:14557"; exec bash"' \
---tab -e 'bash -c "sleep 6; rosrun fixed_wing_formation_control pack_fw_states;  exec bash"' \
---tab -e 'bash -c "sleep 10; rosrun fixed_wing_formation_control task_main;exec bash"' \
---tab -e 'bash -c "sleep 8; rosrun fixed_wing_formation_control vir_dir_leader;exec bash"' \
---tab -e 'bash -c "sleep 8; rosrun fixed_wing_formation_control switch_fw_mode;exec bash"' \
+#bash
+#gnome-terminal --window -e 'bash -c "cd ~/catkin_ws; catkin_make; exec bash"' \
+#--tab -e 'bash -c "sleep 2; cd ~/src/Firmware; export PX4_SIM_SPEED_FACTOR=2&&make px4_sitl gazebo_plane;  exec bash"' \
+#--tab -e 'bash -c "sleep 4; roslaunch mavros px4.launch  fcu_url:="udp://:14540@127.0.0.1:14557"; exec bash"' \
+#--tab -e 'bash -c "sleep 6; rosrun fixed_wing_formation_control pack_fw_states;  exec bash"' \
+#--tab -e 'bash -c "sleep 10; rosrun fixed_wing_formation_control task_main;exec bash"' \
+#--tab -e 'bash -c "sleep 8; rosrun fixed_wing_formation_control vir_dir_leader;exec bash"' \
+#--tab -e 'bash -c "sleep 8; rosrun fixed_wing_formation_control switch_fw_mode;exec bash"' \
 
-
-
-
-
+#zsh
+gnome-terminal --window -e 'zsh -c "cd ~/catkin_ws; catkin_make; exec zsh"' \
+--tab -e 'zsh -c "sleep 2; cd ~/src/Firmware; export PX4_SIM_SPEED_FACTOR=2&&make px4_sitl gazebo_plane;  exec zsh"' \
+--tab -e 'zsh -c "sleep 4; roslaunch mavros px4.launch  fcu_url:="udp://:14540@127.0.0.1:14557"; exec zsh"' \
+--tab -e 'zsh -c "sleep 6; rosrun fixed_wing_formation_control pack_fw_states;  exec zsh"' \
+--tab -e 'zsh -c "sleep 10; rosrun fixed_wing_formation_control task_main;exec zsh"' \
+--tab -e 'zsh -c "sleep 8; rosrun fixed_wing_formation_control vir_dir_leader;exec zsh"' \
+--tab -e 'zsh -c "sleep 8; rosrun fixed_wing_formation_control switch_fw_mode;exec zsh"' \
 

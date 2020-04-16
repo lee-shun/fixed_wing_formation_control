@@ -18,7 +18,7 @@
 
 #include "L1_controller.hpp"
 
-class TRACK_VEL : protected L1_CONTROLLER
+class TRACK_VEL : public L1_CONTROLLER
 {
 public:
     void track_velocity(Point curr_pos, Point sp_pos, Point ground_speed_2d, Point sp_speed_2d);
