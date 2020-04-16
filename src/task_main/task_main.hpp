@@ -82,6 +82,7 @@ private:
     struct ABS_FORMATION_CONTROLLER::_s_4cmd formation_cmd;                /*四通道控制量*/
     struct ABS_FORMATION_CONTROLLER::_s_fw_error formation_error;          /*编队误差以及偏差*/
     struct ABS_FORMATION_CONTROLLER::_s_mix_Xerr_params mix_Xerr_params; /*编队控制器混合误差产生参数,编队控制器参数*/
+    struct ABS_FORMATION_CONTROLLER::_s_mix_Yerr_params mix_Yerr_params; /*编队控制器混合误差产生参数,编队控制器参数*/
     struct ABS_FORMATION_CONTROLLER::_s_fw_sp formation_sp;                /*编队控制运动学期望值*/
     void formation_states_pub();                                    /*发布编队控制器控制状态*/
 

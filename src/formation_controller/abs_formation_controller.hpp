@@ -55,17 +55,38 @@ public:
         /* 主从机位置差比例项 */
         float kp_p{0.2};
 
-        /* 从机期望与实际位置误差比例 */
+        /* 领机从机速度方向偏差比例 */
         float keta_p{0.5};
 
-        /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望roll pid参数 */
         float mix_kp{0.4};
 
-        /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望roll pid参数 */
         float mix_kd{0.0};
 
-        /* 总混合产生期望空速pid参数 */
+        /* 总混合产生期望roll pid参数 */
         float mix_ki{0.0};
+    };
+
+    /* TECS控制器参数 */
+    struct _s_tecs_params
+    {
+        int EAS2TAS{1};
+
+        bool climboutdem{false};
+
+        float climbout_pitch_min_rad{0.2};
+
+        float speed_weight{1};
+
+        float time_const_throt{8.0};
+
+        float time_const{5.0};
+    };
+
+    /*  横侧向控制器参数 */
+    struct _s_lateral_controller_params
+    {
     };
 
     /*编队控制器分段方法*/
@@ -84,15 +105,17 @@ public:
     /* 设定编队控制器参数（主管产生期望空速） */
     void set_mix_Xerr_params(struct _s_mix_Xerr_params &input_params);
 
+    /* 设定编队控制器参数（主管产生期望滚转角） */
+    void set_mix_Yerr_params(struct _s_mix_Yerr_params &input_params);
+
     /* 设定TECS控制器参数 */
     void set_tecs_params(struct _s_tecs_params &input_params);
 
-    /* 设定横侧向控制器参数 */
-    void set_lateral_ctrller_params(
-        struct _s_lateral_controller_params &mix_error_para);
+    /* 得到前向编队控制器参数 */
+    void get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_Xerr_para);
 
-    /* 得到编队控制器参数 */
-    void get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_error_para);
+    /* 得到侧向编队控制器参数 */
+    void get_mix_Yerr_params(struct _s_mix_Yerr_params &mix_Yerr_para);
 
 private:
     /**

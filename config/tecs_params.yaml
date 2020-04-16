@@ -1,0 +1,13 @@
+#编队控制器内部调用TECS参数
+
+
+fixwing_formation_control/abs_formation_controller/TECS/EAS2TAS : 1
+fixwing_formation_control/abs_formation_controller/TECS/climboutdem : false
+fixwing_formation_control/abs_formation_controller/TECS/throttle_min : 0.1
+fixwing_formation_control/abs_formation_controller/TECS/throttle_max : 1
+fixwing_formation_control/abs_formation_controller/TECS/throttle_cruise : 0.1
+fixwing_formation_control/abs_formation_controller/TECS/pitch_min_rad : -0.5
+fixwing_formation_control/abs_formation_controller/TECS/pitch_max_rad : 0.5
+fixwing_formation_control/abs_formation_controller/TECS/speed_weight : 1
+fixwing_formation_control/abs_formation_controller/TECS/time_const_throt : 8.0
+fixwing_formation_control/abs_formation_controller/TECS/time_const : 5.0
