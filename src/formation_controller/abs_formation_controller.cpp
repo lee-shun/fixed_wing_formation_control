@@ -37,21 +37,39 @@ void ABS_FORMATION_CONTROLLER::set_mix_Xerr_params(struct _s_mix_Xerr_params &in
 }
 /**
  * @Input: void
+ * @Output:void
+ * @Description:设定滚转角混合误差产生系数
+ */
+void ABS_FORMATION_CONTROLLER::set_mix_Yerr_params(struct _s_mix_Yerr_params &input_params)
+{
+  mix_Yerr_params = input_params;
+}
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得编队控制前向混合器参数
+ */
+void ABS_FORMATION_CONTROLLER::get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_Xerr_para)
+{
+  mix_Xerr_para = mix_Xerr_params;
+}
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得编队控制器侧向参数
+ */
+void ABS_FORMATION_CONTROLLER::get_mix_Yerr_params(struct _s_mix_Yerr_params &mix_Yerr_para)
+{
+  mix_Yerr_para = mix_Yerr_params;
+}
+/**
+ * @Input: void
  * @Output: void
  * @Description: 设定tecs控制器参数
  */
 void ABS_FORMATION_CONTROLLER::set_tecs_params(struct _s_tecs_params &input_params)
 {
   tecs_params = input_params;
-}
-/**
- * @Input: void
- * @Output: void
- * @Description: 设定衡侧向控制器参数
- */
-void ABS_FORMATION_CONTROLLER::set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params)
-{
-  lateral_controller_params = input_params;
 }
 
 /**
@@ -84,16 +102,6 @@ Point ABS_FORMATION_CONTROLLER::get_plane_to_sp_vector(Point origin, Point targe
 
   return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
-/**
- * @Input: void
- * @Output: void
- * @Description: 获得编队控制器参数
- */
-void ABS_FORMATION_CONTROLLER::get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_error_para)
-{
-  mix_error_para = mix_Xerr_params;
-}
-
 /**
  * @Input: void
  * @Output: void
@@ -189,9 +197,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   led_dir_unit = led_dir_unit.normalized();
 
   /**
-     * 2. 计算从机航迹系，默认顺序：
-     *      1. 从机地速方向
-     *      2. 从机航迹角
+     * 2. 计算本机航迹系，默认顺序：
+     *      1. 本机地速方向
+     *      2. 本机航迹角
      *      3. 有误
     */
 
@@ -355,8 +363,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
                        mix_Xerr_params.kv_p * fw_error.led_fol_vk;
 
     /* 2.混合误差产生期望地速 */
-    if (rest_speed_pid)
-    {
+    if (rest_speed_pid) {
+      rest_speed_pid = false;
       gspeed_sp_pid.reset_incre_pid();
     }
 
@@ -404,8 +412,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      */
   if (rest_tecs)
   {
-    _tecs.reset_state();
     rest_tecs = false;
+    _tecs.reset_state();
   }
   /* 设置参数,真实的飞机还需要另外调参 */
 
