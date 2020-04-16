@@ -207,6 +207,13 @@ void TASK_MAIN::control_formation()
 
     /* 设定编队形状 */
     formation_controller.set_formation_type(2);
+
+    /* 设定前向编队混合参数 */
+    formation_controller.set_mix_Xerr_params(mix_Xerr_params);
+
+    /* 设定侧向编队混合参数 */
+    formation_controller.set_mix_Yerr_params(mix_Yerr_params);
+
     /* 模式不一致，刚切换进来的话，重置一下控制器，还得做到控制连续！！ */
     if (fw_col_mode_current != fw_col_mode_last)
     {
@@ -243,49 +250,35 @@ void TASK_MAIN::control_formation()
  */
 void TASK_MAIN::input_params()
 {
-    /*########################################################################################
-    ##########################################################################################
-    ################################编队控制器外部参数##########################################
-    ##########################################################################################
-    ##########################################################################################*/
+    /* 速度产生的参数调参 */
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_V_sp/kv_p"      , mix_Xerr_params.kv_p   , 0.2);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_V_sp/kp_p"      , mix_Xerr_params.kp_p   , 0.5);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_kp"    , mix_Xerr_params.mix_kp , 0.4);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_ki"    , mix_Xerr_params.mix_ki , 0.0);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_kd"    , mix_Xerr_params.mix_kd , 0.0);
 
-    nh.param<float>("kv_p", mix_Xerr_params.kv_p, 0.5);
-    nh.param<float>("kp_p", mix_Xerr_params.kp_p, 0.8);
-    nh.param<float>("mix_kp", mix_Xerr_params.mix_kp, 0.6);
-    nh.param<float>("mix_kd", mix_Xerr_params.mix_kd, 0.0);
-    nh.param<float>("mix_ki", mix_Xerr_params.mix_ki, 0.01);
-    nh.param<float>("maxinc_acc", fw_params.maxinc_acc, 5.0);
-    nh.param<float>("maxdec_acc", fw_params.maxdec_acc, 3.0);
-    nh.param<float>("max_arispd_sp", fw_params.max_arispd_sp, 25.0);
-    nh.param<float>("min_arispd_sp", fw_params.min_arispd_sp, 8.0);
 
-    /*########################################################################################
-    ##########################################################################################
-    ################################TECS控制器外部参数##########################################
-    ##########################################################################################
-    ##########################################################################################*/
+    /* 滚转角产生的参数调参 */
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_roll_sp/keta_p" , mix_Yerr_params.keta_p , 0.5);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_roll_sp/kp_p"   , mix_Yerr_params.kp_p   , 0.2);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_kp" , mix_Yerr_params.mix_kp , 0.4);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_ki" , mix_Yerr_params.mix_ki , 0.0);
+    nh.param<float>("fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_kd" , mix_Yerr_params.mix_kd , 0.0);
 
-    nh.param<int>("EAS2TAS", tecs_params.EAS2TAS, 1);
-    nh.param<bool>("climboutdem", tecs_params.climboutdem, false);
-    nh.param<float>("climbout_pitch_min_rad", tecs_params.climbout_pitch_min_rad, 0.2);
-    nh.param<float>("throttle_min", fw_params.throttle_min, 0.1);
-    nh.param<float>("throttle_max", fw_params.throttle_max, 1);
-    nh.param<float>("throttle_cruise", fw_params.throttle_cruise, 0.1);
-    nh.param<float>("pitch_min_rad", fw_params.pitch_min_rad, -0.5);
-    nh.param<float>("pitch_max_rad", fw_params.pitch_max_rad, 0.5);
-    nh.param<float>("speed_weight", tecs_params.speed_weight, 1);
-    nh.param<float>("time_const_throt", tecs_params.time_const_throt, 8.0);
-    nh.param<float>("time_const", tecs_params.time_const, 0.0);
-    cout << "input_params->tecs_params.time_const," << tecs_params.time_const << endl;
 
-    /*########################################################################################
-    ##########################################################################################
-    ################################横侧控制器外部参数##########################################
-    ##########################################################################################
-    ##########################################################################################*/
+    TASK_MAIN_INFO(mix_Xerr_params.kv_p  );
+    TASK_MAIN_INFO(mix_Xerr_params.kp_p  );
+    TASK_MAIN_INFO(mix_Xerr_params.mix_kp);
+    TASK_MAIN_INFO(mix_Xerr_params.mix_ki);
+    TASK_MAIN_INFO(mix_Xerr_params.mix_kd);
 
-    nh.param<float>("roll_max", fw_params.roll_max, 0.0);
-    cout << "input_params->later_ctrl_params.roll_max" << fw_params.roll_max << endl;
+    TASK_MAIN_INFO(mix_Yerr_params.keta_p);
+    TASK_MAIN_INFO(mix_Yerr_params.kp_p  );
+    TASK_MAIN_INFO(mix_Yerr_params.mix_kp);
+    TASK_MAIN_INFO(mix_Yerr_params.mix_ki);
+    TASK_MAIN_INFO(mix_Yerr_params.mix_kd);
+
+
 }
 
 /**
@@ -360,7 +353,9 @@ void TASK_MAIN::run()
     begin_time = ros::Time::now(); /* 记录启控时间 */
     ros_sub_pub();
 
-    while (ros::ok())
+    input_params(); /* 读取参数 */
+
+    while (false&&ros::ok())
     {
         /**
         * 比赛任务大循环，根据来自commander的控制指令来进行响应的控制动作

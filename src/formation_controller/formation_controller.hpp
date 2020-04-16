@@ -280,27 +280,6 @@ public:
         float led_fol_eta{0};
     };
 
-    /* TECS控制器参数 */
-    struct _s_tecs_params
-    {
-        int EAS2TAS{1};
-
-        bool climboutdem{false};
-
-        float climbout_pitch_min_rad{0.2};
-
-        float speed_weight{1};
-
-        float time_const_throt{8.0};
-
-        float time_const{5.0};
-    };
-
-    /*  横侧向控制器参数 */
-    struct _s_lateral_controller_params
-    {
-    };
-
     /* 四通道控制量 */
     struct _s_4cmd
     {

@@ -37,21 +37,39 @@ void ABS_FORMATION_CONTROLLER::set_mix_Xerr_params(struct _s_mix_Xerr_params &in
 }
 /**
  * @Input: void
+ * @Output:void
+ * @Description:设定滚转角混合误差产生系数
+ */
+void ABS_FORMATION_CONTROLLER::set_mix_Yerr_params(struct _s_mix_Yerr_params &input_params)
+{
+  mix_Yerr_params = input_params;
+}
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得编队控制前向混合器参数
+ */
+void ABS_FORMATION_CONTROLLER::get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_Xerr_para)
+{
+  mix_Xerr_para = mix_Xerr_params;
+}
+/**
+ * @Input: void
+ * @Output: void
+ * @Description: 获得编队控制器侧向参数
+ */
+void ABS_FORMATION_CONTROLLER::get_mix_Yerr_params(struct _s_mix_Yerr_params &mix_Yerr_para)
+{
+  mix_Yerr_para = mix_Yerr_params;
+}
+/**
+ * @Input: void
  * @Output: void
  * @Description: 设定tecs控制器参数
  */
 void ABS_FORMATION_CONTROLLER::set_tecs_params(struct _s_tecs_params &input_params)
 {
   tecs_params = input_params;
-}
-/**
- * @Input: void
- * @Output: void
- * @Description: 设定衡侧向控制器参数
- */
-void ABS_FORMATION_CONTROLLER::set_lateral_ctrller_params(struct _s_lateral_controller_params &input_params)
-{
-  lateral_controller_params = input_params;
 }
 
 /**
@@ -84,16 +102,6 @@ Point ABS_FORMATION_CONTROLLER::get_plane_to_sp_vector(Point origin, Point targe
 
   return out * double(CONSTANTS_RADIUS_OF_EARTH);
 }
-/**
- * @Input: void
- * @Output: void
- * @Description: 获得编队控制器参数
- */
-void ABS_FORMATION_CONTROLLER::get_mix_Xerr_params(struct _s_mix_Xerr_params &mix_error_para)
-{
-  mix_error_para = mix_Xerr_params;
-}
-
 /**
  * @Input: void
  * @Output: void

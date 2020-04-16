@@ -1,0 +1,18 @@
+#本文件是formation_controller的外层参数
+
+# /* 产生期望速度 */
+
+fixwing_formation_control/abs_formation_controller/gen_V_sp/kv_p      : 0.6 # /* 主从机速度差比例项 */
+fixwing_formation_control/abs_formation_controller/gen_V_sp/kp_p      : 0.6 # /* 从机期望与实际位置误差比例 */
+fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_kp    : 0.6 # /* 总混合产生期望空速pid参数 */
+fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_kd    : 0.6 # /* 总混合产生期望空速pid参数 */
+fixwing_formation_control/abs_formation_controller/gen_V_sp/mix_ki    : 0.6 # /* 总混合产生期望空速pid参数 */
+
+
+# /* 产生期望滚转角 */
+
+fixwing_formation_control/abs_formation_controller/gen_roll_sp/keta_p : 0.6 # /* 主从机速度差比例项 */
+fixwing_formation_control/abs_formation_controller/gen_roll_sp/kp_p   : 0.6 # /* 从机期望与实际位置误差比例 */
+fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_kp : 0.6 # /* 总混合产生期望空速pid参数 */
+fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_kd : 0.6 # /* 总混合产生期望空速pid参数 */
+fixwing_formation_control/abs_formation_controller/gen_roll_sp/mix_ki : 0.6 # /* 总混合产生期望空速pid参数 */
