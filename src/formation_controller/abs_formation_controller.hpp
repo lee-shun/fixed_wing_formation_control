@@ -62,7 +62,7 @@ public:
         float mix_kp{0.5};
 
         /* 总混合产生期望roll pid参数 */
-        float mix_kd{0.1};
+        float mix_kd{0.005};
 
         /* 总混合产生期望roll pid参数 */
         float mix_ki{0.0};
