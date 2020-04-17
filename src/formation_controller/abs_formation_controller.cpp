@@ -137,12 +137,12 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   led_arispd.set_vec_ele(led_airspd_x, led_airspd_y);                                    /* 领机空速向量 */
   led_gspeed_2d.set_vec_ele(leader_states_f.global_vel_x, leader_states_f.global_vel_y); /* 领机地速向量 */
 
-  cout << "领机状态" << endl;
-  cout << "验证用，滤波后的地速x大小为：" << leader_states_f.global_vel_x << endl;
-  cout << "验证用，滤波后的地速y大小为：" << leader_states_f.global_vel_y << endl;
-  cout << "验证用，计算的空速大小为：" << led_arispd.len() << endl;
-  cout << "验证用，实际获取空速为：" << leader_states_f.air_speed << endl;
-  cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (led_arispd.len() - leader_states_f.air_speed) << endl;
+  /* cout << "领机状态" << endl; */
+  /* cout << "验证用，滤波后的地速x大小为：" << leader_states_f.global_vel_x << endl; */
+  /* cout << "验证用，滤波后的地速y大小为：" << leader_states_f.global_vel_y << endl; */
+  /* cout << "验证用，计算的空速大小为：" << led_arispd.len() << endl; */
+  /* cout << "验证用，实际获取空速为：" << leader_states_f.air_speed << endl; */
+  /* cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (led_arispd.len() - leader_states_f.air_speed) << endl; */
 
   /* 计算获得的空速与读取的空速差距较大 */
   if ((led_arispd.len() - leader_states_f.air_speed) >= 3.0)
@@ -209,12 +209,12 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   fw_arispd.set_vec_ele(fw_airspd_x, fw_airspd_y);                              /* 本机空速向量 */
   fw_gspeed_2d.set_vec_ele(fw_states_f.global_vel_x, fw_states_f.global_vel_y); /* 本机地速向量 */
 
-  cout << "本机机状态" << endl;
-  cout << "验证用，滤波后的地速x大小为：" << fw_states_f.global_vel_x << endl;
-  cout << "验证用，滤波后的地速y大小为：" << fw_states_f.global_vel_y << endl;
-  cout << "验证用，计算的空速大小为：" << fw_arispd.len() << endl;
-  cout << "验证用，实际获取空速为：" << fw_states_f.air_speed << endl;
-  cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (fw_arispd.len() - fw_states_f.air_speed) << endl;
+  /* cout << "本机机状态" << endl; */
+  /* cout << "验证用，滤波后的地速x大小为：" << fw_states_f.global_vel_x << endl; */
+  /* cout << "验证用，滤波后的地速y大小为：" << fw_states_f.global_vel_y << endl; */
+  /* cout << "验证用，计算的空速大小为：" << fw_arispd.len() << endl; */
+  /* cout << "验证用，实际获取空速为：" << fw_states_f.air_speed << endl; */
+  /* cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (fw_arispd.len() - fw_states_f.air_speed) << endl; */
 
   if ((fw_arispd.len() - fw_states_f.air_speed) >= 3.0) /* 计算获得的空速与读取的空速差距较大 */
   {
@@ -300,11 +300,11 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   {
     fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*右后方*/
+  else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*右后方*/
   {
     fw_error.led_fol_eta = PI + atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*左前方*/
+  else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*左前方*/
   {
     fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
   }
@@ -312,19 +312,19 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   {
     fw_error.led_fol_eta = -PI + atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*左方*/
+  else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*正左方*/
   {
     fw_error.led_fol_eta = -PI / 2;
   }
-  else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*右方*/
+  else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*正右方*/
   {
     fw_error.led_fol_eta = PI / 2;
   }
-  else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*后方*/
+  else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*正后方*/
   {
     fw_error.led_fol_eta = -PI;
   }
-  else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*前方*/
+  else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*正前方*/
   {
     fw_error.led_fol_eta = 0;
   }
@@ -351,11 +351,11 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 7. 利用前向位置、速度误差产生期望速度大小
      */
 
-  if (format_method == _e_format_method::LONG_DIS)
+  if (false&&format_method == _e_format_method::LONG_DIS)
   {
     airspd_sp = fw_params.max_arispd_sp;
   }
-  else if (format_method == _e_format_method::CLOSE_DIS)
+  else if (true||format_method == _e_format_method::CLOSE_DIS)
   {
     /* 1.产生前向混合误差 */
 
@@ -381,11 +381,11 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     airspd_sp = fw_sp.ground_speed + wind_Xk; /* 此处的空速应该是加法 */
 
-    cout << "最原始的空速设定值为" << airspd_sp << endl;
+    ABS_FORMATION_CONTROLLER_INFO("原始空速设定值：" << airspd_sp);
 
     /* 符合飞机本身的加速减速特性： */
     /* TODO:慎用，加上之后,需要加大飞机的前向后相加速度，由于延时作用太强，可能导致不稳定。
-       */
+     */
     if ((airspd_sp - airspd_sp_prev) > fw_params.maxinc_acc * _dt)
     {
       airspd_sp = airspd_sp_prev + fw_params.maxinc_acc * _dt;
@@ -450,7 +450,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 9. 利用横侧向位置、角度误差产生期望滚转角
      */
 
-  if (format_method == _e_format_method::LONG_DIS)
+  if (false&&format_method == _e_format_method::LONG_DIS)
   {
 
     /* L1控制方法 */
@@ -459,7 +459,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_cmd = l1_controller.nav_roll(); /* 获取期望控制滚转 */
   }
-  else if (format_method == _e_format_method::CLOSE_DIS)
+  else if (true||format_method == _e_format_method::CLOSE_DIS)
   {
 
     /* 位置与角度误差控制方法 */
@@ -474,7 +474,12 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
-    roll_cmd = roll_sp_pid.get_full_output();
+    float Phi_dot_sp = roll_sp_pid.get_full_output();
+
+    ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI);
+    ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp);
+
+    roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
   }
   else
   {
