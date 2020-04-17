@@ -300,11 +300,11 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   {
     fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*右后方*/
+  else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*右后方*/
   {
     fw_error.led_fol_eta = PI + atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk < 0 && led_gsp_Yk > 0) /*左前方*/
+  else if (led_gsp_Xk > 0 && led_gsp_Yk < 0) /*左前方*/
   {
     fw_error.led_fol_eta = atanf(led_gsp_Yk / led_gsp_Xk);
   }
@@ -312,19 +312,19 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   {
     fw_error.led_fol_eta = -PI + atanf(led_gsp_Yk / led_gsp_Xk);
   }
-  else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*左方*/
+  else if (led_gsp_Xk == 0 && led_gsp_Yk < 0) /*正左方*/
   {
     fw_error.led_fol_eta = -PI / 2;
   }
-  else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*右方*/
+  else if (led_gsp_Xk == 0 && led_gsp_Yk > 0) /*正右方*/
   {
     fw_error.led_fol_eta = PI / 2;
   }
-  else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*后方*/
+  else if (led_gsp_Xk < 0 && led_gsp_Yk == 0) /*正后方*/
   {
     fw_error.led_fol_eta = -PI;
   }
-  else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*前方*/
+  else if (led_gsp_Xk > 0 && led_gsp_Yk == 0) /*正前方*/
   {
     fw_error.led_fol_eta = 0;
   }
@@ -474,7 +474,12 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
-    roll_cmd = roll_sp_pid.get_full_output();
+    float Phi_dot_sp = roll_sp_pid.get_full_output();
+
+    ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI);
+    ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp);
+
+    roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
   }
   else
   {
