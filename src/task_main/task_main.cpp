@@ -353,9 +353,9 @@ void TASK_MAIN::run()
     begin_time = ros::Time::now(); /* 记录启控时间 */
     ros_sub_pub();
 
-    input_params(); /* 读取参数 */
+    /* input_params(); /1* 读取参数 *1/ */
 
-    while (false&&ros::ok())
+    while (ros::ok())
     {
         /**
         * 比赛任务大循环，根据来自commander的控制指令来进行响应的控制动作
