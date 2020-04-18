@@ -260,7 +260,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); /* 计算飞机到期望点向量(本质来说是误差向量) */
 
   fw_error.PXk = fw_dir_unit * vector_plane_sp;         /* 沿地速度方向距离误差（待检验） */
-  fw_error.PYk = fw_dir_unit ^ vector_plane_sp;         /* 垂直于地速度方向距离误差 */
+  /* fw_error.PYk = fw_dir_unit ^ vector_plane_sp;         /1* 垂直于地速度方向距离误差 *1/ */
+  fw_error.PYk = led_dir_unit ^ vector_plane_sp;         /* 垂直于地速度方向距离误差 */
   fw_error.PZk = fw_sp.altitude - fw_states_f.altitude; /* 高度方向误差 */
 
   double a_pos[2], b_pos[2], m[2]; /* 计算ned坐标系下的位置误差 */
@@ -463,6 +464,13 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   {
 
     /* 位置与角度误差控制方法 */
+    if (fw_error.led_fol_eta <= deg_2_rad(60.0) &&
+        fw_error.led_fol_eta >= deg_2_rad(-60.0)) {
+      mix_Yerr_params.kp_p = 0.005;
+    } else {
+      mix_Yerr_params.kp_p = 0.0;
+    }
+
 
     float mix_err_Yk = mix_Yerr_params.keta_p * fw_error.led_fol_eta + mix_Yerr_params.kp_p * fw_error.PYk;
 
@@ -475,11 +483,14 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
     float Phi_dot_sp = roll_sp_pid.get_full_output();
+    /* float acc_sp = roll_sp_pid.get_full_output(); */
 
+    ABS_FORMATION_CONTROLLER_INFO("fw_error.PYk = ="<< fw_error.PYk);
     ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI);
     ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp);
 
     roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
+    /* roll_cmd = acc_sp/(CONSTANTS_ONE_G); */
   }
   else
   {

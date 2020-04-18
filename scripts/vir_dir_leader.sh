@@ -26,7 +26,7 @@
 
 #zsh
 gnome-terminal --window -e 'zsh -c "cd ~/catkin_ws; catkin_make; exec zsh"' \
---tab -e 'zsh -c "sleep 2; cd ~/src/Firmware; export PX4_SIM_SPEED_FACTOR=2&&make px4_sitl gazebo_plane;  exec zsh"' \
+--tab -e 'zsh -c "sleep 2; cd ~/src/Firmware; export PX4_SIM_SPEED_FACTOR=1.3&&make px4_sitl gazebo_plane;  exec zsh"' \
 --tab -e 'zsh -c "sleep 4; roslaunch mavros px4.launch  fcu_url:="udp://:14540@127.0.0.1:14557"; exec zsh"' \
 --tab -e 'zsh -c "sleep 6; rosrun fixed_wing_formation_control pack_fw_states;  exec zsh"' \
 --tab -e 'zsh -c "sleep 10; rosrun fixed_wing_formation_control task_main;exec zsh"' \
