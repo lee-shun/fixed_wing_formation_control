@@ -24,8 +24,8 @@
 #include "../../fixed_wing_lib/mathlib.hpp"
 #include "../../fixed_wing_lib/syslib.hpp"
 
-#define LEADER_HOME_LAT 47.3965196
-#define LEADER_HOME_LONG 8.5505739
+#define LEADER_HOME_LAT 47.3977089
+#define LEADER_HOME_LONG 8.5486917
 #define LEADER_HOME_ALT 580.00
 
 using namespace std;
@@ -38,7 +38,7 @@ public:
 private:
     float distance_e;
 
-    fixed_wing_formation_control::Leaderstates leaderstates; //即将要发布的领机的状态
+    fixed_wing_formation_control::Leaderstates leaderstates; /*即将要发布的领机的状态*/
     ros::NodeHandle nh;
     ros::Publisher vir_leader_pub;
 
