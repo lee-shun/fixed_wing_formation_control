@@ -33,6 +33,8 @@ class PACK_FW_STATES
 {
 
 private:
+    string planeID = "uav1/";
+
     int print_counter{0};
 
     _FIXED_WING_SUB_PUB fixed_wing_sub_pub;
