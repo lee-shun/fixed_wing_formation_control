@@ -29,6 +29,7 @@ public:
   float get_full_output();
   float get_inc_output();
   void reset_incre_pid();
+  void set_prev_output(float prev);/* 设定上一次的输出值，保证从别的控制逻辑切入时控制连续 */
 
 private:
   float input{0.0};
@@ -37,6 +38,7 @@ private:
 
   float increment{0.0};
   float output{0.0};
+  float prev_output{0.0};
   void update_input();
 };
 
@@ -45,10 +47,23 @@ float INCREMENT_PID_CONTROLLER::get_inc_output()
     return increment;
 }
 
+/**
+ * @Input: 
+ * @Output: 
+ * @Description: 用于第一次进入时与其他控制方式的衔接
+ */
+
+void INCREMENT_PID_CONTROLLER::set_prev_output(float prev) {
+
+  prev_output = prev;
+}
+
 float INCREMENT_PID_CONTROLLER::get_full_output()
 {
 
-  output = output + increment;
+  output = prev_output + increment;
+
+  prev_output = output;
 
   return output;
 }
@@ -73,11 +88,6 @@ void INCREMENT_PID_CONTROLLER::increment_pid(float in, float Kp, float Ki,
                                               float Kd)
 {
   input = in;
-
-  cout << "before calculate" << endl;
-  cout << "input" << input << endl;
-  cout << "prev2_input" << prev2_input << endl;
-  cout << "prev_input" << prev_input << endl;
 
   float param_p = Kp * (input - prev_input);
   float param_i = Ki * input;
