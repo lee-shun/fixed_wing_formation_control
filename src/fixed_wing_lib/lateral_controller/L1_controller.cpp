@@ -74,5 +74,5 @@ void L1_CONTROLLER::l1_controller(Point curr_pos, Point sp_pos,
     /**
      * 计算切向加速度,此处的L1_distance是否替换成vector_A_to_airplane.len()有待之后检验
     */
-    _lateral_accel = _K_L1 * ground_speed * ground_speed / vector_A_to_airplane.len() * sinf(eta);
+    _lateral_accel = _K_L1 * ground_speed * ground_speed / _L1_distance * sinf(eta);
 }

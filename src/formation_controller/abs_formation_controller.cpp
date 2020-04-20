@@ -339,24 +339,28 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 6.判断控制分段
      */
 
-  if (vector_plane_sp.len() >= 30.0)
+  if (vector_plane_sp.len() >= 60.0)
   {
     format_method = _e_format_method::LONG_DIS;
+    ABS_FORMATION_CONTROLLER_INFO("现在是长距离");
   }
   else
   {
     format_method = _e_format_method::CLOSE_DIS;
+    ABS_FORMATION_CONTROLLER_INFO("现在是短距离");
   }
 
   /**
      * 7. 利用前向位置、速度误差产生期望速度大小
      */
 
-  if (false&&format_method == _e_format_method::LONG_DIS)
+  if (format_method == _e_format_method::LONG_DIS)
   {
-    airspd_sp = fw_params.max_arispd_sp;
+    fw_sp.air_speed = fw_params.max_arispd_sp;
+
+    gspeed_sp_pid.set_prev_output(fw_sp.air_speed);
   }
-  else if (true||format_method == _e_format_method::CLOSE_DIS)
+  else if (format_method == _e_format_method::CLOSE_DIS)
   {
     /* 1.产生前向混合误差 */
 
@@ -451,7 +455,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 9. 利用横侧向位置、角度误差产生期望滚转角
      */
 
-  if (false&&format_method == _e_format_method::LONG_DIS)
+  if (format_method == _e_format_method::LONG_DIS)
   {
 
     /* L1控制方法 */
@@ -460,7 +464,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_cmd = l1_controller.nav_roll(); /* 获取期望控制滚转 */
   }
-  else if (true||format_method == _e_format_method::CLOSE_DIS)
+  else if (format_method == _e_format_method::CLOSE_DIS)
   {
 
     /* 位置与角度误差控制方法 */
@@ -485,9 +489,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     float Phi_dot_sp = roll_sp_pid.get_full_output();
     /* float acc_sp = roll_sp_pid.get_full_output(); */
 
-    ABS_FORMATION_CONTROLLER_INFO("fw_error.PYk = ="<< fw_error.PYk);
-    ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI);
-    ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp);
+    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.PYk = ="<< fw_error.PYk); */
+    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI); */
+    /* ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp); */
 
     roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
     /* roll_cmd = acc_sp/(CONSTANTS_ONE_G); */

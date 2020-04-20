@@ -37,7 +37,7 @@ public:
         float kv_p{0.4};
 
         /* 从机期望与实际位置误差比例 */
-        float kp_p{0.6};
+        float kp_p{0.45};
 
         /* 总混合产生期望空速pid参数 */
         float mix_kp{0.3};
