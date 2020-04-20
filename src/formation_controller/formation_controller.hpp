@@ -72,7 +72,7 @@ public:
         /*for generate the airspeed setpoint use*/
 
         /* 飞机前向最大瞬时加速度 */
-        float maxinc_acc{10.0};
+        float maxinc_acc{20.0};
 
         /* 飞机减速最大瞬时加速度 */
         float maxdec_acc{10.0};
