@@ -8,20 +8,20 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation#自定义消息产生器
-  geometry_msgs
-  mavros
-  mavros_msgs
-  nav_msgs
-  roscpp
-  rospy
-  sensor_msgs
-  serial
-  std_msgs
-  std_srvs
-  tf2_eigen
-  tf2_ros
-)
+    message_generation#自定义消息产生器
+    geometry_msgs
+    mavros
+    mavros_msgs
+    nav_msgs
+    roscpp
+    rospy
+    sensor_msgs
+    serial
+    std_msgs
+    std_srvs
+    tf2_eigen
+    tf2_ros
+    )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -58,15 +58,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-   FILES
-   FWstates.msg
-   FWcmd.msg
-   Formation_control_states.msg
-   Leaderstates.msg
-   Fwmonitor.msg
-   Fw_cmd_mode.msg
-   Fw_current_mode.msg
-)
+    FILES
+    FWstates.msg
+    FWcmd.msg
+    Formation_control_states.msg
+    Leaderstates.msg
+    Fwmonitor.msg
+    Fw_cmd_mode.msg
+    Fw_current_mode.msg
+    )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -84,10 +84,10 @@ add_message_files(
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs#   mavros_msgs#   nav_msgs#   sensor_msgs#   std_msgs
-)
+    DEPENDENCIES
+    std_msgs
+    geometry_msgs#   mavros_msgs#   nav_msgs#   sensor_msgs#   std_msgs
+    )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -119,12 +119,12 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  #INCLUDE_DIRS include
-  #LIBRARIES fixed_wing_formation_control
-  CATKIN_DEPENDS   message_runtime geometry_msgs mavros mavros_msgs nav_msgs roscpp rospy sensor_msgs serial std_msgs std_srvs tf2_eigen tf2_ros
-  #DEPENDS system_lib
+    #INCLUDE_DIRS include
+    #LIBRARIES fixed_wing_formation_control
+    CATKIN_DEPENDS   message_runtime geometry_msgs mavros mavros_msgs nav_msgs roscpp rospy sensor_msgs serial std_msgs std_srvs tf2_eigen tf2_ros
+    #DEPENDS system_lib
 
-)
+    )
 
 ###########
 ## Build ##
@@ -133,42 +133,128 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+    # include
+    ${catkin_INCLUDE_DIRS}
+    )
 
 
-########### 库生成声明 #############
+################################################## 库生成声明 #################################################################
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
 
-# add_library(lateral_controller
-# src/fixed_wing_lib/lateral_controller/lateral_controller.cpp
-# )
+########### 衡侧向控制器库生成声明 #############
 add_library(L1_controller
-src/fixed_wing_lib/lateral_controller/L1_controller.cpp
-)
+    src/fixed_wing_lib/lateral_controller/L1_controller.cpp
+    )
 add_library(L1_vel_controller
-src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp
-)
+    src/fixed_wing_lib/lateral_controller/L1_vel_controller.cpp
+    )
 add_library(track_vel
-src/fixed_wing_lib/lateral_controller/track_vel.cpp
-)
+    src/fixed_wing_lib/lateral_controller/track_vel.cpp
+    )
 add_library(mix_angle_pos_controller
-src/fixed_wing_lib/lateral_controller/mix_angle_pos_controller.cpp
-)
+    src/fixed_wing_lib/lateral_controller/mix_angle_pos_controller.cpp
+    )
 
+########### TECS控制器库生成声明 #############
 add_library(tecs
-src/fixed_wing_lib/vertical_controller/tecs.cpp
-)
+    src/fixed_wing_lib/vertical_controller/tecs.cpp
+    )
+
+########### 编队控制器库生成声明 #############
 add_library(formation_controller
-src/formation_controller/formation_controller.cpp
-)
+    src/formation_controller/formation_controller.cpp
+    )
 add_library(abs_formation_controller
-src/formation_controller/abs_formation_controller.cpp
-)
+    src/formation_controller/abs_formation_controller.cpp
+    )
+
+########### 无人机状态打包器库生成声明 #############
+add_library(pack_fw_states
+    src/pack_fw_states/pack_fw_states.cpp
+    )
+
+########### 无人机模式切换库生成声明 #############
+add_library(switch_fw_mode
+    src/test/switch_fw_mode/switch_fw_mode.cpp
+    )
+
+################## 编队控制节点 #####################
+add_library(task_main
+    src/task_main/task_main.cpp
+    )
+
+
+################################################ 库文件链接 #############################################################
+
+target_link_libraries(formation_controller
+    L1_controller
+    )
+target_link_libraries(formation_controller
+    tecs
+    )
+target_link_libraries( abs_formation_controller
+    formation_controller
+    )
+target_link_libraries( task_main
+    abs_formation_controller)
+
+
+################################################ 仿真节点生成声明 #############################################################
+
+#################### 从机1号 #######################
+
+add_executable(follower1_main src/multi_uav_sim/followers_main/follower1_main.cpp)
+target_link_libraries(follower1_main
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(follower1_main
+    task_main
+    )
+
+########## 从机1号消息打包节点 #############
+
+add_executable(pack_fw1_states src/multi_uav_sim/pack_fws_states/pack_fw1_states.cpp)
+target_link_libraries(pack_fw1_states
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(pack_fw1_states
+    pack_fw_states
+    )
+
+########## 从机1号模式切换节点 #############
+
+
+#################### 从机2号 #######################
+add_executable(follower2_main src/multi_uav_sim/followers_main/follower2_main.cpp)
+target_link_libraries(follower2_main
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(follower2_main
+    task_main
+    )
+
+########## 从机2号消息打包节点 #############
+
+add_executable(pack_fw2_states src/multi_uav_sim/pack_fws_states/pack_fw2_states.cpp)
+target_link_libraries(pack_fw2_states
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(pack_fw2_states
+    pack_fw_states
+    )
+########## 从机2号模式切换节点 #############
+
+
+
+########## 领机0号 #############
+
+
+
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -194,78 +280,78 @@ src/formation_controller/abs_formation_controller.cpp
 
 ## Specify libraries to link a library or executable target against
 
-###########比赛任务主节点##############
-add_executable(task_main src/task_main/task_main.cpp)
-target_link_libraries(task_main
-   ${catkin_LIBRARIES}
- )
- target_link_libraries(abs_formation_controller
- tecs
- )
- target_link_libraries(abs_formation_controller
- L1_controller
- )
- target_link_libraries(abs_formation_controller
- formation_controller
- )
+############比赛任务主节点##############
+#add_executable(task_main src/task_main/task_main.cpp)
+#target_link_libraries(task_main
+#${catkin_LIBRARIES}
+#)
+#target_link_libraries(abs_formation_controller
+#tecs
+#)
+#target_link_libraries(abs_formation_controller
+#L1_controller
+#)
+#target_link_libraries(abs_formation_controller
+#formation_controller
+#)
 
- target_link_libraries(task_main
- abs_formation_controller
- )
-
-
-###########mavros打包+指令发送节点##############
- add_executable(pack_fw_states src/pack_fw_states/pack_fw_states.cpp)
- target_link_libraries(pack_fw_states
- ${catkin_LIBRARIES}
-)
+#target_link_libraries(task_main
+#abs_formation_controller
+#)
 
 
-###########模式切换##############
-add_executable(switch_fw_mode src/test/switch_fw_mode.cpp)
-target_link_libraries(switch_fw_mode
-${catkin_LIBRARIES}
-)
-
-###########任务状态flags##############
-add_executable(control_monitor src/fw_control_monitor/control_monitor.cpp)
-target_link_libraries(control_monitor
-${catkin_LIBRARIES}
-)
-
-###########飞机模式状态机commander##############
-add_executable(commander src/commander/commander.cpp)
-target_link_libraries(commander
-${catkin_LIBRARIES}
-)
+############mavros打包+指令发送节点##############
+#add_executable(pack_fw_states src/pack_fw_states/pack_fw_states.cpp)
+#target_link_libraries(pack_fw_states
+#${catkin_LIBRARIES}
+#)
 
 
-######################################################
-###################TEST文件节点########################
-######################################################
+############模式切换##############
+#add_executable(switch_fw_mode src/test/switch_fw_mode.cpp)
+#target_link_libraries(switch_fw_mode
+#${catkin_LIBRARIES}
+#)
 
-###########几何虚拟领机##############
-add_executable(vir_dir_leader src/test/vir_leader/vir_dir_leader.cpp)
-target_link_libraries(vir_dir_leader
-${catkin_LIBRARIES}
-)
+############任务状态flags##############
+#add_executable(control_monitor src/fw_control_monitor/control_monitor.cpp)
+#target_link_libraries(control_monitor
+#${catkin_LIBRARIES}
+#)
 
-###########仿真虚拟领机##############
-add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
-target_link_libraries(vir_sim_leader
-${catkin_LIBRARIES}
-)
+############飞机模式状态机commander##############
+#add_executable(commander src/commander/commander.cpp)
+#target_link_libraries(commander
+#${catkin_LIBRARIES}
+#)
 
-###########test_filter##############
-add_executable(test_filter src/test/test_filter.cpp)
-target_link_libraries(test_filter
-${catkin_LIBRARIES}
-)
-###########pid_controller##############
-add_executable(test_pid src/test/test_pid.cpp)
-target_link_libraries(test_pid
-${catkin_LIBRARIES}
-)
+
+#######################################################
+####################TEST文件节点########################
+#######################################################
+
+############几何虚拟领机##############
+#add_executable(vir_dir_leader src/test/vir_leader/vir_dir_leader.cpp)
+#target_link_libraries(vir_dir_leader
+#${catkin_LIBRARIES}
+#)
+
+############仿真虚拟领机##############
+#add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
+#target_link_libraries(vir_sim_leader
+#${catkin_LIBRARIES}
+#)
+
+############test_filter##############
+#add_executable(test_filter src/test/test_filter.cpp)
+#target_link_libraries(test_filter
+#${catkin_LIBRARIES}
+#)
+############pid_controller##############
+#add_executable(test_pid src/test/test_pid.cpp)
+#target_link_libraries(test_pid
+#${catkin_LIBRARIES}
+#)
 
 
 #############
