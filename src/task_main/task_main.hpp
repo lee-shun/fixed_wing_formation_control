@@ -37,7 +37,10 @@ using namespace std;
 class TASK_MAIN
 {
 private:
-    int planeID{2};                                                   /*飞机编号*/
+    int planeID{1};                                                   /*飞机编号*/
+
+    string uavID{ "uav1/"};
+
     void print_data(const struct ABS_FORMATION_CONTROLLER ::_s_fw_states *p); /*打印数据*/
 
     ros::NodeHandle nh; /*ros句柄*/
@@ -87,7 +90,8 @@ private:
     void formation_states_pub();                                    /*发布编队控制器控制状态*/
 
 public:
-    void run();
+  void run();
+  void set_planeID(int id);
 };
 
 #endif

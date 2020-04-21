@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-08 22:35:49
+ * @LastEditTime: 2020-04-21 22:27:52
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -16,6 +16,25 @@
 
 #include "task_main.hpp"
 
+/**
+ * @Input: int
+ * @Output: 
+ * @Description: 设定当前飞机的ID
+ */
+void TASK_MAIN::set_planeID(int id) {
+  planeID = id;
+  switch (planeID) {
+  case 1:
+    uavID = "uav1/";
+    break;
+  case 2:
+    uavID = "uav2/";
+    break;
+  case 3:
+    uavID = "uav3/";
+    break;
+  }
+}
 /**
  * @Input: ros::Time begin
  * @Output: float time_now
@@ -56,36 +75,42 @@ void TASK_MAIN::ros_sub_pub() {
 
   fw_states_sub = nh.subscribe /* 【订阅】固定翼全部状态量 */
                   <fixed_wing_formation_control::FWstates>(
-                      "fixed_wing_formation_control/fw_states", 10,
-                      &TASK_MAIN::fw_state_cb, this);
+                      add2str(uavID, "fixed_wing_formation_control/fw_states"),
+                      10, &TASK_MAIN::fw_state_cb, this);
 
-  leader_states_sub = nh.subscribe /* 【订阅】领机信息 */
-                      <fixed_wing_formation_control::Leaderstates>(
-                          "fixed_wing_formation_control/leader_states", 10,
-                          &TASK_MAIN::leader_states_cb, this);
+  leader_states_sub =
+      nh.subscribe /* 【订阅】领机信息 */
+      <fixed_wing_formation_control::Leaderstates>(
+          add2str(uavID, "fixed_wing_formation_control/leader_states"), 10,
+          &TASK_MAIN::leader_states_cb, this);
 
-  fwmonitor_sub = nh.subscribe /* 【订阅】监控节点飞机以及任务状态 */
-                  <fixed_wing_formation_control::Fwmonitor>(
-                      "fixed_wing_formation_control/fwmonitor_flags", 10,
-                      &TASK_MAIN::fw_fwmonitor_cb, this);
+  fwmonitor_sub =
+      nh.subscribe /* 【订阅】监控节点飞机以及任务状态 */
+      <fixed_wing_formation_control::Fwmonitor>(
+          add2str(uavID, "fixed_wing_formation_control/fwmonitor_flags"), 10,
+          &TASK_MAIN::fw_fwmonitor_cb, this);
 
-  fw_cmd_mode_sub = nh.subscribe /* 【订阅】commander指定比赛模式 */
-                    <fixed_wing_formation_control::Fw_cmd_mode>(
-                        "fixed_wing_formation_control/fw_cmd_mode", 10,
-                        &TASK_MAIN::fw_cmd_mode_cb, this);
+  fw_cmd_mode_sub =
+      nh.subscribe /* 【订阅】commander指定比赛模式 */
+      <fixed_wing_formation_control::Fw_cmd_mode>(
+          add2str(uavID, "fixed_wing_formation_control/fw_cmd_mode"), 10,
+          &TASK_MAIN::fw_cmd_mode_cb, this);
 
   fw_cmd_pub = nh.advertise /* 【发布】固定翼四通道控制量 */
                <fixed_wing_formation_control::FWcmd>(
-                   "/fixed_wing_formation_control/fw_cmd", 10);
+                   add2str(uavID, "fixed_wing_formation_control/fw_cmd"), 10);
 
   formation_control_states_pub =
       nh.advertise /* 【发布】编队控制器状态 */
       <fixed_wing_formation_control::Formation_control_states>(
-          "/fixed_wing_formation_control/formation_control_states", 10);
+          add2str(uavID,
+                  "fixed_wing_formation_control/formation_control_states"),
+          10);
 
-  fw_current_mode_pub = nh.advertise /* 【发布】比赛任务进所处阶段 */
-                        <fixed_wing_formation_control::Fw_current_mode>(
-                            "fixed_wing_formation_control/fw_current_mode", 10);
+  fw_current_mode_pub =
+      nh.advertise /* 【发布】比赛任务进所处阶段 */
+      <fixed_wing_formation_control::Fw_current_mode>(
+          add2str(uavID, "fixed_wing_formation_control/fw_current_mode"), 10);
 }
 
 /**
