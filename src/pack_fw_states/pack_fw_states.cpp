@@ -20,12 +20,19 @@
 #include "pack_fw_states.hpp"
 
 void PACK_FW_STATES::set_planeID(int id) {
+  planeID = id;
   switch (id) {
-  case 1: uavID = "uav1/";
+  case 0:
+    uavID = "uav0/"; /* 领机 */
     break;
-  case 2: uavID = "uav2/";
+  case 1:
+    uavID = "uav1/"; /*从机*/
     break;
-  case 3: uavID = "uav3/";
+  case 2:
+    uavID = "uav2/"; /*从机*/
+    break;
+  case 3:
+    uavID = "uav3/"; /*从机*/
     break;
   }
 }

@@ -39,7 +39,9 @@ class TASK_MAIN
 private:
     int planeID{1};                                                   /*飞机编号*/
 
-    string uavID{ "uav1/"};
+    string uavID{ "uav1/"}; /* 本机编号，用于命名空间 */
+
+    string leaderID{ "uav0/"};/* 领机编号，用于命名空间 */
 
     void print_data(const struct ABS_FORMATION_CONTROLLER ::_s_fw_states *p); /*打印数据*/
 
