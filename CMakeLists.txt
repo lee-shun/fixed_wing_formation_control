@@ -227,6 +227,13 @@ target_link_libraries(pack_fw1_states
 
 ########## 从机1号模式切换节点 #############
 
+add_executable(switch_fw1_mode src/multi_uav_sim/switch_fws_mode/switch_fw1_mode.cpp)
+target_link_libraries(switch_fw1_mode
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(switch_fw1_mode
+    switch_fw_mode
+    )
 
 #################### 从机2号 #######################
 add_executable(follower2_main src/multi_uav_sim/followers_main/follower2_main.cpp)
@@ -248,11 +255,31 @@ target_link_libraries(pack_fw2_states
     )
 ########## 从机2号模式切换节点 #############
 
+add_executable(switch_fw2_mode src/multi_uav_sim/switch_fws_mode/switch_fw2_mode.cpp)
+target_link_libraries(switch_fw2_mode
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(switch_fw2_mode
+    switch_fw_mode
+    )
 
 
 ########## 领机0号 #############
 
+add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
+target_link_libraries(vir_sim_leader
+    ${catkin_LIBRARIES}
+    )
 
+#########领机0号消息打包节点 #############
+
+add_executable(pack_leader_states src/multi_uav_sim/pack_fws_states/pack_leader_states.cpp)
+target_link_libraries(pack_leader_states
+    ${catkin_LIBRARIES}
+    )
+target_link_libraries(pack_leader_states
+    pack_fw_states
+    )
 
 
 

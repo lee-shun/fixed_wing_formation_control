@@ -24,6 +24,9 @@
 void TASK_MAIN::set_planeID(int id) {
   planeID = id;
   switch (planeID) {
+  case 0:
+    uavID = "uav0/";
+    break;
   case 1:
     uavID = "uav1/";
     break;
@@ -81,7 +84,7 @@ void TASK_MAIN::ros_sub_pub() {
   leader_states_sub =
       nh.subscribe /* 【订阅】领机信息 */
       <fixed_wing_formation_control::Leaderstates>(
-          add2str(uavID, "fixed_wing_formation_control/leader_states"), 10,
+          add2str(leaderID, "fixed_wing_formation_control/leader_states"), 10,
           &TASK_MAIN::leader_states_cb, this);
 
   fwmonitor_sub =
