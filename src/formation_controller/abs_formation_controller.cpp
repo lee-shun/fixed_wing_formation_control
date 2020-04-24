@@ -187,7 +187,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   fw_sp.altitude = result[2];
 
   /* 保证归一化的结果，此向量代表了领机的速度方向*/
-  Vec led_dir_unit(led_cos_dir, fw_sin_dir);
+  Vec led_dir_unit(led_cos_dir, led_sin_dir);
   led_dir_unit = led_dir_unit.normalized();
 
   /**
@@ -444,7 +444,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 9. 利用横侧向位置、角度误差产生期望滚转角
      */
 
-  if (format_method == _e_format_method::LONG_DIS)
+  if (false&&format_method == _e_format_method::LONG_DIS)
   {
 
     /* L1控制方法 */
@@ -453,7 +453,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_cmd = l1_controller.nav_roll(); /* 获取期望控制滚转 */
   }
-  else if (format_method == _e_format_method::CLOSE_DIS)
+  else if (true||format_method == _e_format_method::CLOSE_DIS)
   {
 
     /* 位置与角度误差控制方法 */
@@ -476,14 +476,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
     float Phi_dot_sp = roll_sp_pid.get_full_output();
-    /* float acc_sp = roll_sp_pid.get_full_output(); */
-
-    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.PYk = ="<< fw_error.PYk); */
-    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI); */
-    /* ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp); */
 
     roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
-    /* roll_cmd = acc_sp/(CONSTANTS_ONE_G); */
   }
   else
   {
