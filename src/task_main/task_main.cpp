@@ -129,6 +129,7 @@ void TASK_MAIN::formation_states_pub() {
   formation_control_states.err_P_E = formation_error.P_E;
   formation_control_states.err_P_D = formation_error.P_D;
   formation_control_states.err_P_NE = formation_error.P_NE;
+
   formation_control_states.err_PXb = formation_error.PXb;
   formation_control_states.err_PYb = formation_error.PYb;
   formation_control_states.err_PZb = formation_error.PZb;
@@ -148,6 +149,9 @@ void TASK_MAIN::formation_states_pub() {
   formation_control_states.led_fol_vxk = formation_error.led_fol_vxk;
   formation_control_states.led_fol_vyk = formation_error.led_fol_vyk;
   formation_control_states.led_fol_vzk = formation_error.led_fol_vzk;
+
+  formation_control_states.led_fol_eta = formation_error.led_fol_eta;
+  formation_control_states.eta_deg = rad_2_deg(formation_error.led_fol_eta);
 
   /* 本部分关于从机的期望值的赋值 */
   formation_control_states.sp_air_speed = formation_sp.air_speed;

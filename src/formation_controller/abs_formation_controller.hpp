@@ -53,7 +53,7 @@ public:
     struct _s_mix_Yerr_params
     {
         /* 主从机位置差比例项 */
-        float kp_p{0.003};
+        float kp_p{0.004};
 
         /* 领机从机速度方向偏差比例0.5比较合适 */
         float keta_p{0.50};
