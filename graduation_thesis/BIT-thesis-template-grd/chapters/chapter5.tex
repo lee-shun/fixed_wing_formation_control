@@ -60,12 +60,39 @@
 由仿真结果可知，本文所设计的$TECS$控制器可以完成对于期望速度以及期望高度的跟踪，从而达到消除竖直平面内的误差的作用。
 \section{基于ROS/Gazebo-PX4的双机编队动力学仿真}
 根据第\ref{chap:hardware}章中介绍的ROS-Gazebo仿真环境，进行仿真环境下的双机编队飞行试验。首先利用QGround Control 地面站为领机规划
-一条包括起飞以及降落航点在内的一条长直航线。之后先使用地面站将领机解锁，切换任务模式之后起飞，按照既定航线飞行。等待领机到达第一个
-航点之后，再起飞从机1，并切换到外部控制模式，即编队控制的控制逻辑。之后经过一段时间的飞行之后，采集飞行之中的编队误差等数据：最终
+一条包括起飞以及降落航点在内的一条长直航线。之后先使用地面站将领机1(vehicle 1)
+解锁，切换任务模式之后起飞，按照既定航线飞行。等待领机到达第一个
+航点之后，再起飞从机2(vehicle 2)
+，并切换到外部控制模式，即编队控制的控制逻辑。之后经过一段时间的飞行之后，采集飞行之中的编队误差等数据：最终
 编队稳定之后的可视化效果如下：
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-overview}
     \caption{稳定编队之后的编队可视化效果}\label{c5-real-overview}
 \end{figure}
-在仿真过程中，利用ROS提供的rosbag等数据记录工具
+在仿真过程中，利用ROS提供的rosbag等数据记录工具,可以进行仿真之中的数据记录与处理：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-pos_err_x}
+    \caption{X通道位置误差}\label{c5-real-pos_err_x}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-pos_err_y}
+    \caption{Y通道位置误差}\label{c5-real-pos_err_y}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-pos_err_z}
+    \caption{Z通道位置误差}\label{c5-real-pos_err_z}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-vel_err}
+    \caption{领机从机速度大小误差}\label{c5-real-vel_err}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-eta_err}
+    \caption{领机从机速度方向误差}\label{c5-real-eta_err}
+\end{figure}
