@@ -1,0 +1,63 @@
+\hypersetup {hidelinks}
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{摘\nobreakspace {}\nobreakspace {}\nobreakspace {}\nobreakspace {}要}{I}{Doc-Start}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Abstract}{II}{chapter*.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {第1章\hspace {.3em}}绪论}{1}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.\hspace {4bp}1}本文研究的目的和意义}{1}{section.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.\hspace {4bp}2}国内外研究现状及发展趋势}{1}{section.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.\hspace {4bp}3}本文的技术方案}{2}{section.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.\hspace {4bp}4}本文的组织结构}{2}{section.1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {第2章\hspace {.3em}}无人机编队的动力学模型的建立}{3}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {第3章\hspace {.3em}}编队控制器设计}{6}{chapter.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.\hspace {4bp}1}水平平面编队控制器设计}{6}{section.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}1.\hspace {3bp}1}误差定义}{6}{subsection.3.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}1.\hspace {3bp}2}航迹系x轴方向控制器}{7}{subsection.3.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}1.\hspace {3bp}3}航迹系y轴方向控制器}{8}{subsection.3.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.\hspace {4bp}2}竖直平面编队控制器设计}{9}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.\hspace {4bp}3}实际应用时的考虑}{12}{section.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}3.\hspace {3bp}1}编队控制器分段设计}{13}{subsection.3.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}3.\hspace {3bp}2}风速较大时的处理}{13}{subsection.3.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}3.\hspace {3bp}3}无人机飞行性能限幅设计}{15}{subsection.3.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.\hspace {3bp}3.\hspace {3bp}4}原始数据滤波器设计}{16}{subsection.3.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {第4章\hspace {.3em}}无人机编队整体控制逻辑、仿真环境以及硬件选型}{17}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.\hspace {4bp}1}无人机编队软件整体控制逻辑}{17}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.\hspace {4bp}2}无人机软硬件环境选配}{18}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.\hspace {4bp}3}无人机编队动力学仿真环境}{18}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {第5章\hspace {.3em}}控制器仿真以及实际飞行实验结果分析}{20}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.\hspace {4bp}1}基于MATLAB/Simulink的双机编队数学仿真}{20}{section.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.\hspace {4bp}2}基于ROS/Gazebo-PX4的双机编队动力学仿真}{24}{section.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{结\nobreakspace {}\nobreakspace {}\nobreakspace {}\nobreakspace {}论}{28}{chapter*.35}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{参考文献}{29}{chapter*.36}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{附\nobreakspace {}\nobreakspace {}\nobreakspace {}\nobreakspace {}录}{30}{chapter*.37}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{致\nobreakspace {}\nobreakspace {}\nobreakspace {}\nobreakspace {}谢}{31}{chapter*.38}%
+\contentsfinish 
