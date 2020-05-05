@@ -8,7 +8,7 @@
  * @------------------------------------------2: 2------------------------------------------@
  * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime: 2020-04-08 23:16:38
+ * @LastEditTime: 2020-05-05 14:19:20
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -47,6 +47,13 @@ void FORMATION_CONTROLLER::set_formation_type(int formation_type)
     case 2:
         formation_offset.xb = -10;
         formation_offset.yb = 0.1;
+        formation_offset.zb = 0;
+
+        break;
+
+    case 3:
+        formation_offset.xb = -4;
+        formation_offset.yb = 2;
         formation_offset.zb = 0;
 
         break;
