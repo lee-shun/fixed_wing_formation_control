@@ -18,6 +18,7 @@
 #define _SYSLIB_HPP_
 #include <iostream>
 #include <fstream>
+#include <string.h>
 #include <sys/time.h>
 
 using namespace std;
@@ -54,6 +55,16 @@ void write_to_files(string file_path_name, string flight_mode, float data[5]) //
         cout << file_path_name << "-->"
              << "something wrong to open or write" << endl;
     oufile.close();
+}
+/**
+ * @Input: string
+ * @Output:string
+ * @Description:将两个string合并
+ */
+ 
+string add2str(string a, string b)
+{
+    return a+b;
 }
 
 #endif
