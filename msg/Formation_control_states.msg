@@ -26,32 +26,37 @@ float64 err_P_E
 float64 err_P_D
 float64 err_P_NE
 
-#体轴系位置误差<与自己期望>
-float64 err_PXb
-float64 err_PYb
-float64 err_PZb
-
 #航迹轴系位置误差<与自己期望>
 float64 err_PXk
 float64 err_PYk
 float64 err_PZk
 
-#体轴系速度误差<与自己期望>
-float64 err_VXb
-float64 err_VYb
-float64 err_VZb
+#航迹系速度误差<与领机>
+float64 led_fol_vxk
+float64 led_fol_vyk
+float64 led_fol_vzk
 
 #航迹轴系速度误差<与自己期望>
 float64 err_VXk
 float64 err_VYk
 float64 err_VZk
 
+#角度误差
+float64 led_fol_eta
+float64 eta_deg
+
+#体轴系位置误差<与自己期望>
+float64 err_PXb
+float64 err_PYb
+float64 err_PZb
+
+#体轴系速度误差<与自己期望>
+float64 err_VXb
+float64 err_VYb
+float64 err_VZb
+
 #体轴系速度误差<与领机>
 float64 led_fol_vxb
 float64 led_fol_vyb
 float64 led_fol_vzb
 
-#机体轴系速度误差<与领机>
-float64 led_fol_vxk
-float64 led_fol_vyk
-float64 led_fol_vzk

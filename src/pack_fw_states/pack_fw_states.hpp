@@ -9,9 +9,9 @@
  *  1. 将来自于mavros的消息坐标变换后打包成Fw_state消息，便于以后使用。
  *  2. 将需要发送给飞机的四通道控制量消息坐标变换解包，发给mavros   
  * @------------------------------------------2: 2------------------------------------------@
- * @LastEditors  : lee-shun
+ * @LastEditors: lee-shun
  * @LastEditors_Email: 2015097272@qq.com
- * @LastEditTime : 2020-02-13 10:22:36
+ * @LastEditTime: 2020-04-20 22:35:34
  * @LastEditors_Organization: BIT-CGNC, fixed_wing_group
  * @LastEditors_Description:  
  * @------------------------------------------3: 3------------------------------------------@
@@ -22,17 +22,22 @@
 
 #include <ros/ros.h>
 #include <iostream>
-#include "fixed_wing_formation_control/FWstates.h" //自定义的飞机的状态消息
+#include "fixed_wing_formation_control/FWstates.h" /*自定义的飞机的状态消息*/
 #include "fixed_wing_formation_control/FWcmd.h"
 #include "fixed_wing_sub_pub.hpp"
 #include "../fixed_wing_lib/syslib.hpp"
 
+#define PACK_FW_STATES_INFO(a) cout<<"[PACK_FW_STATES_INFO]:"<<a<<endl
 using namespace std;
 
 class PACK_FW_STATES
 {
 
 private:
+    int planeID{1};
+
+    string uavID{ "uav1/"};
+
     int print_counter{0};
 
     _FIXED_WING_SUB_PUB fixed_wing_sub_pub;
@@ -109,7 +114,7 @@ private:
 
     float att_angle[3], att_quat[4]; //转换四元数中间量
 
-public:
+    /* 子函数（组） */
     void msg_to_mavros();
 
     void srv_to_mavros();
@@ -118,6 +123,10 @@ public:
 
     void pack_fw_states();
 
+public:
+
     void run(int argc, char **argv);
+
+    void set_planeID(int id);
 };
 #endif

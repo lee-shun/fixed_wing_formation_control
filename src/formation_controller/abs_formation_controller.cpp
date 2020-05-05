@@ -137,12 +137,6 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   led_arispd.set_vec_ele(led_airspd_x, led_airspd_y);                                    /* 领机空速向量 */
   led_gspeed_2d.set_vec_ele(leader_states_f.global_vel_x, leader_states_f.global_vel_y); /* 领机地速向量 */
 
-  /* cout << "领机状态" << endl; */
-  /* cout << "验证用，滤波后的地速x大小为：" << leader_states_f.global_vel_x << endl; */
-  /* cout << "验证用，滤波后的地速y大小为：" << leader_states_f.global_vel_y << endl; */
-  /* cout << "验证用，计算的空速大小为：" << led_arispd.len() << endl; */
-  /* cout << "验证用，实际获取空速为：" << leader_states_f.air_speed << endl; */
-  /* cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (led_arispd.len() - leader_states_f.air_speed) << endl; */
 
   /* 计算获得的空速与读取的空速差距较大 */
   if ((led_arispd.len() - leader_states_f.air_speed) >= 3.0)
@@ -193,7 +187,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   fw_sp.altitude = result[2];
 
   /* 保证归一化的结果，此向量代表了领机的速度方向*/
-  Vec led_dir_unit(led_cos_dir, fw_sin_dir);
+  Vec led_dir_unit(led_cos_dir, led_sin_dir);
   led_dir_unit = led_dir_unit.normalized();
 
   /**
@@ -209,12 +203,6 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   fw_arispd.set_vec_ele(fw_airspd_x, fw_airspd_y);                              /* 本机空速向量 */
   fw_gspeed_2d.set_vec_ele(fw_states_f.global_vel_x, fw_states_f.global_vel_y); /* 本机地速向量 */
 
-  /* cout << "本机机状态" << endl; */
-  /* cout << "验证用，滤波后的地速x大小为：" << fw_states_f.global_vel_x << endl; */
-  /* cout << "验证用，滤波后的地速y大小为：" << fw_states_f.global_vel_y << endl; */
-  /* cout << "验证用，计算的空速大小为：" << fw_arispd.len() << endl; */
-  /* cout << "验证用，实际获取空速为：" << fw_states_f.air_speed << endl; */
-  /* cout << "验证用，计算的空速大小以及实际获取空速之差为：" << (fw_arispd.len() - fw_states_f.air_speed) << endl; */
 
   if ((fw_arispd.len() - fw_states_f.air_speed) >= 3.0) /* 计算获得的空速与读取的空速差距较大 */
   {
@@ -259,8 +247,9 @@ void ABS_FORMATION_CONTROLLER::control_formation()
   Point current_pos(fw_states_f.latitude, fw_states_f.longitude);    /* 当前位置 */
   Vec vector_plane_sp = get_plane_to_sp_vector(current_pos, pos_sp); /* 计算飞机到期望点向量(本质来说是误差向量) */
 
-  fw_error.PXk = fw_dir_unit * vector_plane_sp;         /* 沿地速度方向距离误差（待检验） */
+  /* fw_error.PXk = fw_dir_unit * vector_plane_sp;         /1* 沿地速度方向距离误差（待检验） *1/ */
   /* fw_error.PYk = fw_dir_unit ^ vector_plane_sp;         /1* 垂直于地速度方向距离误差 *1/ */
+  fw_error.PXk = led_dir_unit * vector_plane_sp;
   fw_error.PYk = led_dir_unit ^ vector_plane_sp;         /* 垂直于地速度方向距离误差 */
   fw_error.PZk = fw_sp.altitude - fw_states_f.altitude; /* 高度方向误差 */
 
@@ -339,7 +328,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 6.判断控制分段
      */
 
-  if (vector_plane_sp.len() >= 60.0)
+  if (fw_error.PXk>= 60.0)
   {
     format_method = _e_format_method::LONG_DIS;
     ABS_FORMATION_CONTROLLER_INFO("现在是长距离");
@@ -389,7 +378,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     ABS_FORMATION_CONTROLLER_INFO("原始空速设定值：" << airspd_sp);
 
     /* 符合飞机本身的加速减速特性： */
-    /* TODO:慎用，加上之后,需要加大飞机的前向后相加速度，由于延时作用太强，可能导致不稳定。
+    /* ATTENTION:慎用，加上之后,需要加大飞机的前向后相加速度，由于延时作用太强，可能导致不稳定。
      */
     if ((airspd_sp - airspd_sp_prev) > fw_params.maxinc_acc * _dt)
     {
@@ -455,7 +444,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
      * 9. 利用横侧向位置、角度误差产生期望滚转角
      */
 
-  if (format_method == _e_format_method::LONG_DIS)
+  if (false&&format_method == _e_format_method::LONG_DIS)
   {
 
     /* L1控制方法 */
@@ -464,7 +453,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
     roll_cmd = l1_controller.nav_roll(); /* 获取期望控制滚转 */
   }
-  else if (format_method == _e_format_method::CLOSE_DIS)
+  else if (true||format_method == _e_format_method::CLOSE_DIS)
   {
 
     /* 位置与角度误差控制方法 */
@@ -487,14 +476,8 @@ void ABS_FORMATION_CONTROLLER::control_formation()
     roll_sp_pid.increment_pid(mix_err_Yk, mix_Yerr_params.mix_kp, mix_Yerr_params.mix_ki, mix_Yerr_params.mix_kd);
 
     float Phi_dot_sp = roll_sp_pid.get_full_output();
-    /* float acc_sp = roll_sp_pid.get_full_output(); */
-
-    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.PYk = ="<< fw_error.PYk); */
-    /* ABS_FORMATION_CONTROLLER_INFO("fw_error.led_fol_eta = ="<< fw_error.led_fol_eta*180/PI); */
-    /* ABS_FORMATION_CONTROLLER_INFO("Phi_dot_sp = ="<< Phi_dot_sp); */
 
     roll_cmd = atanf((Phi_dot_sp*fw_gspeed_2d.len())/CONSTANTS_ONE_G);
-    /* roll_cmd = acc_sp/(CONSTANTS_ONE_G); */
   }
   else
   {

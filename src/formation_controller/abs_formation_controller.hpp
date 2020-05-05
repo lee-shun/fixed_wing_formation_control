@@ -37,26 +37,26 @@ public:
         float kv_p{0.4};
 
         /* 从机期望与实际位置误差比例 */
-        float kp_p{0.45};
+        float kp_p{0.65};
 
         /* 总混合产生期望空速pid参数 */
         float mix_kp{0.3};
 
         /* 总混合产生期望空速pid参数 */
-        float mix_kd{0.0};
+        float mix_kd{0.00001};
 
         /* 总混合产生期望空速pid参数 */
-        float mix_ki{0.00005};
+        float mix_ki{0.00008};
     };
 
     /* 编队控制器Y方向混合误差产生参数,编队控制器参数 */
     struct _s_mix_Yerr_params
     {
         /* 主从机位置差比例项 */
-        float kp_p{0.005};
+        float kp_p{0.004};
 
         /* 领机从机速度方向偏差比例0.5比较合适 */
-        float keta_p{0.5};
+        float keta_p{0.50};
 
         /* 总混合产生期望roll pid参数 */
         float mix_kp{0.3};
@@ -65,7 +65,7 @@ public:
         float mix_kd{0.005};
 
         /* 总混合产生期望roll pid参数 */
-        float mix_ki{0.001};
+        float mix_ki{0.0015};
     };
 
     /* TECS控制器参数 */
