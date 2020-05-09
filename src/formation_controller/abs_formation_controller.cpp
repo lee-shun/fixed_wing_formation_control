@@ -268,6 +268,7 @@ void ABS_FORMATION_CONTROLLER::control_formation()
 
   /**
     * 4. 计算领机从机地速“差”在从机航迹坐标系之中的投影，控制量是地速，所以是地速之差
+    * TODO:改为领机
     */
 
   Vec led_fol_vel_error = led_gspeed_2d - fw_gspeed_2d;
