@@ -2665,7 +2665,7 @@
     <bcf:datasource type="file" datatype="bibtex">misc/ref.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">dengImageNetLargescaleHierarchical2010</bcf:citekey>
+    <bcf:citekey order="1">Zhang2017Aerodynamics</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

@@ -363,8 +363,6 @@ INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/main
 OUTPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/main.toc
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/1_chapter1.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/1_chapter1.tex
-INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-1.png
-INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-2.jpeg
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
@@ -387,6 +385,8 @@ INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-1.png
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-2.jpeg
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/2_chapter2.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/2_chapter2.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c2/2d_level_motion.png
