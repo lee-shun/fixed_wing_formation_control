@@ -1,7 +1,8 @@
 \chapter{编队控制器设计}
 \label{chap:controller_design}
-第\ref{chap:formation_dynamic_equ}章中介绍了无人机双机编队的动力学模型，并将无人机运动分为竖直平面以及水平平面；方程组\ref{fol_motion_eauation1}水平平面的直接输入量为$\Psi$的期望值，竖直平面的
-直接输入量为$\theta$和$V$的期望值。整体的控制逻辑框图如下图所示：
+第\ref{chap:formation_dynamic_equ}章中介绍了无人机双机编队的动力学模型，并将无人机运动分为竖直平面以及水平平面；第\ref{chap:single_control_logic}
+章中介绍了编队控制器所依赖的自动驾驶仪导航、位置外环以及姿态内环的实现逻辑；再结合方程组\ref{fol_motion_eauation1}水平平面的直接输
+入量为$\Psi$的期望值，竖直平面的直接输入量为$\theta$和$V$的期望值。整体的控制逻辑框图如下图所示：
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/c3/c3-overview_controller.png}
@@ -130,57 +131,8 @@ $PID$控制器参数。
     \includegraphics[width=0.75\textwidth]{figures/c3/relation_theta_thrust}
     \caption{速度以及高度通道的控制逻辑图}\label{fig:relation_theta_thrust}
 \end{figure}
-因而速度和高度需要同时考虑，相应的，期望俯仰角以及推力也需要同时计算。$TECS$控制器正是为此种情况设计的：%TODO:需要添加引用
-所谓总能量控制（total energy control）是将无人机的速度以及高度计算得到相应的动能以及势能作为直接控制对象，应用PID控制器对动能与势能的和（total energy）
-以及动能与势能的转化（total energy balance）进行控制，计算得到无人机期望俯仰角以及期望推力的控制器。飞机作为一个动力学系统，其机械能来自推力做功的输入，因而总能量控制对应着期望推力；与之对应的俯仰角控制是能量守恒的，
-可作为动能向势能（反之亦然）的转化途径，对此种能量转化的控制对应着期望俯仰角。下面简要介绍$TECS$控制器的计算过程：
-\\
-无人机的总能量为：
-\begin{equation}
-    E_T=\frac{1}{2}mV_T^2+mgh
-    \label{ET}
-\end{equation}
-对上式两边微分，可得到总能量变化率：
-\begin{equation}
-    \dot{E_T}=mV_T\dot{V_T}+mg\dot{h}
-    \label{ET_rate}
-\end{equation}
-由此可得单位总能量变化率：
-\begin{equation}
-    \dot{E}=\frac{\dot{E}_{T}}{m g V_{T}}=\frac{\dot{V}_{T}}{g}+\frac{\dot{h}}{V_{T}}=\frac{\dot{V}_{T}}{g}+\sin \gamma
-    \label{specif_ET_rate}
-\end{equation}
-更换式\ref{point_dynamaic}第一式形式，可得到：
-\begin{equation}
-    T-D=m g\left(\frac{\dot{V}_{T}}{g}+\sin \gamma\right)
-    \label{point_dynamaic_change}
-\end{equation}
-由此可得：
-\begin{equation}
-    \Delta T=m g\left(\frac{\dot{V}_{T}}{g}+sin\gamma\right)
-    \label{thrust}
-\end{equation}
-关于能量转化，定义：
-\begin{equation}
-    B=m g h-\frac{1}{2} m V_{T}^{2}
-\end{equation}
-能量转化率为：
-\begin{equation}
-\dot{B}=sin\gamma-\frac{\dot{V}_{T}}{g}
-\end{equation}
-这里参照开源软件$PX4$内部的TECS控制器设计方法，总能量环和能量分配环的控制逻辑框图如下所示：
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/c3/TECS_throttle.jpg}
-    \caption{总能量环}\label{fig:total_energy}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/c3/TECS_pitch.jpg}
-    \caption{能量分配环}\label{fig:balance_energy}
-\end{figure}
-图\ref{fig:total_energy}中，$K_i,K_d,T_{FF},\tau_{thr},K_{\dot{E}\rightarrow\Delta T}$分别为积分项，微分项比例系数，油门前馈项，油门时间常数以及比例向项系数。
-图\ref{fig:balance_energy}中，$K_i,K_d,\tau_{\theta},K_{\dot{B}\rightarrow\Delta \theta}$分别为积分项，微分项比例系数，俯仰角时间常数以及比例向项系数。
+因而速度和高度需要同时考虑，相应的，期望俯仰角以及推力也需要同时计算。$TECS$控制器正是为此种情况设计的：
+次处的TECS控制器的设计参照PX4内部的位置控制部分相应代码，但做出了一些工程化的改进，详见下一节。
 
 至此，来自水平平面的期望速度$|V|_{x_k}^{des}$以及纵向平面的位置误差$P_{z_k}^{err}$将转化为期望俯仰角以及期望推力进入内环姿态驾驶仪；水平平面编队控制器
 产生的期望滚转角也将进入姿态驾驶仪内环。内环姿态自动驾驶仪首先按照无侧滑条件得出期望偏航角速度$\dot{\Phi}^{des}$，然后再利用串级PID分角速度环，角
