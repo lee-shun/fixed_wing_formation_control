@@ -112,4 +112,11 @@ TECS控制器，水平平面选用L1控制器。下面将简要介绍上述两�
 \end{equation}
 \section{姿态内环控制原理}
 总体而言，内环的控制器为串级PID，分为角度环，角速度环以及角加速度环，其控制框图如下所示：
-S
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figures/c3/attitude_inner_loop}
+    \caption{姿态内环控制原理框图}\label{c3-attitude_inner_loop}
+\end{figure}
+其中，$\phi_{sp}$,$\theta_{sp}$,$\psi_{sp}$分别为滚转角、俯仰角以及偏航角期望值；$\dot{\phi}_{sp}$,$\dot{\theta}_{sp}$,$\dot{\psi}_{sp}$
+分别为姿态角速度期望值；$\dot{\Psi}_{sp}$为上述期望姿态角速度所组成的三维向量；$J^{b}_l$为无人机由惯性系到机体系的转换矩阵；
+$V_T$、$V_I$分别为无人机真实空速（true air speed）以及指示空速（indicator air speed）;带“$\sphat$”符号的为响应物理量的估计值。
