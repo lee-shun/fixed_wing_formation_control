@@ -63,7 +63,7 @@ TECS控制器，水平平面选用L1控制器。下面将简要介绍上述两�
 \begin{equation}
 \dot{B}=sin\gamma-\frac{\dot{V}_{T}}{g}
 \end{equation}
-这里参照开源软件$PX4$内部的TECS控制器设计方法，总能量环和能量分配环的控制逻辑框图如下所示：
+这里参照开源自驾仪$PX4$内部的TECS控制器设计方法，总能量环和能量分配环的控制逻辑框图如下所示：
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/c3/TECS_throttle.jpg}
@@ -74,9 +74,42 @@ TECS控制器，水平平面选用L1控制器。下面将简要介绍上述两�
     \includegraphics[width=0.9\textwidth]{figures/c3/TECS_pitch.jpg}
     \caption{能量分配环}\label{fig:balance_energy}
 \end{figure}
-图\ref{fig:total_energy}中，$K_i,K_d,T_{FF},\tau_{thr},K_{\dot{E}\rightarrow\Delta T}$分别为积分项，微分项比例系数，油门前馈项，油门时间常数以及比例向项系数。
+图\ref{fig:total_energy}中，$K_i,K_d,T_{FF},\tau_{thr},K_{\dot{E}\rightarrow\Delta T}$分别为积分项，微分项比例系数，
+油门前馈项，油门时间常数以及比例向项系数。
 图\ref{fig:balance_energy}中，$K_i,K_d,\tau_{\theta},K_{\dot{B}\rightarrow\Delta \theta}$分别为积分项，微分项比例系数，俯仰角时间常数以及比例向项系数。
 \subsection{L1控制器实现逻辑}
-所谓L1控制器是Sanghyuk Park等人在文献\cite{Park_2004}中提出的一种非线性航迹追踪方法的一种工程实现。下面仅作简要介绍：
-
-\section{姿态内环实现原理}
+所谓L1控制器是Sanghyuk Park等人在文献\cite{Park_2004}中提出的一种非线性航迹追踪方法的一种工程实现。Sanghyuk Park在此文中对于此种
+控制器的稳定性做了详细的证明，并在不同飞行状态下对此种控制器与传统线性的控制器控制效果做出了完整对比。下面仅作简要介绍：
+应用L1控制器分为两步：首先应选取在所控制无人机之前的期望航迹之上的并且距离无人机当前位置为L1距离的参考点，如下图\cite{Park_2004}所示：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/c3/L1_control}
+    \caption{L1控制逻辑图}\label{fig:L1_control}
+\end{figure}
+之后期望向心加速度$a_{s_{cmd}}$由下式\cite{Park_2004}给出，此式即为L1控制器的导引律。
+\begin{equation}
+    a_{s_{cmd}}=2\frac{V^2}{L_1}sin\eta
+\end{equation}
+最终的控制效果为：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/c3/L1_eff}
+    \caption{L1控制器控制效果}\label{fig：c3-L1_eff}
+\end{figure}
+在做曲线航迹追踪时，按照Sanghyuk Park等人的分析，控制律将近似为PD控制器。
+之后，按照实际应用的需要，并参考Paul Riseborough, Brandon Jones 和 Andrew Tridgell等人为另一款开源无人机自动驾驶仪APM的L1
+控制器设计，将上述导引律做如下改动：
+\begin{enumerate}
+    \item 显式表示控制律中的频率以及阻尼。
+    \item 显式表示跟踪角度。
+    \item 可以使用小于L1长度的盘旋半径。
+    \item 修改原始圆形追踪控制律，使用PD控制器使得盘旋时可使用小于L1长度的盘旋半径。
+    \item 修改控制逻辑可以分别调整L1控制器的阻尼比以及周期。\label{enu:period}
+\end{enumerate}
+对于较为关键的第\ref{enu:period}项，最终的$L1$长度选择可由下式表示：
+ \begin{equation}
+     L_1 = \frac{V}{\pi T_{L1} \xi_{L1}}
+\end{equation}
+\section{姿态内环控制原理}
+总体而言，内环的控制器为串级PID，分为角度环，角速度环以及角加速度环，其控制框图如下所示：
+S
