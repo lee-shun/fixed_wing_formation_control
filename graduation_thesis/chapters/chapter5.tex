@@ -27,8 +27,11 @@
 
 在无人机编队过程中，双机通信必不可少。通信模块相对于无人机系统相对独立，在此只介绍硬件实现的一种手段：通讯模块选用P900芯片，通讯协议
 选用mavlink协议，驱动由ROS下的串口功能包“serial”提供；实际双机编队飞行试验的硬件链接逻辑如下图所示：
-
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/c4/double_plane_real}
+    \caption{双机编队硬件链接}\label{fig:c4-double_plane_real}
+\end{figure}
 \section{无人机编队动力学仿真环境}
 所谓无人机动力学仿真环境，是在考虑无人机的动力学过程的基础之上搭建的仿真环境，相较于控制器的数学仿真，此种仿真环境考
 虑了无人机作为一个实际的被控系统而存在的过渡过程，不确定性以及扰动因素，将更加符合无人机飞行时的实际状态。
