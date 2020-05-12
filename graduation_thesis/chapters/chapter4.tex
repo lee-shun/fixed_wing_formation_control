@@ -108,7 +108,7 @@ $PID$控制器参数。
 （total energy control system，$TECS$）。固定翼无人机的速度控制和高度控制是耦合的，即单独控制高度或速度时，另一个未被控制量将会发生变化：
 下面通过飞机飞行动力学纵向运动方程简单说明：
 \\方程组\ref{fol_motion_eauation1}的第三式说明：飞机高度方向的变化率与地速大以及俯仰角大小有关，且为正相关。
-\\根据飞机飞行动力学，无人机纵向运动质心运动的动力学方程为：
+\\根据飞机飞行动力学\cite{Fangzhenping2005}，无人机纵向运动质心运动的动力学方程为：
 \begin{equation}
     \left\{
     \begin{aligned}
@@ -188,8 +188,8 @@ $PID$控制器参数。
         control\_input\_x_y(k)
     \end{matrix}
     \right]
-    =  
-    \left[  
+    =
+    \left[
     \begin{matrix}
         cos\sigma& -sin\sigma\\
         sin\sigma& cos\sigma
