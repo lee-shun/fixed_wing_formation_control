@@ -28,7 +28,7 @@
 又因为编队应以领机为参考，受控制量其中之一为从机的地速方向，因而误差应投影在领机航迹坐标系$O^{f}_kx_ky_kz_k$中。
 此处选择编队形成的三种误差类型，形成混合误差，产生期望控制量，进而转化到从机航迹坐标系之下，使从机做出响应。
 \begin{enumerate}
-    \item 领机与从机2维速度方向误差$\eta$，参见图\ref{fig:c02-2d_level_motion}。%TODO:记得改一下图，与之对应
+    \item 领机与从机2维速度方向误差$\eta$，参见图\ref{fig:c02-2d_level_motion}。
     \item 领机与从机速度（地速$V_g$）大小误差$|V_g|^{err}$。
     \item 领机与期望位置3维误差$(P_{x_k}^{err},P_{y_k}^{err},P_{z_k}^{err})$
 \end{enumerate}
@@ -131,7 +131,7 @@ $PID$控制器参数。
     \includegraphics[width=0.75\textwidth]{figures/c3/relation_theta_thrust}
     \caption{速度以及高度通道的控制逻辑图}\label{fig:relation_theta_thrust}
 \end{figure}
-因而速度和高度需要同时考虑，相应的，期望俯仰角以及推力也需要同时计算。$TECS$控制器正是为此种情况设计的：
+因而速度和高度需要同时考虑，相应的，期望俯仰角以及推力也需要同时计算。TECS控制器正是为此种情况设计的：
 次处的TECS控制器的设计参照PX4内部的位置控制部分相应代码，但做出了一些工程化的改进，详见下一节。
 
 至此，来自水平平面的期望速度$|V|_{x_k}^{des}$以及纵向平面的位置误差$P_{z_k}^{err}$将转化为期望俯仰角以及期望推力进入内环姿态驾驶仪；水平平面编队控制器

@@ -25,8 +25,8 @@ method）为基础，并考虑现有
 内环的姿态驾驶仪的控制输入量，完成从编队误差量到姿态控制输入量的计算，进而达到消除编队误差，形成编队之目的。本文先定义编队控制误差
 ，再进行控制器数学形式的设计。初步设计完成之后，使用MATLAB/Simulink等数学仿真工具研究控制器设计的稳定性以及动态特性。之后，再结合ROS/
 Gazebo等仿真工具，验证在考虑无人机的动力学模型、环境不确定性以及噪声的情况下的控制器的表现。
-之后选取合适的无人机飞行平台，飞行控制硬件并编写移植编队控制算法，完成飞行仿真实验验证。完成编队控制器的参数参数整定之后，并将实验的结果与仿真结果相对比，进行一定的改进。
-最后，使用改进后的编队控制器完成双机编队任务。
+之后选取合适的无人机飞行平台，飞行控制硬件并编写移植编队控制算法，完成飞行仿真实验验证。根据仿真实验结果，对实验中的一些不足之处进行
+一定的改进。最后，使用改进后的编队控制器完成双机编队任务。另外，本文还将介绍编队控制的整体实现方法。
 %TODO：这里的研究目的要针对研究情况改写。
 %（{\color{blue}{摘要是一篇具有独立性和完整性的短文，应概括而扼要地反映出本论文的主要内容。包括研究目的、研究方法、研究结果和结论等，特别要突出研究结果和结论。中文摘要力求语言精炼准确，硕士学位论文摘要建议500$\sim$800字，博士学位论文建议1000$\sim$1200字。摘要中不可出现参考文献、图、表、化学结构式、非公知公用的符号和术语。英文摘要与中文摘要的内容应一致。}}）
 
@@ -54,8 +54,17 @@ Gazebo等仿真工具，验证在考虑无人机的动力学模型、环境不�
 \setlength{\parskip}{0em}
 
 % 英文摘要正文从这里开始
-The main content of this thesis is to design the close formation controller adapted to the inner-loop attitude controller of the fixed-wing UAV, which is based on the leader-follower method of the UAV formation control. The close formation controller plays role of translating the formation errors to the input for the inner loop attitude controller.The formation control error is defined at the beginning of the thesis and then the formulations of the close formation controller. After the preliminary design of the formation controller, the MATLAB/Simulink is used to test and verify the dynamic quality and stability of the proposed controller. Then considering the dynamic model of the  UAV, the environment uncertainty and the noise, the performance of the controller is verified with the ROS/Gazebo simulator. After that, the controller is rewrote to the algorithm running on the upper controller. The hardware of the controller and the UAV platform is well chosen to accomplish the formation experiment. During this period, the parameters are tuned in order to accomplish the optimal control effect.
-Finally, the double fixed-wing UAV formation is conducted.
+The main content of this thesis is to design the close formation controller adapted to the inner-loop attitude controller of
+the fixed-wing UAV, which is based on the leader-follower method of the UAV formation control. The close formation controller
+plays role of translating the formation errors to the input for the inner loop attitude controller.The formation control error
+is defined at the beginning of the thesis and then the formulations of the close formation controller. After the preliminary
+design of the formation controller, the MATLAB/Simulink is used to test and verify the dynamic quality and stability of the
+proposed controller. Then considering the dynamic model of the  UAV, the environment uncertainty and the noise, the performance
+of the controller is verified with the ROS/Gazebo simulator. After that, the controller is rewrote to the algorithm running on
+the upper controller. The hardware of the controller and the UAV platform is well chosen to accomplish the formation experiment.
+During this period, the parameters are tuned in order to accomplish the optimal control effect.After that, some improvment is 
+done to the backwards given by the simulation.
+Finally, the double fixed-wing UAV formation is conducted. Besides the implementation of the double fixed-wing formation is introducted.
 
-\vspace{3ex}\noindent\textbf{fixed-wing UAV, leader-follower method, close formation controller design,flight simulation experiment}
+\vspace{3ex}\noindent\textbf{Keywords: fixed-wing UAV, leader-follower method, close formation controller design,flight simulation experiment}
 \newpage

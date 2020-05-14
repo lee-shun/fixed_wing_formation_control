@@ -1,7 +1,8 @@
-\chapter{控制器仿真以及实际飞行实验结果分析}
+\chapter{控制器仿真实验结果分析}
 \label{chap:simulatin_expermient}
 本章之中，按照第\ref{chap:controller_design}
-章中给出的控制器的数学模型，选定相应的初始条件进行双机的质点模型数学仿真：即不考虑无人机的姿态，只考虑无人机的位置，速度大小以及方向。之后，利用第\ref{chap:hardware}章中介绍的$ROS/Gazebo-PX4$仿真环境，在考虑无人机动力学的条件下进行双机编队仿真。
+章中给出的控制器的数学模型，选定相应的初始条件进行双机的质点模型数学仿真：即不考虑无人机的姿态，只考虑无人机的位置，速度大小以及方向。
+之后，利用第\ref{chap:hardware}章中介绍的$ROS/Gazebo-PX4$仿真环境，在考虑无人机动力学的条件下进行双机编队仿真。
 \section{基于MATLAB/Simulink的双机编队数学仿真}
 本节数学仿真只验证编队控制器的控制性能以及控制逻辑的正确性，因而在仿真之前，做如下假设：
 \begin{enumerate}
@@ -11,7 +12,7 @@
 另外，按照第\ref{chap:controller_design}章中控制器设计分为水平平面以及竖直平面的原则，本节之中的仿真也是分为两个方面进行的；在任何
 在其中任意一个平面内仿真时，都假设另外一个平面已经达到了控制目标，并且处于稳态。
 
-在水平面的仿真中：选取的初始条件均为在地面坐标系$NED$中定义：
+在水平面的仿真中：选取的初始条件均为在地面坐标系NED中定义：
 领机初始位置$P_{0}^{l}=(0,100)$;
 领机初始速度$V_{0}^{l}=(20,0)$;
 从机的初始位置$P_{0}^{f}=(0,0)$;
@@ -57,7 +58,7 @@
     \includegraphics[width=0.85\textwidth]{figures/c5/c5-TECS-control.jpg}
     \caption{竖直平面控制量关系}\label{fig:c5-TECS-control}
 \end{figure}
-由仿真结果可知，本文所设计的$TECS$控制器可以完成对于期望速度以及期望高度的跟踪，从而达到消除竖直平面内的误差的作用。
+由仿真结果可知，本文所设计的TECS控制器可以完成对于期望速度以及期望高度的跟踪，从而达到消除竖直平面内的误差的作用。
 \section{基于ROS/Gazebo-PX4的双机编队动力学仿真}
 根据第\ref{chap:hardware}章中介绍的ROS-Gazebo仿真环境，进行仿真环境下的双机编队飞行试验。首先利用QGround Control 地面站为领机规划
 一条包括起飞以及降落航点在内的一条长直航线。之后先使用地面站将领机1(vehicle 1)
@@ -70,7 +71,10 @@
     \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-overview}
     \caption{稳定编队之后的编队可视化效果}\label{c5-real-overview}
 \end{figure}
-在仿真过程中，利用ROS提供的rosbag等数据记录工具,可以进行仿真之中的数据记录与处理：图\ref{c5-real-pos_err_x}-图\ref{c5-real-pos_err_z}分别代表了双机编队位置误差投影在从机坐标系$O_kx_ky_kz_k$中的分量随时间的变化关系；图\ref{c5-real-eta_err}代表从机与领机的速度方向误差随时间变化关系；图\ref{c5-real-vel_err}代表从机与领机的速度大小误差随时间的变化关系。
+在仿真过程中，利用ROS提供的rosbag等数据记录工具,可以进行仿真之中的数据记录与处理：
+图\ref{c5-real-pos_err_x}-图\ref{c5-real-pos_err_z}分别代表了双机编队位置误差投影
+在从机坐标系$O_kx_ky_kz_k$中的分量随时间的变化关系；图\ref{c5-real-eta_err}代表从
+机与领机的速度方向误差随时间变化关系；图\ref{c5-real-vel_err}代表从机与领机的速度大小误差随时间的变化关系。
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-pos_err_x}
@@ -96,3 +100,8 @@
     \includegraphics[width=0.85\textwidth]{figures/c5/c5-real-eta_err}
     \caption{领机从机速度方向误差}\label{c5-real-eta_err}
 \end{figure}
+从图\ref{c5-real-pos_err_x}-图\ref{c5-real-pos_err_z}中可看出，编队的3向位置误差最终稳定在$\pm0.1m$范围之内；而无人机的翼展尺寸在$2m$左右
+则按照文献\cite{Zhang2017Aerodynamics}，此种精度可以满足固定翼无人机紧密编队的要求。
+
+速度的收敛速度要迟于位置的收敛，这是因为从机速度要大于领机的速度时才可以消除相应的位置误差。但是最终速度方向以及速度大小均会收敛到
+领机的速度方向以及大小，从而实现前文所提出的无人机编队的位置以及速度要求。
