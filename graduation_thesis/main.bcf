@@ -2666,6 +2666,44 @@
   </bcf:bibdata>
   <bcf:section number="0">
     <bcf:citekey order="1">Zhang2017Aerodynamics</bcf:citekey>
+    <bcf:citekey order="2">Zzhangjialong2019Collision</bcf:citekey>
+    <bcf:citekey order="3">Wangxiangke2019</bcf:citekey>
+    <bcf:citekey order="4">LiuLi2010</bcf:citekey>
+    <bcf:citekey order="5">Park_2004</bcf:citekey>
+    <bcf:citekey order="6">Lambregts1983Vertical</bcf:citekey>
+    <bcf:citekey order="7">ZhuZhanXia2007</bcf:citekey>
+    <bcf:citekey order="8">WangLi2008</bcf:citekey>
+    <bcf:citekey order="9">Turpin2012Trajectory</bcf:citekey>
+    <bcf:citekey order="10">Saska2017System</bcf:citekey>
+    <bcf:citekey order="11">WeiYang2016</bcf:citekey>
+    <bcf:citekey order="12">Balch1998Behavior</bcf:citekey>
+    <bcf:citekey order="13">Sharma2009Collision</bcf:citekey>
+    <bcf:citekey order="14">Jadbabaie2003Coordination</bcf:citekey>
+    <bcf:citekey order="15">Kim2009</bcf:citekey>
+    <bcf:citekey order="16">SongYunZhong2012</bcf:citekey>
+    <bcf:citekey order="17">DuanHaiBin2015</bcf:citekey>
+    <bcf:citekey order="18">Jongho2015</bcf:citekey>
+    <bcf:citekey order="19">Lewis1997High</bcf:citekey>
+    <bcf:citekey order="20">Ren2004Formation</bcf:citekey>
+    <bcf:citekey order="21">Ren2004Decentralized</bcf:citekey>
+    <bcf:citekey order="22">XiaoYaHui2011</bcf:citekey>
+    <bcf:citekey order="23">XuYue</bcf:citekey>
+    <bcf:citekey order="24">MengXiuyun2020</bcf:citekey>
+    <bcf:citekey order="25">Helvlong2020</bcf:citekey>
+    <bcf:citekey order="26">Zhoushaolei2020</bcf:citekey>
+    <bcf:citekey order="27">Zhangxiyong2019</bcf:citekey>
+    <bcf:citekey order="28">Dongzhaoyang2020</bcf:citekey>
+    <bcf:citekey order="29">Jilei2019</bcf:citekey>
+    <bcf:citekey order="30">Xuzhen2019</bcf:citekey>
+    <bcf:citekey order="31">Zhangtianhui2019</bcf:citekey>
+    <bcf:citekey order="32">Wusentang2013</bcf:citekey>
+    <bcf:citekey order="33">Park_2004</bcf:citekey>
+    <bcf:citekey order="34">Park_2004</bcf:citekey>
+    <bcf:citekey order="35">Park_2004</bcf:citekey>
+    <bcf:citekey order="36">Fangzhenping2005</bcf:citekey>
+    <bcf:citekey order="37">Fangzhenping2005</bcf:citekey>
+    <bcf:citekey order="38">Zhang2017Aerodynamics</bcf:citekey>
+    <bcf:citekey order="39">YuJianQiao2010</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

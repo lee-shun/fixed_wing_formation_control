@@ -387,6 +387,9 @@ INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-1.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-2.jpeg
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-3.jpeg
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/c01-meaning-4.jpeg
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c1/autopilot_struct.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter2.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter2.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c2/2d_level_motion.png
@@ -396,6 +399,9 @@ INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chap
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c4/PX4_archticher.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/TECS_throttle.jpg
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/TECS_pitch.jpg
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/L1_control.png
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/L1_eff.png
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/attitude_inner_loop.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter4.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter4.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c3/c3-overview_controller.png
@@ -405,6 +411,7 @@ INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figu
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter5.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter5.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c4/c4-soft-hard.png
+INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c4/double_plane_real.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c4/Gazebo.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/figures/c4/px4_sitl_overview.png
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/chapters/chapter6.tex
@@ -425,8 +432,6 @@ INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/3_conclusion.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/4_reference.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/4_reference.tex
-INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/5_appendix.tex
-INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/5_appendix.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/6_acknowledgements.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/misc/6_acknowledgements.tex
 INPUT /home/ls/catkin_ws/src/fixed_wing_formation_control/graduation_thesis/main.aux
