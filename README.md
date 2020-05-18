@@ -1,6 +1,6 @@
 ## ✈✈ _固定翼编队控制器设计及实现_
 
-### 整体逻辑
+### 软件硬件关系
 ![avatar](./graduation_thesis/figures/c4/c4-soft-hard.png)
 ### 文件结构
     .
@@ -19,7 +19,7 @@
     └── src                     ===》     编队控制器源程序
 
 ### 编队控制器软件逻辑
-![avatar](./graduation_thesis/figures/c4/c4-soft-hard.png)
+![avatar](./graduation_thesis/figures/c4/c4-soft-arch.png)
 
 ### 依赖项目
 ##### 1. 运行环境
