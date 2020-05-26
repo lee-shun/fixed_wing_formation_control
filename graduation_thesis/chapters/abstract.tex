@@ -20,17 +20,19 @@
 \setlength{\parskip}{0em}
 
 % 中文摘要正文从这里开始
-本文主要的研究内容为固定翼无人机紧密编队控制器设计、仿真及其应用。本文中控制器以固定翼无人机编队的领从方法（leader-follower 
-method）为基础，并考虑现有
-内环的姿态驾驶仪的控制输入量，完成从编队误差量到姿态控制输入量的计算，进而达到消除编队误差，形成编队之目的。本文先定义编队控制误差
+固定翼无人机编队技术作为多无人机协同作战的一项重要功能，其实现涉及多项关键技术，例如队形形成，队形保持以及组网通信等。
+小型无人机成本较低是实现无人机编队的理想平台，但因控制器以及传感器等硬件的精度相应较低，常造成控制精度上的困难。本文旨在
+设计一款面向低成本的固定翼无人机的编队控制算法，与现有开源无人机控制系统相匹配，并通过合适的硬件选配以及算法移植，实现低成本
+固定翼无人机的编队任务。
+
+文中编队控制器以固定翼无人机编队的领从方法（leader-follower method）为基础，并考虑现有开源无人机自动驾驶仪
+姿态内环的控制输入量，完成从编队误差量到姿态控制输入量的计算，进而达到消除编队误差，形成编队之目的。本文先定义编队控制误差
 ，再进行控制器数学形式的设计。初步设计完成之后，使用MATLAB/Simulink等数学仿真工具研究控制器设计的稳定性以及动态特性。之后，再结合ROS/
 Gazebo等仿真工具，验证在考虑无人机的动力学模型、环境不确定性以及噪声的情况下的控制器的表现。
 之后选取合适的无人机飞行平台，飞行控制硬件并编写移植编队控制算法，完成飞行仿真实验验证。根据仿真实验结果，对实验中的一些不足之处进行
 一定的改进。最后，使用改进后的编队控制器完成双机编队任务。另外，本文还将介绍编队控制的整体实现方法。
-%TODO：这里的研究目的要针对研究情况改写。
-%（{\color{blue}{摘要是一篇具有独立性和完整性的短文，应概括而扼要地反映出本论文的主要内容。包括研究目的、研究方法、研究结果和结论等，特别要突出研究结果和结论。中文摘要力求语言精炼准确，硕士学位论文摘要建议500$\sim$800字，博士学位论文建议1000$\sim$1200字。摘要中不可出现参考文献、图、表、化学结构式、非公知公用的符号和术语。英文摘要与中文摘要的内容应一致。}}）
 
-\vspace{4ex}\noindent\textbf{\heiti 关键词：固定翼无人机、领从方法、紧密编队控制器设计、飞行仿真实验}
+\vspace{4ex}\noindent\textbf{\heiti 关键词：固定翼无人机、领从方法、编队控制器设计、飞行仿真实验}
 \newpage
 
 % 英文摘要章节
@@ -54,8 +56,15 @@ Gazebo等仿真工具，验证在考虑无人机的动力学模型、环境不�
 \setlength{\parskip}{0em}
 
 % 英文摘要正文从这里开始
-The main content of this thesis is to design the close formation controller adapted to the inner-loop attitude controller of
-the fixed-wing UAV, which is based on the leader-follower method of the UAV formation control. The close formation controller
+The formation control of the fixed-wing UAV, as a typical function of the multi-UAVs cooperativly combat, includes many critical
+technologies such as formation maintenance, formation transformation and network communication. Micro-UAVs could be the ideal 
+platform of the formation control due to their low cost and easy-depolyed features. However, The important sensors of these platform
+alaways can't satify the precision of the formation controller, which usually causes the difficult during the controller design.
+This paper aims to design the formation controller adapted to the realtive mature inner-loop attitude controller of
+the nowadays open source UAV autopilot. After that, the hardware will be well chosen to adapted the formation algorithm, which 
+finally relaize the formation control of fixed-wing UAV.
+
+The formation controller is based on the leader-follower method of the UAV formation control. The close formation controller
 plays role of translating the formation errors to the input for the inner loop attitude controller.The formation control error
 is defined at the beginning of the thesis and then the formulations of the close formation controller. After the preliminary
 design of the formation controller, the MATLAB/Simulink is used to test and verify the dynamic quality and stability of the
