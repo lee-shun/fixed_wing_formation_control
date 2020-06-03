@@ -1,7 +1,6 @@
 \chapter{编队控制器设计}
 \label{chap:controller_design}
-第\ref{chap:formation_dynamic_equ}章中介绍了无人机双机编队的动力学模型，并将无人机运动分为竖直平面以及水平平面；第\ref{chap:single_control_logic}
-章中介绍了编队控制器所依赖的自动驾驶仪导航、位置外环以及姿态内环的实现逻辑；再结合方程组\ref{fol_motion_eauation1}水平平面的直接输
+第\ref{chap:formation_dynamic_equ}章中介绍了无人机双机编队的动力学模型，并将无人机运动分为竖直平面以及水平平面，之后介绍了编队控制器所依赖的自动驾驶仪导航、位置外环以及姿态内环的实现逻辑；再结合方程组\ref{fol_motion_eauation1}水平平面的直接输
 入量为$\Psi$的期望值，竖直平面的直接输入量为$\theta$和$V$的期望值。整体的控制逻辑框图如下图所示：
 \begin{figure}[H]
     \centering
