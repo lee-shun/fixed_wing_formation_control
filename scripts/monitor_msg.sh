@@ -23,8 +23,8 @@
 
 #zsh
 gnome-terminal --window -e 'zsh -c "rosrun rqt_graph rqt_graph; exec zsh"' \
---tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/fw_states; exec zsh"' \
---tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/leader_states; exec zsh"' \
---tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/formation_control_states; exec zsh"' \
---tab -e 'zsh -c "rostopic echo /fixed_wing_formation_control/fw_cmd; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /uav1/fixed_wing_formation_control/fw_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /uav1/fixed_wing_formation_control/leader_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /uav1/fixed_wing_formation_control/formation_control_states; exec zsh"' \
+--tab -e 'zsh -c "rostopic echo /uav1/fixed_wing_formation_control/fw_cmd; exec zsh"' \
 
