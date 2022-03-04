@@ -1,43 +1,74 @@
-## ✈✈ _固定翼编队控制器设计及实现_
+# Fixed-Wing UAV Formation Controller Design and Implementation
 
-### 软件硬件关系
-![avatar](./graduation_thesis/figures/c4/c4-soft-hard.png)
-### 文件结构
-    .
-    ├── CMakeLists.txt          ===》     编译文件
-    ├── compile_commands.json   ===》     clang文件
-    ├── config                  ===》     ROS节点配置文件
-    ├── flight_logs             ===》     典型的飞行仿真数据
-    ├── graduation_thesis       ===》     论文目录
-    ├── launch                  ===》     启动文件
-    ├── matlab_simulink         ===》     matlab仿真文件
-    ├── msg                     ===》     自定义消息文件
-    ├── package.xml             ===》     包描述文件
-    ├── processing_frame        ===》     程序流程图
-    ├── README.md               ===》     自述
-    ├── scripts                 ===》     一些脚本文件
-    └── src                     ===》     编队控制器源程序
+> **Flight Simulation based on Gazebo & ROS:**
 
-### 编队控制器软件逻辑
-![avatar](./graduation_thesis/figures/c4/c4-soft-arch.png)
+![12_x264.gif](./demo_files/12_x264.gif)
 
-### 依赖项目
-##### 1. 运行环境
-[ROS](https://www.ros.org/) --开源机器人操作系统
-##### 2. 依赖
-[mavros]() 功能包 </br>
-[serial]() 功能包 </br>
+## Introduction & Hypothesis
 
-##### 3. 姿态内环
-[PX4](https://px4.io/) 自动驾驶仪 </br>
+### Introduction
 
-### 注意
-1. 仅作为兴趣以及学术交流使用，*请勿做商用*
+Use the “Leader-Follower” method to accomplish the 2 fixed-wing UAVs formation controlling.
 
-2. 本软件可以被更改以及使用，*请注明出处*
+### Hypothesis
 
-### 最后
-本项目的进步与发展，得益于北京理工大学飞行器动力学与控制实验室（BIT-
-CGNC）的对我的培养与帮助。</br>另外，由于我受到帮助以及指点实在
-太多，详情请参见论文致谢页。
-若有志同道合的朋友，欢迎交流！
+- Earth
+  - No rotation, inertial coordinate system
+  - Flat, no curve
+- Air
+  - No wind
+  - The air shares the same properties within the UAVs flight envelope.
+- UAVs
+  - Not sliding( sliding angle β=0), Coordinated Turn Model
+  - AOA(angle of attack) is small
+  - Rigid body
+
+## Modeling
+
+### Horizontal Plane
+
+![ho](./demo_files/ho.png)
+
+- Split this problem into horizontal plane and vertical plane!
+- The formation control object:
+  - Velocity of the follower is the same as the leader.
+  - Position error is zero
+
+**Note:** no sliding angle, no wind and  small AOA, velocity is (almost) along the body-fixed axis X.
+
+### Vertical Plane
+
+![ver](./demo_files/ver.png)
+
+- In the vertical plane, the most important error is the height error, which is also called the Z position error.
+
+**Note:** We mainly focus on the horizonal plane motion.  So, we won’t take it as a part of error in the vertical plane.
+
+## Formation Controller Design
+
+![for_des](./demo_files/for_design.png)
+
+- Make use of the inner-loop controller, design the outer-loop!
+- Input: the states of leader and follower.
+- Output: the desired attitude setpoint and the throttle values of the follower.
+
+### Error Defination
+
+![ctrl](./demo_files/ctrl.png)
+
+- Why? Find the relationship between the errors and their corresponding controllable variables:
+- X direction ==> velocity.
+- Y direction ==> yaw rate.
+- Z direction ==> height
+- We want to eliminate both the position and velocity error at the same time!
+- So, We define the linear combination of the position and velocity error as the “mixed error” along the X and Y axis in
+  follower’s body-fixed coordinate system.
+- We will use the height error as the error along the Z axis, treating the main motion as in the 2D plane.
+
+## Simulation Results
+
+![image](./demo_files/res.png)
+
+## Copyright
+
+**Copyright (C) 2020 Aircraft Dynamics and Control Laboratory of BIT. All rights reserved.**
