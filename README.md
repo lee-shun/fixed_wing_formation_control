@@ -10,6 +10,10 @@
 
 Use the “Leader-Follower” method to accomplish the 2 fixed-wing UAVs formation controlling.
 
+### Software Architecture
+
+![image](./demo_files/arc.png)
+
 ### Hypothesis
 
 - Earth
