@@ -144,7 +144,6 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/fixed_wing_formation_control.cpp
 # )
-
 ########### 衡侧向控制器库生成声明 #############
 add_library(L1_controller
     src/fixed_wing_lib/lateral_controller/L1_controller.cpp
@@ -176,11 +175,21 @@ add_library(abs_formation_controller
 add_library(pack_fw_states
     src/pack_fw_states/pack_fw_states.cpp
     )
+add_dependencies(
+  pack_fw_states
+  ${PROJECT_NAME}_generate_messages_cpp
+)
+
+
 
 ########### 无人机模式切换库生成声明 #############
 add_library(switch_fw_mode
     src/test/switch_fw_mode/switch_fw_mode.cpp
     )
+add_dependencies(
+  switch_fw_mode
+  ${PROJECT_NAME}_generate_messages_cpp
+)
 
 ################## 编队控制节点 #####################
 add_library(task_main
@@ -270,6 +279,10 @@ add_executable(vir_sim_leader src/test/vir_leader/vir_sim_leader.cpp)
 target_link_libraries(vir_sim_leader
     ${catkin_LIBRARIES}
     )
+add_dependencies(
+  vir_sim_leader
+  ${PROJECT_NAME}_generate_messages_cpp
+)
 
 #########领机0号消息打包节点 #############
 
