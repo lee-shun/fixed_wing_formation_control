@@ -1,6 +1,6 @@
 # Fixed-Wing UAV Formation Controller Design and Implementation
 
-> download my bachalor's [thesis work]().
+**Download my bachalor's [thesis](./demo_files/main.pdf).**
 
 > **Flight Simulation based on Gazebo & ROS:**
 
